@@ -94,8 +94,30 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Kiểm tra kho lưu trữ GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 - [x] Tạo file `GEMINI.md` thiết lập quy tắc dự án và hướng dẫn khôi phục.
 - [x] Cập nhật `README.md` chi tiết về dự án Agent-Pixels 4 Dũng.
-- [ ] Khởi tạo thư mục Backend (FastAPI, SQLAlchemy 2.0, pyodbc, Pydantic, WebSockets, Agent Workflow Service).
-- [ ] Khởi tạo thư mục Frontend (React 19 + TypeScript + Vite + Canvas Pixel Office Engine + 4 Dũng sprites + Multi-camera + Sound effects).
-- [ ] Tích hợp API giao tiếp giữa Backend và Frontend.
-- [ ] Build ứng dụng frontend ra thư mục `dist` sạch sẽ.
-- [ ] Commit và Push toàn bộ code lên GitHub.
+- [x] Khởi tạo thư mục Backend (FastAPI, SQLAlchemy 2.0, pyodbc, Pydantic, WebSockets, Agent Workflow Service).
+- [x] Khởi tạo thư mục Frontend (React 19 + TypeScript + Vite + Canvas Pixel Office Engine + 4 Dũng sprites + Multi-camera + Sound effects).
+- [x] Tích hợp API giao tiếp giữa Backend và Frontend.
+- [x] Build ứng dụng frontend ra thư mục `dist` sạch sẽ, 0 lỗi, 0 warning.
+- [x] Commit toàn bộ mã nguồn sạch sẽ.
+
+---
+
+## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER
+
+Khi đưa lên máy chủ thật có SQL Server:
+1. Cài đặt **Microsoft ODBC Driver 18 for SQL Server**:
+   - Tải từ trang chủ Microsoft hoặc cài qua chocolatey: `choco install sqlserver-odbcdriver`
+2. Tạo cơ sở dữ liệu trên SQL Server (Ví dụ: `AgentMultiDB`).
+3. Khai báo biến môi trường trong file `backend/.env`:
+   ```ini
+   SQL_SERVER_CONNECTION_STRING=mssql+pyodbc://sa:YourStrongPassword123@localhost:1433/AgentMultiDB?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
+   ```
+4. Khi khởi chạy, SQLAlchemy 2.0 sẽ tự động tạo bảng `agents`, `project_sessions`, `deliberation_messages`, `office_event_logs` và nạp sẵn 4 chuyên gia Dũng vào database.
+
+---
+
+## 7. KẾ HOẠCH BÀN GIAO & VIỆC CẦN LÀM TIẾP THEO (NEXT STEPS)
+1. **Kiểm tra đẩy mã nguồn**: Đẩy các commit lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
+2. **Triển khai Server**: Đưa thư mục `frontend/dist` lên Web Server (IIS/Nginx) và chạy FastAPI Backend bằng Supervisor / PM2 / Windows Service.
+3. **Mở rộng**: Có thể tích hợp thêm LLM trực tiếp (OpenAI API key hoặc Gemini API key) nếu muốn câu trả lời của 4 Dũng được sinh động theo thời gian thực từ API bên ngoài ngoài template tối ưu có sẵn.
+
