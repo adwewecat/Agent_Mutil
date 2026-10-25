@@ -147,6 +147,30 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Build bản đóng gói `frontend/dist` thành công sạch sẽ 100%, 0 lỗi, 0 cảnh báo.
 - [x] Commit và đẩy code lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-25] Tái cấu trúc không gian chuẩn The Pixel Office (thepixeloffice.ai) & Agent-Pixels
+- [x] **Vấn đề đã xử lý**:
+  - Giao diện trước đây vẽ các phòng hình hộp rời rạc, nhồi nhét quá nhiều vật trang trí trong không gian chật hẹp dẫn đến tình trạng chồng chéo, đè lên tường và đồ vật khác.
+  - Thiếu tính chiều sâu và không gian mở liền mạch của một văn phòng ảo chuyên nghiệp.
+- [x] **Giải pháp kiến trúc không gian mới (Unified 2.5D Isometric Floor Plan)**:
+  1. **Bố cục không gian mở thoáng đãng (Open-Plan Unified Architecture)**:
+     - Tường hậu phía sau (Back Wall) có độ sâu 3D Isometric, tích hợp 5 cửa sổ kính lớn (Cityscape Windows) chiếu ánh sáng thành phố hiện đại.
+     - Hành lang trung tâm gạch caro đen trắng (Checkerboard Hallway) nối liền thông suốt giữa 2 dãy phòng.
+     - Vách ngăn lửng kính mờ 2.5D giữa các phòng, cửa ra vào rộng rãi 44px, không gây chắn đường hay tù túng.
+  2. **Hệ thống nội thất Zero-Overlap (Khoảng cách chuẩn Pixel-Perfect)**:
+     - Loại bỏ toàn bộ vật dụng dư thừa, tính toán tọa độ và kích thước từng vật thể cách nhau tối thiểu 25-40px:
+       + **Phòng Kiến Trúc (Dũng 2)**: Kệ sách sát tường sau, mini server rack đèn LED, cây xanh góc phòng, bàn làm việc lớn 2 màn hình PC, ghế xoay tại `(125, 195)`.
+       + **Phòng Giám Đốc (Dũng 1)**: Thảm sapphire hoàng gia, sofa da đỏ êm ái tại `(470, 130)`, bàn trà gỗ tiếp khách phía trước có 2 tách cà phê, tranh nghệ thuật viền vàng và 2 chậu ficus đối xứng.
+       + **Khu Pantry & Cà Phê Bar**: Quầy bar bồn rửa inox, tủ lạnh 2 cánh, máy bán nước tự động, bình nước khoáng nóng lạnh úp ngược, cây xanh thoáng mát.
+       + **Phòng Dev Lab (Dũng 3)**: Bàn làm việc Fullstack Dev rộng rãi, 2 màn hình sáng code matrix xanh lá, bàn phím cơ, cốc cà phê, ghế xoay công thái học tại `(135, 410)`.
+       + **Phòng Họp Chiến Lược (Boardroom)**: Bàn họp hội đồng gỗ óc chó lớn ở trung tâm, 6 ghế xoay nỉ xanh đối xứng xung quanh, laptop điều hành mở sẵn, bảng trắng kiến trúc.
+       + **Phòng Bida & Giải Trí (Dũng 4)**: Bàn bida nỉ xanh chuẩn thi đấu ở trung tâm, 4 phía đều có khoảng trống rộng rãi; máy game Arcade retro tím neon góc tường, Dũng 4 đứng cầm gậy cơ tại `(710, 405)`.
+  3. **Kiến trúc Z-Sort Rendering Pipeline thực thụ**:
+     - Mọi đồ vật nội thất và 4 nhân vật Dũng đều được đưa vào mảng `allDrawables`, sắp xếp tự động theo trục Y (`zY = y + height`).
+     - Đảm bảo 100% không bao giờ xảy ra hiện tượng chồng chéo, vật thể đè lên nhau hay nhân vật trèo lên bàn.
+- [x] Đồng bộ dữ liệu tọa độ trên Backend FastAPI, Database SQLite / SQL Server và Frontend React Canvas.
+- [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

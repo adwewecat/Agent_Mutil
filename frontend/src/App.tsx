@@ -68,16 +68,16 @@ export const App: React.FC = () => {
   const handleDispatchAgent = (code: string, room: string, statusOverride?: string) => {
     const targetCoords: Record<string, { x: number; y: number }> = {
       boardroom: {
-        dung_1: { x: 715, y: 318 }, // Ghế họp dãy trên bên trái (mặt bàn phủ chân tự nhiên)
-        dung_2: { x: 765, y: 318 }, // Ghế họp dãy trên bên phải
-        dung_3: { x: 715, y: 418 }, // Ghế họp dãy dưới
-        dung_4: { x: 765, y: 418 }, // Ghế họp dãy dưới
-      }[code] || { x: 715, y: 318 },
-      director_office: { x: 595, y: 65 },   // Ngồi ghế sofa da đỏ tiếp khách
-      architect_office: { x: 140, y: 152 }, // Ngồi ghế xoay trước bàn vẽ kiến trúc
-      dev_lab: { x: 120, y: 402 },          // Ngồi ghế văn phòng trước máy tính Dev Lab
-      games_room: { x: 320, y: 400 },       // Đứng cạnh thành bàn bida (không đứng trên bàn)
-      kitchen_pantry: { x: 850, y: 88 },    // Đứng trước quầy pha cà phê
+        dung_1: { x: 445, y: 350 }, // Ghế họp dãy trên bên trái (bàn che nửa thân dưới)
+        dung_2: { x: 525, y: 350 }, // Ghế họp dãy trên bên phải
+        dung_3: { x: 445, y: 435 }, // Ghế họp dãy dưới
+        dung_4: { x: 525, y: 435 }, // Ghế họp dãy dưới
+      }[code] || { x: 445, y: 350 },
+      director_office: { x: 470, y: 130 },   // Ngồi ghế sofa da đỏ tiếp khách
+      architect_office: { x: 125, y: 195 }, // Ngồi ghế xoay trước bàn thiết kế
+      dev_lab: { x: 135, y: 410 },          // Ngồi ghế văn phòng trước máy tính Dev Lab
+      games_room: { x: 710, y: 405 },       // Đứng cạnh bàn bida (tay cầm gậy cơ)
+      kitchen_pantry: { x: 740, y: 165 },   // Đứng trước quầy bar cà phê
     };
 
     const target = targetCoords[room] || { x: 500, y: 250 };

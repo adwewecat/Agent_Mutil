@@ -280,32 +280,34 @@ export class OfficeEngine {
     ctx.scale(this.zoom, this.zoom);
     ctx.translate(-this.viewX, -this.viewY);
 
-    // 1. Dựng tầng nền: Sàn gạch, tường 3D, tủ sách, tranh tường, quầy bếp và ghế dãy trên bàn họp
-    SpriteRenderer.drawBackground(ctx, OFFICE_WIDTH, OFFICE_HEIGHT);
+    // 1. Dựng nền tổng thể và kiến trúc văn phòng (Sàn nhà, Tường 3D, Cửa sổ kính, Vách ngăn phòng)
+    SpriteRenderer.drawOfficeStructure(ctx, OFFICE_WIDTH, OFFICE_HEIGHT);
 
-    // 2. Dựng các nhân vật ngồi ở dãy ghế trên của phòng họp (pos_y < 330 và đang ở boardroom)
-    // Các nhân vật này được vẽ TRƯỚC mặt bàn họp để khi bàn họp vẽ sau sẽ che chân tự nhiên
-    const backRowAgents = this.agents.filter(a => a.current_room === 'boardroom' && a.pos_y < 330);
-    backRowAgents.forEach(agent => {
-      this.renderAgentWithEffects(ctx, agent, true);
-    });
+    // 2. Gom toàn bộ đồ đạc nội thất và 4 Dũng vào danh sách Z-Sort
+    const furnitureDrawables = SpriteRenderer.getFurnitureDrawables();
+    const allDrawables: { zY: number; draw: (c: CanvasRenderingContext2D) => void }[] = [
+      ...furnitureDrawables,
+      ...this.agents.map(agent => ({
+        zY: agent.pos_y + 16,
+        draw: (c: CanvasRenderingContext2D) => this.renderAgentWithEffects(c, agent),
+      })),
+    ];
 
-    // 3. Dựng tầng nổi phía trước: Mặt bàn họp lớn, bàn Dev Lab, bàn Kiến trúc, bàn Bida, bàn trà và ghế trước
-    SpriteRenderer.drawForeground(ctx);
+    // 3. Sắp xếp tất cả thực thể theo thứ tự chiều sâu Y (Tránh triệt để chồng chéo vật thể)
+    allDrawables.sort((a, b) => a.zY - b.zY);
 
-    // 4. Dựng các nhân vật còn lại (ở phía trước bàn, ở Dev Lab, Games Room, phòng Giám đốc...)
-    const otherAgents = this.agents.filter(a => !(a.current_room === 'boardroom' && a.pos_y < 330));
-    otherAgents.forEach(agent => {
-      this.renderAgentWithEffects(ctx, agent, false);
-    });
+    // 4. Vẽ tuần tự theo thứ tự chiều sâu hoàn hảo
+    for (const item of allDrawables) {
+      item.draw(ctx);
+    }
 
     ctx.restore();
 
-    // 3. Lớp phủ Camera an ninh (CCTV REC Overlay)
+    // 5. Lớp phủ Camera an ninh (CCTV REC Overlay)
     const currentCameraName = ROOMS.find(r => r.id === this.camera)?.name || 'Văn phòng Tổng quan';
     SpriteRenderer.drawCameraOverlay(ctx, canvas.width, canvas.height, currentCameraName, this.showScanlines);
 
-    // 4. Nếu có Agent được chọn, hiển thị thanh trạng thái điều khiển trên Canvas
+    // 6. Nếu có Agent được chọn, hiển thị thanh trạng thái điều khiển trên Canvas
     if (this.selectedAgentCode) {
       const sel = this.agents.find(a => a.code === this.selectedAgentCode);
       if (sel) {
@@ -328,12 +330,12 @@ export class OfficeEngine {
   /**
    * Dựng một Agent kèm theo hiệu ứng chọn và bong bóng thoại
    */
-  private renderAgentWithEffects(ctx: CanvasRenderingContext2D, agent: Agent, isBehindTable: boolean) {
+  private renderAgentWithEffects(ctx: CanvasRenderingContext2D, agent: Agent) {
     const isSelected = agent.code === this.selectedAgentCode;
     const customBubble = this.customBubbles[agent.code]?.text;
 
     // Vẽ vòng phát sáng dưới chân nếu đang được chọn
-    if (isSelected && !isBehindTable) {
+    if (isSelected) {
       ctx.save();
       ctx.strokeStyle = '#38bdf8';
       ctx.lineWidth = 2.5;
@@ -345,8 +347,8 @@ export class OfficeEngine {
       ctx.restore();
     }
 
-    // Dựng nhân vật với tư thế phù hợp
-    SpriteRenderer.drawAgent(ctx, agent, this.frameCount, isBehindTable);
+    // Dựng nhân vật Pixel với animation phù hợp
+    SpriteRenderer.drawAgent(ctx, agent, this.frameCount);
 
     // Nếu có bong bóng thoại đặc biệt thì vẽ đè lên
     if (customBubble) {
