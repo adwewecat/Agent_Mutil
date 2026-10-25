@@ -539,15 +539,20 @@ export class SpriteRenderer {
       zY: 385,
       draw: ctx => this.drawOfficeCopier(ctx, 230, 348),
     });
-    // Bàn làm việc Fullstack Dev với 2 màn hình code matrix xanh lá & case PC (Pin A & B)
+    // Bàn làm việc Fullstack Dev chính (Dũng 3 - Chỗ số 3/7)
     drawables.push({
       zY: 395,
-      draw: ctx => this.drawDevWorkstation(ctx, 85, 355),
+      draw: ctx => this.drawDevWorkstation(ctx, 60, 355),
+    });
+    // Bàn làm việc cubicle phụ chuẩn công sở 80 Elements (Chỗ số 5/7)
+    drawables.push({
+      zY: 395,
+      draw: ctx => this.drawSecondaryOfficeDesk(ctx, 172, 360),
     });
     // Thùng rác inox công nghệ
     drawables.push({
       zY: 410,
-      draw: ctx => this.drawTrashBin(ctx, 205, 395),
+      draw: ctx => this.drawTrashBin(ctx, 226, 395),
     });
     // Cây Topiary góc phòng dev (Pinterest Pin B)
     drawables.push({
@@ -828,22 +833,102 @@ export class SpriteRenderer {
   }
 
   /**
-   * Ghế xoay văn phòng họp nỉ bọc da cao cấp (Executive Conference Chair)
+   * Ghế xoay văn phòng công thái học bánh xe nỉ xanh Royal Blue (Pinterest Pin B - Ergonomic Rolling Office Chair)
+   */
+  private static drawOfficeSwivelChair(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.save();
+    // 1. Chân sao 5 cánh có bánh xe xoay (5-Star Castor Wheel Base)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x - 9, y + 10, 18, 2);
+    ctx.fillRect(x - 2, y + 8, 4, 4);
+    // Bánh xe lăn
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(x - 10, y + 11, 3, 3);
+    ctx.fillRect(x + 7, y + 11, 3, 3);
+    ctx.fillRect(x - 2, y + 12, 4, 2);
+
+    // 2. Trục nâng thủy lực xi-lanh nhôm
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x - 1.5, y + 4, 3, 5);
+
+    // 3. Đệm ngồi nỉ xanh Royal Blue êm ái (Plush Royal Blue Cushion)
+    ctx.fillStyle = '#1d4ed8';
+    ctx.beginPath();
+    ctx.roundRect(x - 10, y, 20, 8, 3);
+    ctx.fill();
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x - 8, y + 1, 16, 3);
+
+    // 4. Tựa lưng ghế uốn cong công thái học (Ergonomic Backrest)
+    ctx.fillStyle = '#1e40af';
+    ctx.beginPath();
+    ctx.roundRect(x - 9, y - 12, 18, 12, 3);
+    ctx.fill();
+    ctx.fillStyle = '#60a5fa';
+    ctx.fillRect(x - 7, y - 10, 14, 2);
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x - 9, y - 12, 18, 12);
+
+    ctx.restore();
+  }
+
+  /**
+   * Ghế họp văn phòng xoay nỉ xanh Royal Blue (Pinterest Pin B - Conference Swivel Chair)
    */
   private static drawConferenceChair(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    this.drawOfficeSwivelChair(ctx, x, y);
+  }
+
+  /**
+   * Bàn làm việc cubicle phụ chuẩn công sở 80 Elements (Pinterest Pin B - Secondary Cubicle Desk Spot)
+   */
+  private static drawSecondaryOfficeDesk(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    const w = 48;
+    const h = 36;
     ctx.save();
-    // Đệm ngồi da
+    // Đổ bóng chân bàn
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    ctx.fillRect(x + 2, y + 4, w, h);
+
+    // Chân bàn thép sơn tĩnh điện
     ctx.fillStyle = '#0f172a';
-    ctx.beginPath();
-    ctx.roundRect(x - 10, y, 20, 14, 4);
-    ctx.fill();
-    // Chỉ may thêu
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x - 8, y + 2, 16, 4);
-    // Viền kim loại
-    ctx.strokeStyle = '#475569';
+    ctx.fillRect(x + 2, y + 6, 4, h);
+    ctx.fillRect(x + w - 6, y + 6, 4, h);
+
+    // Mặt bàn laminate trắng ngà
+    const deskGrad = ctx.createLinearGradient(x, y, x, y + 14);
+    deskGrad.addColorStop(0, '#f8fafc');
+    deskGrad.addColorStop(1, '#e2e8f0');
+    ctx.fillStyle = deskGrad;
+    ctx.fillRect(x, y, w, 14);
+    ctx.strokeStyle = '#94a3b8';
     ctx.lineWidth = 1;
-    ctx.stroke();
+    ctx.strokeRect(x, y, w, 14);
+
+    // Màn hình LCD văn phòng viền xám bạc
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x + 14, y - 16, 20, 15);
+    ctx.fillStyle = '#0284c7'; // Màn hình xanh
+    ctx.fillRect(x + 15, y - 15, 18, 11);
+    ctx.fillStyle = '#94a3b8'; // Chân đế
+    ctx.fillRect(x + 21, y - 1, 6, 3);
+
+    // Bàn phím & chuột
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x + 12, y + 2, 16, 5);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 31, y + 3, 3, 4);
+
+    // Khay tài liệu In/Out bên cạnh
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x + 3, y + 2, 8, 8);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 4, y + 3, 6, 2);
+
+    // Ghế xoay nỉ xanh đặt trước bàn
+    this.drawOfficeSwivelChair(ctx, x + 24, y + 24);
+
     ctx.restore();
   }
 
@@ -2312,15 +2397,17 @@ export class SpriteRenderer {
     // 1. VẼ SPRITE NHÂN VẬT CHÂN THỰC THEO PHONG CÁCH PINTEREST
     // ─────────────────────────────────────────────────────────────────────
     if (spriteImg && spriteImg.complete && spriteImg.naturalWidth > 0) {
-      // Tựa ghế xoay văn phòng nếu Dũng 3 hoặc Dũng 2 đang ngồi làm việc
+      // Tựa ghế xoay văn phòng nếu Dũng 3 hoặc Dũng 2 đang ngồi làm việc (Lưng ghế nỉ xanh Royal Blue)
       if (!isMoving && agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
-        ctx.fillStyle = '#0f172a';
+        ctx.fillStyle = '#1e3a8a';
         ctx.fillRect(x - 12, charY - 14, 24, 18);
-        ctx.fillStyle = '#334155';
+        ctx.fillStyle = '#2563eb';
         ctx.fillRect(x - 10, charY - 12, 20, 14);
       } else if (!isMoving && agent.code === 'dung_2' && agent.current_room === 'architect_office') {
-        ctx.fillStyle = '#1e1b4b';
+        ctx.fillStyle = '#1e3a8a';
         ctx.fillRect(x - 12, charY - 14, 24, 18);
+        ctx.fillStyle = '#2563eb';
+        ctx.fillRect(x - 10, charY - 12, 20, 14);
       }
 
       // Bóng đổ mềm mại dưới chân
@@ -2329,16 +2416,16 @@ export class SpriteRenderer {
       ctx.ellipse(x, y + 16, 15, 5, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Vẽ nhân vật Pinterest với tỉ lệ vàng (34px x 58px) sắc nét pixel
+      // Vẽ nhân vật Pinterest Pin B với tỉ lệ chuẩn sắc nét pixel (36px x 64px)
       const tilt = isMoving ? Math.sin(frame * 0.25) * 0.05 : 0;
       if (tilt !== 0) {
         ctx.translate(x, y);
         ctx.rotate(tilt);
-        ctx.drawImage(spriteImg, -17, -44 - walkBob, 34, 58);
+        ctx.drawImage(spriteImg, -18, -48 - walkBob, 36, 64);
         ctx.rotate(-tilt);
         ctx.translate(-x, -y);
       } else {
-        ctx.drawImage(spriteImg, x - 17, y - 44 - walkBob, 34, 58);
+        ctx.drawImage(spriteImg, x - 18, y - 48 - walkBob, 36, 64);
       }
 
       // Bảng tên Pixel nổi trên đầu
@@ -2361,20 +2448,22 @@ export class SpriteRenderer {
     }
 
     // ─────────────────────────────────────────────────────────────────────
-    // 2. FALLBACK VẼ PIXEL ART NẾU CHƯA CÓ ẢNH SPRITE
+    // 2. FALLBACK VẼ PIXEL ART CHUẨN CÔNG SỞ PINTEREST PIN B
     // ─────────────────────────────────────────────────────────────────────
     const walkCycle = Math.floor((frame / 8) % 4);
     const legOffset = isMoving ? (walkCycle === 0 ? -4 : walkCycle === 2 ? 4 : 0) : 0;
 
     // 1. Tựa ghế xoay văn phòng nếu Dũng 3 hoặc Dũng 2 đang ngồi làm việc
     if (!isMoving && agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = '#1e3a8a';
       ctx.fillRect(x - 11, charY - 12, 22, 16);
-      ctx.fillStyle = '#334155';
+      ctx.fillStyle = '#2563eb';
       ctx.fillRect(x - 9, charY - 10, 18, 12);
     } else if (!isMoving && agent.code === 'dung_2' && agent.current_room === 'architect_office') {
-      ctx.fillStyle = '#1e1b4b';
+      ctx.fillStyle = '#1e3a8a';
       ctx.fillRect(x - 11, charY - 12, 22, 16);
+      ctx.fillStyle = '#2563eb';
+      ctx.fillRect(x - 9, charY - 10, 18, 12);
     }
 
     // 2. Bóng đổ mềm mại dưới chân
@@ -2384,7 +2473,7 @@ export class SpriteRenderer {
     ctx.fill();
 
     // 3. Chân & Giày da
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = agent.code === 'dung_3' ? '#1e293b' : '#451a03'; // Giày da nâu hoặc sneaker đen
     if (!isMoving && (agent.current_room === 'director_office' || agent.current_room === 'dev_lab')) {
       // Dáng ngồi: Chân gập ngắn
       ctx.fillRect(x - 6, charY + 8, 5, 6);
@@ -2395,41 +2484,51 @@ export class SpriteRenderer {
       ctx.fillRect(x + 2, charY + 8 + legOffset, 5, 9 - legOffset);
     }
 
-    // 4. Quần dài
-    ctx.fillStyle = agent.code === 'dung_1' ? '#1e293b' : agent.code === 'dung_2' ? '#334155' : agent.code === 'dung_3' ? '#1e293b' : '#450a0a';
+    // 4. Quần dài chuẩn công sở Pin B
+    // Dũng 1: Quần tây xám | Dũng 2: Quần navy | Dũng 3: Jeans xanh | Dũng 4: Quần âu xám
+    ctx.fillStyle = agent.code === 'dung_1' ? '#475569' : agent.code === 'dung_2' ? '#1e3a8a' : agent.code === 'dung_3' ? '#2563eb' : '#334155';
     ctx.fillRect(x - 8, charY + 3, 16, 7);
 
-    // 5. Áo đặc trưng cho từng Dũng
+    // 5. Trang phục đặc trưng cho từng Dũng (Chuẩn Pinterest Pin B 80 Elements)
     if (agent.code === 'dung_1') {
-      // DŨNG 1: Vest xanh Navy + Cà vạt xanh
-      ctx.fillStyle = '#1e3a8a';
+      // DŨNG 1: Vest xám công sở + Sơ mi trắng + Cà vạt xanh biển
+      ctx.fillStyle = '#64748b'; // Áo vest xám
       ctx.fillRect(x - 10, charY - 11, 20, 16);
-      ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(x - 4, charY - 11, 8, 4);
-      ctx.fillStyle = '#38bdf8';
+      ctx.fillStyle = '#f8fafc'; // Sơ mi trắng chữ V
+      ctx.fillRect(x - 4, charY - 11, 8, 5);
+      ctx.fillStyle = '#0284c7'; // Cà vạt xanh
       ctx.fillRect(x - 1.5, charY - 9, 3, 11);
     } else if (agent.code === 'dung_2') {
-      // DŨNG 2: Áo gile tím lịch lãm
-      ctx.fillStyle = '#581c87';
+      // DŨNG 2: Sơ mi trắng công sở + Cà vạt xanh navy
+      ctx.fillStyle = '#f8fafc'; // Sơ mi trắng
       ctx.fillRect(x - 10, charY - 11, 20, 16);
-      ctx.fillStyle = '#e9d5ff';
-      ctx.fillRect(x - 4, charY - 11, 8, 4);
-      ctx.fillStyle = '#c084fc';
-      ctx.fillRect(x - 2, charY - 9, 4, 4);
+      ctx.fillStyle = '#1e40af'; // Cà vạt navy
+      ctx.fillRect(x - 1.5, charY - 9, 3, 11);
+      ctx.fillStyle = '#cbd5e1'; // Hàng cúc
+      ctx.fillRect(x - 0.5, charY + 2, 1, 3);
     } else if (agent.code === 'dung_3') {
-      // DŨNG 3: Hoodie xanh Hacker
-      ctx.fillStyle = '#065f46';
+      // DŨNG 3: Áo thun tech đen + Tai nghe quanh cổ
+      ctx.fillStyle = '#1e293b'; // Áo thun đen
       ctx.fillRect(x - 10, charY - 11, 20, 16);
-      ctx.fillStyle = '#10b981';
-      ctx.fillRect(x - 5, charY - 4, 10, 7);
+      ctx.fillStyle = '#38bdf8'; // Logo cyan
+      ctx.fillRect(x - 3, charY - 5, 6, 2);
+      // Tai nghe bạc đeo quanh cổ (Silver Headphones)
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(x, charY - 11, 6, 0, Math.PI);
+      ctx.stroke();
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(x - 8, charY - 10, 3, 4);
+      ctx.fillRect(x + 5, charY - 10, 3, 4);
     } else {
-      // DŨNG 4: Áo khoác an ninh đỏ + Thẻ vàng
-      ctx.fillStyle = '#991b1b';
+      // DŨNG 4: Áo len xanh lá tươi cổ tim + Sơ mi trắng + Thẻ QA vàng
+      ctx.fillStyle = '#16a34a'; // Áo len xanh lá
       ctx.fillRect(x - 10, charY - 11, 20, 16);
-      ctx.fillStyle = '#ef4444';
-      ctx.fillRect(x - 6, charY - 7, 5, 5);
-      ctx.fillStyle = '#eab308';
-      ctx.fillRect(x + 2, charY - 6, 4, 4);
+      ctx.fillStyle = '#f8fafc'; // Cổ sơ mi trắng
+      ctx.fillRect(x - 3, charY - 11, 6, 3);
+      ctx.fillStyle = '#eab308'; // Thẻ vàng QA
+      ctx.fillRect(x - 2, charY - 5, 4, 4);
     }
 
     // 6. Cánh tay & Hành động (Gõ bàn phím, vung tay khi đi, hoặc cầm gậy bida)

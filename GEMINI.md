@@ -262,6 +262,30 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Bản build `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
 - [x] Đã commit và đẩy toàn bộ mã nguồn lên GitHub.
 
+### [2026-10-25] Nâng cấp Toàn diện Nhân vật Công sở Sáng sủa, Thiết bị Hardware & Hệ thống 7 Chỗ Ngồi (Chuẩn Pin B)
+- [x] **Thiết kế lại 4 Nhân vật Sáng sủa, Năng động Chuẩn Văn phòng Công nghệ (People)**:
+  - Thay thế phong cách cổ điển mafia bằng 4 bộ trang phục công sở hiện đại, sáng sủa, sắc nét chuẩn 100% mục "people" của Pinterest Pin B:
+    - **Dũng 1 (Software Director)**: Bộ com-lê vest xám công sở sang trọng (`#64748b`), sơ mi trắng, cà vạt xanh biển (`#0284c7`), tóc nâu chải gọn gàng và giày da nâu.
+    - **Dũng 2 (Software Architect & PM)**: Sơ mi trắng công sở cộc tay/xắn tay (`#f8fafc`), cà vạt xanh navy (`#1e40af`), quần tây xanh đen (`#1e3a8a`), kính mắt gọng vàng tri thức.
+    - **Dũng 3 (Senior Fullstack Dev)**: Áo thun tech đen than (`#1e293b`), **tai nghe bạc đeo quanh cổ (`#cbd5e1`)**, quần jeans xanh hiện đại (`#2563eb`), **tay cầm cốc cà phê đỏ tươi (`#ef4444`)** bốc khói.
+    - **Dũng 4 (Test Lead & QA Specialist)**: Áo len cổ tim xanh lá tươi (`#16a34a`) phối cổ sơ mi trắng, quần âu xám than (`#334155`), thẻ đeo QA an ninh màu vàng.
+  - Tái tạo lại cả 4 file sprite PNG trong suốt độ phân giải pixel-perfect (`frontend/public/assets/characters/dung_1.png` -> `dung_4.png`) và cập nhật đồng bộ logic render Canvas fallback.
+- [x] **Trang bị Hardware & Ghế xoay Công thái học (Hardware & Furniture)**:
+  - **Ghế xoay văn phòng nỉ xanh Royal Blue (`#2563eb`)**: Thiết kế tựa lưng cong công thái học, đệm nỉ xanh hoàng gia, xi lanh nâng hạ thủy lực nhôm và chân sao 5 cánh có bánh xe lăn (`#475569`).
+  - **Thiết bị Hardware chuẩn Pin B**: Máy in / photocopy đa khay có thùng rác tái chế, màn hình LCD viền bạc hiển thị xanh dương, mở rộng khay tài liệu In/Out 2 tầng trên mặt bàn.
+- [x] **Bố trí Không gian 7 Chỗ Ngồi Công sở (4 Nhân vật Core giữ nguyên vị trí)**:
+  - Hệ thống văn phòng hiện có đầy đủ **7 vị trí ngồi / làm việc chuẩn công sở**:
+    1. Chỗ số 1: Ghế sofa nỉ Royal Blue phòng tiếp khách (Dũng 1 điều hành).
+    2. Chỗ số 2: Trạm vẽ kỹ thuật cubicle kiến trúc sư (Dũng 2 thẩm định).
+    3. Chỗ số 3: Trạm lập trình Fullstack Dev chính (Dũng 3 gõ code).
+    4. Chỗ số 4: Khu vực bida & máy Arcade testing (Dũng 4 kiểm thử).
+    5. Chỗ số 5: Bàn làm việc cubicle phụ (Secondary Office Desk) có màn hình LCD, khay tài liệu và ghế xoay xanh.
+    6. Chỗ số 6: Ghế xoay hội nghị số 1 phòng họp Boardroom.
+    7. Chỗ số 7: Ghế xoay hội nghị số 2 phòng họp Boardroom.
+  - 4 nhân vật Dũng hoạt động chính xác tại 4 vị trí cốt lõi, đồng thời có thể tự do điều động tới các chỗ ngồi họp hoặc thao tác trực tiếp.
+- [x] Bản build `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Đã commit và đẩy toàn bộ mã nguồn lên GitHub.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER
