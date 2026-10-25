@@ -19,9 +19,10 @@ const CAMERAS: CamConfig[] = [
   { id: 'architect_office' as CameraView, code: 'CAM-03', name: 'P. Kiến Trúc (Dũng 2)' },
   { id: 'boardroom', code: 'CAM-04', name: 'Phòng Họp Tranh Luận' },
   { id: 'dev_lab', code: 'CAM-05', name: 'Dev Lab (Dũng 3)' },
-  { id: 'qa_lab', code: 'CAM-06', name: 'QA & An Ninh (Dũng 4)' },
-  { id: 'lounge', code: 'CAM-07', name: 'Cà Phê & Arcade' },
+  { id: 'games_room' as CameraView, code: 'CAM-06', name: 'Phòng Bida & Arcade' },
+  { id: 'kitchen_pantry' as CameraView, code: 'CAM-07', name: 'Cà Phê & Bếp Pantry' },
 ];
+
 
 export const SecurityCameraBar: React.FC<SecurityCameraBarProps> = ({
   currentCamera,

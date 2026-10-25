@@ -45,7 +45,15 @@ export interface ProjectSession {
   messages: DeliberationMessage[];
 }
 
-export type CameraView = 'overview' | 'boardroom' | 'dev_lab' | 'qa_lab' | 'director' | 'architect' | 'lounge';
+export type CameraView =
+  | 'overview'
+  | 'director_office'
+  | 'architect_office'
+  | 'boardroom'
+  | 'dev_lab'
+  | 'games_room'
+  | 'kitchen_pantry';
+
 
 export interface OfficeRoom {
   id: string;

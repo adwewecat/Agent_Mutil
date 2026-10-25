@@ -100,6 +100,21 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Build ứng dụng frontend ra thư mục `dist` sạch sẽ, 0 lỗi, 0 warning.
 - [x] Commit toàn bộ mã nguồn sạch sẽ.
 
+### [2026-10-25] Nâng cấp giao diện 2.5D Isometric và tái cấu trúc Layout
+- [x] Đưa bảng **GIAO ĐỀ BÀI CHO BỘ TỨ DŨNG** lên vị trí trên cùng của trang (Top Panel) tiện thao tác nhanh.
+- [x] Chuyển đổi hiển thị của **4 Dũng (Dũng 1, Dũng 2, Dũng 3, Dũng 4)** thành danh sách theo chiều dọc bên cột phải (Right Sidebar).
+- [x] Nâng cấp toàn diện đồ họa Canvas Pixel Art mô phỏng 100% phong cách 2.5D Isometric chuẩn của `Agent-Pixels`:
+  - Sàn gỗ parquet ấm cúng cho văn phòng dev & làm việc.
+  - Hành lang gạch caro đen trắng (checkerboard).
+  - Phòng giải trí bida (billiard table có bóng và gậy cơ) và máy Arcade retro tím.
+  - Phòng họp chiến lược với bàn gỗ dài, ghế xoay bọc da, máy tính xách tay và bảng trắng (whiteboard).
+  - Khu vực pantry/kitchen lát gạch trắng men bóng với bồn rửa, bình nước nóng lạnh và máy bán nước.
+  - Tủ sách gỗ đầy màu sắc, tranh phong cảnh nghệ thuật viền vàng treo tường, chậu cây monstera/ficus chi tiết.
+- [x] Cải tiến Animation nhân vật pixel sống động: đi bộ đu đưa tay chân 4 frame nhịp nhàng, ngồi gõ bàn phím nhấp nháy màn hình, ngồi họp và đứng đánh bida.
+- [x] Build bản đóng gói sạch sẽ ra `frontend/dist/`.
+- [x] Commit và sẵn sàng push mã nguồn lên GitHub.
+
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

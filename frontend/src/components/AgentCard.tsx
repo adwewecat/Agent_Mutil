@@ -56,7 +56,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, onDispatch }) => {
         </span>
         <button
           onClick={() => onDispatch(agent.code, 'boardroom')}
-          className="dispatch-chip"
+          className="dispatch-chip chip-boardroom"
           title="Gọi vào phòng họp tranh luận"
         >
           Họp
@@ -71,22 +71,30 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, onDispatch }) => {
                 ? 'architect_office'
                 : agent.code === 'dung_3'
                 ? 'dev_lab'
-                : 'qa_lab'
+                : 'games_room'
             )
           }
           className="dispatch-chip"
-          title="Về bàn làm việc chính"
+          title="Về phòng làm việc chuyên môn"
         >
           Bàn làm việc
         </button>
         <button
-          onClick={() => onDispatch(agent.code, 'lounge')}
+          onClick={() => onDispatch(agent.code, 'games_room')}
           className="dispatch-chip"
-          title="Ra khu vực giải trí cà phê"
+          title="Ra phòng chơi Bida & Arcade giải trí"
         >
-          Lounge
+          Bida
+        </button>
+        <button
+          onClick={() => onDispatch(agent.code, 'kitchen_pantry')}
+          className="dispatch-chip"
+          title="Ra quầy pantry uống nước / cà phê"
+        >
+          Pantry
         </button>
       </div>
     </div>
   );
 };
+

@@ -1,5 +1,6 @@
 /**
- * Bộ dựng đồ họa Pixel Art cho đồ đạc nội thất và 4 Nhân vật Dũng
+ * Bộ dựng đồ họa Pixel Art 2.5D Isometric chuẩn phong cách Agent-Pixels
+ * Dựng nội thất phòng bida, quầy pantry, phòng họp, dev lab và 4 Dũng chi tiết cao
  */
 
 import { Agent } from '../types';
@@ -7,223 +8,765 @@ import { ROOMS } from './mapData';
 
 export class SpriteRenderer {
   /**
-   * Vẽ toàn bộ phòng, sàn nhà và tường ngăn cách phong cách Pixel Art
+   * Vẽ toàn bộ phòng, sàn nhà cao cấp (gỗ, caro bàn cờ, gạch men) và tường 2.5D
    */
   public static drawMap(ctx: CanvasRenderingContext2D, width: number, height: number) {
-    // 1. Nền tổng thể văn phòng
-    ctx.fillStyle = '#0f172a';
+    // 1. Nền tổng thể văn phòng (Vùng không gian tối bao quanh)
+    ctx.fillStyle = '#080d1a';
     ctx.fillRect(0, 0, width, height);
 
-    // 2. Vẽ từng phòng
+    // 2. Vẽ hành lang trung tâm gạch caro đen trắng (Checkerboard Hallway) nối giữa các phòng
+    this.drawCheckerboardHallway(ctx);
+
+    // 3. Vẽ từng phòng chức năng với sàn gạch đặc thù
     ROOMS.forEach(room => {
-      // Sàn nhà
-      ctx.fillStyle = room.floorColor;
-      ctx.fillRect(room.x, room.y, room.width, room.height);
+      ctx.save();
 
-      // Lưới gạch Pixel (Floor Tiles)
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-      ctx.lineWidth = 1;
-      const tileSize = 24;
-      for (let tx = room.x; tx < room.x + room.width; tx += tileSize) {
-        ctx.beginPath();
-        ctx.moveTo(tx, room.y);
-        ctx.lineTo(tx, room.y + room.height);
-        ctx.stroke();
+      // Sàn phòng
+      if (room.id === 'dev_lab' || room.id === 'architect_office') {
+        // Sàn gỗ Parquet ấm áp vân gỗ
+        this.drawParquetFloor(ctx, room.x, room.y, room.width, room.height);
+      } else if (room.id === 'kitchen_pantry') {
+        // Gạch men trắng sáng nhà bếp
+        this.drawCeramicFloor(ctx, room.x, room.y, room.width, room.height);
+      } else if (room.id === 'games_room') {
+        // Gạch hoa văn tím/hồng phòng bida
+        this.drawLavenderTiles(ctx, room.x, room.y, room.width, room.height);
+      } else if (room.id === 'boardroom') {
+        // Gạch xanh ngọc thạch phòng họp hội nghị
+        this.drawTealCarpet(ctx, room.x, room.y, room.width, room.height);
+      } else {
+        // Sàn xanh sapphire phòng giám đốc
+        this.drawSapphireFloor(ctx, room.x, room.y, room.width, room.height);
       }
-      for (let ty = room.y; ty < room.y + room.height; ty += tileSize) {
-        ctx.beginPath();
-        ctx.moveTo(room.x, ty);
-        ctx.lineTo(room.x + room.width, ty);
-        ctx.stroke();
-      }
 
-      // Viền tường phòng (Wall Borders)
-      ctx.strokeStyle = '#334155';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(room.x, room.y, room.width, room.height);
+      // Tường dày 2.5D Isometric (Wall Depth & Shadow)
+      this.draw3DWalls(ctx, room.x, room.y, room.width, room.height);
 
-      // Nẹp tường nổi khối pixel
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(room.x, room.y, room.width, 10);
+      // Biển LED tên phòng kiểu Pixel Art
+      this.drawRoomBadge(ctx, room.name, room.x, room.y);
 
-      // Biển tên phòng phong cách LED / Pixel Badge
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-      ctx.fillRect(room.x + 8, room.y + 12, room.name.length * 7.5 + 16, 20);
-      ctx.strokeStyle = '#475569';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(room.x + 8, room.y + 12, room.name.length * 7.5 + 16, 20);
-
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '10px "JetBrains Mono", monospace';
-      ctx.fillText(room.name, room.x + 14, room.y + 26);
+      ctx.restore();
     });
 
-    // 3. Vẽ nội thất từng phòng
-    this.drawFurniture(ctx);
+    // 4. Vẽ toàn bộ nội thất chi tiết (Bàn bida, sofa đỏ, tủ sách, quầy nước, cây xanh, bảng họp)
+    this.drawDetailedFurniture(ctx);
   }
 
   /**
-   * Vẽ đồ đạc nội thất chi tiết (Bàn, ghế, máy tính, bảng vẽ, bàn họp, máy arcade)
+   * Vẽ hành lang gạch caro đen trắng (Checkerboard) kinh điển của Agent-Pixels
    */
-  private static drawFurniture(ctx: CanvasRenderingContext2D) {
-    // --- PHÒNG GIÁM ĐỐC (Dũng 1) ---
-    // Bàn làm việc gỗ sang trọng
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(90, 110, 80, 40);
-    ctx.fillStyle = '#92400e';
-    ctx.fillRect(92, 112, 76, 8);
-    // Laptop giám đốc
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(115, 118, 26, 16);
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(117, 120, 22, 12);
-    // Ghế da giám đốc
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(118, 90, 22, 18);
-    // Chậu cây phong thủy pixel
-    this.drawPixelPlant(ctx, 40, 50);
+  private static drawCheckerboardHallway(ctx: CanvasRenderingContext2D) {
+    const startX = 250;
+    const startY = 20;
+    const endX = 570;
+    const endY = 280;
+    const tileSize = 20;
 
-    // --- PHÒNG KIẾN TRÚC SƯ (Dũng 2) ---
-    // Bàn thiết kế kiến trúc
-    ctx.fillStyle = '#475569';
-    ctx.fillRect(320, 110, 80, 40);
-    // Bản vẽ kiến trúc Blueprint mở rộng
-    ctx.fillStyle = '#1d4ed8';
-    ctx.fillRect(330, 116, 40, 24);
-    ctx.strokeStyle = '#93c5fd';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(332, 118, 36, 20);
-    // Tủ Server Rack
-    this.drawServerRack(ctx, 420, 45);
-
-    // --- PHÒNG HỌP CHIẾN LƯỢC (Boardroom) ---
-    // Bàn họp tròn dài gỗ Mahogany
-    ctx.fillStyle = '#451a03';
-    ctx.beginPath();
-    ctx.roundRect(550, 95, 320, 80, 16);
-    ctx.fill();
-    ctx.strokeStyle = '#78350f';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    // Máy chiếu trung tâm bàn họp
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(690, 125, 40, 22);
-    ctx.fillStyle = '#38bdf8';
-    ctx.beginPath();
-    ctx.arc(710, 136, 6, 0, Math.PI * 2);
-    ctx.fill();
-    // Ghế họp bao quanh
-    const chairX = [580, 640, 700, 760, 820];
-    chairX.forEach(x => {
-      // Ghế hàng trên
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(x, 70, 20, 18);
-      // Ghế hàng dưới
-      ctx.fillRect(x, 185, 20, 18);
-    });
-
-    // --- PHÒNG LẬP TRÌNH (Dũng 3) ---
-    // Bàn Lập trình góc chữ L hiện đại
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(140, 360, 90, 45);
-    // 3 Màn hình lập trình hiển thị Matrix Code
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(145, 365, 24, 16);
-    ctx.fillRect(173, 365, 26, 16);
-    ctx.fillRect(203, 365, 22, 16);
-    ctx.fillStyle = '#22c55e'; // Code xanh lá
-    ctx.fillRect(147, 367, 20, 12);
-    ctx.fillRect(175, 367, 22, 12);
-    ctx.fillRect(205, 367, 18, 12);
-    // Bàn phím cơ RGB
-    ctx.fillStyle = '#6366f1';
-    ctx.fillRect(165, 386, 36, 8);
-
-    // --- PHÒNG KIỂM THỬ (Dũng 4) ---
-    // Bàn kiểm thử & An ninh
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(460, 360, 90, 45);
-    // Màn hình Radar & Bug Matrix đỏ
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(470, 365, 40, 20);
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(473, 368, 34, 14);
-    // Radar scan quét
-    ctx.strokeStyle = '#fca5a5';
-    ctx.beginPath();
-    ctx.arc(490, 375, 5, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // --- KHU VỰC CÀ PHÊ & ARCADE (Lounge) ---
-    // Máy trò chơi Arcade Retro
-    this.drawArcadeMachine(ctx, 700, 310);
-    // Quầy pha chế cà phê Espresso
-    ctx.fillStyle = '#475569';
-    ctx.fillRect(820, 330, 80, 35);
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fillRect(840, 315, 24, 16);
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(870, 318, 14, 12);
-    // Sofa thư giãn
-    ctx.fillStyle = '#dc2626';
-    ctx.fillRect(720, 440, 110, 40);
-    ctx.fillStyle = '#b91c1c';
-    ctx.fillRect(720, 425, 110, 16);
-  }
-
-  /**
-   * Vẽ chậu cây cảnh Pixel Art
-   */
-  private static drawPixelPlant(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#92400e';
-    ctx.fillRect(x + 4, y + 16, 16, 14);
-    ctx.fillStyle = '#16a34a';
-    ctx.fillRect(x, y + 4, 24, 14);
-    ctx.fillStyle = '#22c55e';
-    ctx.fillRect(x + 4, y, 16, 8);
-  }
-
-  /**
-   * Vẽ Tủ Server Rack phòng Kiến trúc sư
-   */
-  private static drawServerRack(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#090d16';
-    ctx.fillRect(x, y, 36, 70);
-    ctx.strokeStyle = '#334155';
-    ctx.strokeRect(x, y, 36, 70);
-    // Đèn LED nhấp nháy trên server
-    for (let i = 0; i < 6; i++) {
-      ctx.fillStyle = i % 2 === 0 ? '#22c55e' : '#38bdf8';
-      ctx.fillRect(x + 6, y + 10 + i * 9, 5, 4);
-      ctx.fillStyle = '#475569';
-      ctx.fillRect(x + 15, y + 10 + i * 9, 15, 4);
+    for (let x = startX; x < endX; x += tileSize) {
+      for (let y = startY; y < endY; y += tileSize) {
+        const isWhite = (Math.floor(x / tileSize) + Math.floor(y / tileSize)) % 2 === 0;
+        ctx.fillStyle = isWhite ? '#f1f5f9' : '#1e293b';
+        ctx.fillRect(x, y, tileSize, tileSize);
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(x, y, tileSize, tileSize);
+      }
     }
   }
 
   /**
-   * Vẽ Máy chơi game Arcade Retro
+   * Vẽ sàn gỗ sồi Parquet vân gỗ phòng Dev & Kiến trúc
    */
-  private static drawArcadeMachine(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#7c3aed';
-    ctx.fillRect(x, y, 34, 60);
+  private static drawParquetFloor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+    const plankH = 14;
+    const plankW = 48;
+    for (let py = y; py < y + h; py += plankH) {
+      const rowIdx = Math.floor((py - y) / plankH);
+      const offset = (rowIdx % 2) * (plankW / 2);
+      for (let px = x - offset; px < x + w; px += plankW) {
+        // Tạo sắc độ màu gỗ tự nhiên
+        const seed = (Math.sin(px * 12.9898 + py * 78.233) * 43758.5453) % 1;
+        const tone = Math.floor(Math.abs(seed) * 20);
+        ctx.fillStyle = `rgb(${110 + tone}, ${75 + tone}, ${40 + tone})`;
+        ctx.fillRect(Math.max(x, px), py, Math.min(plankW, x + w - px), plankH);
+
+        // Đường chỉ rãnh vân gỗ
+        ctx.strokeStyle = 'rgba(40, 20, 10, 0.45)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(Math.max(x, px), py, Math.min(plankW, x + w - px), plankH);
+      }
+    }
+  }
+
+  /**
+   * Vẽ sàn gạch men trắng ceramic bóng bẩy khu bếp pantry
+   */
+  private static drawCeramicFloor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1;
+    const sz = 24;
+    for (let px = x; px < x + w; px += sz) {
+      ctx.beginPath();
+      ctx.moveTo(px, y);
+      ctx.lineTo(px, y + h);
+      ctx.stroke();
+    }
+    for (let py = y; py < y + h; py += sz) {
+      ctx.beginPath();
+      ctx.moveTo(x, py);
+      ctx.lineTo(x + w, py);
+      ctx.stroke();
+    }
+  }
+
+  /**
+   * Vẽ sàn hoa văn tím lavender phòng giải trí bida & arcade
+   */
+  private static drawLavenderTiles(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+    ctx.fillStyle = '#4a2559';
+    ctx.fillRect(x, y, w, h);
+    const sz = 24;
+    for (let px = x; px < x + w; px += sz) {
+      for (let py = y; py < y + h; py += sz) {
+        ctx.fillStyle = (Math.floor((px - x) / sz) + Math.floor((py - y) / sz)) % 2 === 0 ? '#582d6b' : '#3f1f4c';
+        ctx.fillRect(px, py, sz, sz);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.strokeRect(px, py, sz, sz);
+      }
+    }
+  }
+
+  /**
+   * Vẽ thảm xanh ngọc thạch phòng họp hội đồng Boardroom
+   */
+  private static drawTealCarpet(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+    ctx.fillStyle = '#16384c';
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.1)';
+    ctx.lineWidth = 1;
+    const sz = 24;
+    for (let px = x; px < x + w; px += sz) {
+      ctx.beginPath();
+      ctx.moveTo(px, y);
+      ctx.lineTo(px, y + h);
+      ctx.stroke();
+    }
+    for (let py = y; py < y + h; py += sz) {
+      ctx.beginPath();
+      ctx.moveTo(x, py);
+      ctx.lineTo(x + w, py);
+      ctx.stroke();
+    }
+  }
+
+  /**
+   * Vẽ thảm sapphire phòng giám đốc
+   */
+  private static drawSapphireFloor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+    ctx.fillStyle = '#1a3152';
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    const sz = 24;
+    for (let px = x; px < x + w; px += sz) {
+      ctx.beginPath();
+      ctx.moveTo(px, y);
+      ctx.lineTo(px, y + h);
+      ctx.stroke();
+    }
+    for (let py = y; py < y + h; py += sz) {
+      ctx.beginPath();
+      ctx.moveTo(x, py);
+      ctx.lineTo(x + w, py);
+      ctx.stroke();
+    }
+  }
+
+  /**
+   * Dựng tường 3D có độ sâu Isometric, gờ nẹp và bóng đổ
+   */
+  private static draw3DWalls(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+    // Tường trên cùng có độ sâu dày 12px
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 4, y + 8, 26, 20);
-    // Màn hình game pixel 8-bit
+    ctx.fillRect(x, y, w, 12);
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x, y, w, 4); // Gờ viền sáng trên đỉnh tường
+
+    // Tường bao quanh
+    ctx.strokeStyle = '#090d16';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(x, y, w, h);
+
+    // Cửa ra vào phòng cắt rãnh (Doorway Cutout)
+    const doorW = 32;
+    const doorX = x + w / 2 - doorW / 2;
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(doorX, y + h - 4, doorW, 4); // Ngưỡng cửa gỗ
+  }
+
+  /**
+   * Biển LED tên phòng
+   */
+  private static drawRoomBadge(ctx: CanvasRenderingContext2D, name: string, x: number, y: number) {
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+    ctx.fillRect(x + 10, y + 16, name.length * 7.5 + 16, 18);
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 10, y + 16, name.length * 7.5 + 16, 18);
+
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = 'bold 9px "JetBrains Mono", monospace';
+    ctx.fillText(name, x + 16, y + 29);
+  }
+
+  /**
+   * Vẽ toàn bộ nội thất chi tiết cao giống ảnh mẫu Agent-Pixels
+   */
+  private static drawDetailedFurniture(ctx: CanvasRenderingContext2D) {
+    // ═════════════════════════════════════════════════════════════════════════
+    // 1. PHÒNG GIÁI TRÍ BIDA & ARCADE (GAMES ROOM - x: 270, y: 290)
+    // ═════════════════════════════════════════════════════════════════════════
+    // Bàn Bida chuẩn kích thước, nỉ xanh, viền gỗ, bóng & gậy cơ (như hình mẫu)
+    this.drawBilliardTable(ctx, 350, 360);
+    // Máy chơi game Arcade Retro màu tím ở góc
+    this.drawArcadeCabinet(ctx, 290, 310);
+    // Thùng rác inox ở góc phòng
+    this.drawTrashBin(ctx, 285, 490);
+    // Tranh nghệ thuật treo tường phòng bida
+    this.drawWallArt(ctx, 480, 295, 30, 20, '#d97706');
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // 2. PHÒNG GIÁM ĐỐC & TIẾP KHÁCH (DIRECTOR LOUNGE - x: 500, y: 20)
+    // ═════════════════════════════════════════════════════════════════════════
+    // Sofa dài da đỏ sang trọng
+    this.drawLuxuryRedSofa(ctx, 550, 45, 90, 30);
+    // 2 Ghế bành da đỏ 2 bên
+    this.drawArmchair(ctx, 520, 85, true);
+    this.drawArmchair(ctx, 660, 85, false);
+    // Bàn trà gỗ tiếp khách với 2 tách cà phê
+    this.drawCoffeeTable(ctx, 570, 95);
+    // Chậu cây ficus lá xanh viền chậu đất nung
+    this.drawPottedFicus(ctx, 515, 30);
+    this.drawPottedFicus(ctx, 680, 30);
+    // Tranh phong cảnh treo tường viền vàng
+    this.drawWallArt(ctx, 600, 25, 40, 16, '#0284c7');
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // 3. KHU CÀ PHÊ & BẾP PANTRY (KITCHEN - x: 730, y: 20)
+    // ═════════════════════════════════════════════════════════════════════════
+    // Bình nước khoáng nóng lạnh (Water Dispenser có bình nước xanh dương tròn)
+    this.drawWaterDispenser(ctx, 750, 35);
+    // Máy bán hàng tự động (Vending Machine)
+    this.drawVendingMachine(ctx, 785, 35);
+    // Quầy bếp & Bồn rửa Inox (Kitchen Sink & Cabinets)
+    this.drawKitchenCounter(ctx, 840, 40);
+    // Tủ lạnh 2 cánh trắng
+    this.drawRefrigerator(ctx, 905, 35);
+    // Cây cảnh góc bếp
+    this.drawPottedFicus(ctx, 905, 160);
+    // Đồng hồ tròn treo tường bếp
+    this.drawWallClock(ctx, 845, 28);
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // 4. PHÒNG KIẾN TRÚC SƯ & PM (DŨNG 2 - x: 20, y: 20)
+    // ═════════════════════════════════════════════════════════════════════════
+    // 2 Tủ sách gỗ đầy ắp sách kỹ thuật màu sắc
+    this.drawBookshelf(ctx, 35, 35);
+    this.drawBookshelf(ctx, 95, 35);
+    // Bàn làm việc kiến trúc sư với 2 màn hình lớn
+    this.drawWorkstationDesk(ctx, 100, 110, 80, '#38bdf8');
+    // Server Rack đèn LED nhấp nháy
+    this.drawServerRack(ctx, 205, 35);
+    // Cây cảnh phong thủy
+    this.drawPottedFicus(ctx, 165, 35);
+    // Đồng hồ tường
+    this.drawWallClock(ctx, 145, 28);
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // 5. DEV LAB & WORKSTATIONS (DŨNG 3 - x: 20, y: 230)
+    // ═════════════════════════════════════════════════════════════════════════
+    // Dãy 3 bàn làm việc lập trình viên xếp thẳng hàng (như ảnh mẫu)
+    this.drawWorkstationDesk(ctx, 40, 260, 65, '#22c55e');
+    this.drawWorkstationDesk(ctx, 130, 260, 65, '#22c55e');
+    this.drawWorkstationDesk(ctx, 80, 360, 80, '#22c55e');
+    // Tủ sách tài liệu Dev
+    this.drawBookshelf(ctx, 35, 440);
+    // Cây cảnh Dev Lab
+    this.drawPottedFicus(ctx, 200, 240);
+    this.drawPottedFicus(ctx, 200, 460);
+
+    // ═════════════════════════════════════════════════════════════════════════
+    // 6. PHÒNG HỌP TRANH LUẬN (BOARDROOM - x: 580, y: 230)
+    // ═════════════════════════════════════════════════════════════════════════
+    // Bàn họp hội đồng lớn bằng gỗ bóng (Large Conference Table)
+    this.drawConferenceTable(ctx, 640, 330);
+    // Bảng trắng kiến trúc lớn treo tường (Architecture Whiteboard)
+    this.drawWhiteboard(ctx, 740, 240);
+    // Đồng hồ tường phòng họp
+    this.drawWallClock(ctx, 715, 240);
+    // Tủ tài liệu phòng họp bên dưới
+    this.drawCredenza(ctx, 660, 480);
+    // Chậu cây lớn ở 2 góc phòng họp
+    this.drawPottedFicus(ctx, 905, 245);
+    this.drawPottedFicus(ctx, 905, 475);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // CÁC HÀM DỰNG NỘI THẤT CHI TIẾT
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /**
+   * Bàn Bida (Billiard Table) chuẩn đẹp giống ảnh mẫu
+   */
+  private static drawBilliardTable(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    const w = 140;
+    const h = 80;
+
+    // Chân bàn gỗ bóng
+    ctx.fillStyle = '#3e1f0e';
+    ctx.fillRect(x + 10, y + h, 14, 18);
+    ctx.fillRect(x + w - 24, y + h, 14, 18);
+
+    // Viền khung gỗ thành bàn
+    ctx.fillStyle = '#5c2d13';
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = '#7a3e1b';
+    ctx.fillRect(x + 2, y + 2, w - 4, 6);
+
+    // Mặt nỉ xanh bida đặc trưng
+    ctx.fillStyle = '#15803d';
+    ctx.fillRect(x + 10, y + 10, w - 20, h - 20);
+
+    // 6 Lỗ bida (Pockets)
+    ctx.fillStyle = '#0f172a';
+    const pockets = [
+      [x + 10, y + 10], [x + w / 2, y + 8], [x + w - 10, y + 10],
+      [x + 10, y + h - 10], [x + w / 2, y + h - 8], [x + w - 10, y + h - 10],
+    ];
+    pockets.forEach(([px, py]) => {
+      ctx.beginPath();
+      ctx.arc(px, py, 4, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Các quả bóng bi-a màu sắc (Đỏ, vàng, xanh, trắng)
+    const balls = [
+      { x: x + 45, y: y + 35, color: '#ef4444' },
+      { x: x + 53, y: y + 42, color: '#eab308' },
+      { x: x + 48, y: y + 48, color: '#3b82f6' },
+      { x: x + 100, y: y + 36, color: '#f8fafc' }, // Bi cái trắng
+    ];
+    balls.forEach(b => {
+      ctx.fillStyle = b.color;
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // Gậy cơ bida bằng gỗ đặt chéo trên bàn
+    ctx.strokeStyle = '#d97706';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x + 95, y + 40);
+    ctx.lineTo(x + 60, y + 62);
+    ctx.stroke();
+  }
+
+  /**
+   * Máy trò chơi Arcade Retro màu tím neon
+   */
+  private static drawArcadeCabinet(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#581c87';
+    ctx.fillRect(x, y, 36, 68);
+    // Viền sáng marquee
     ctx.fillStyle = '#ec4899';
-    ctx.fillRect(x + 6, y + 10, 22, 16);
-    // Nút bấm & Joystick
+    ctx.fillRect(x + 4, y + 4, 28, 10);
+    // Màn hình arcade đang hiển thị game pixel
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + 4, y + 18, 28, 22);
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(x + 8, y + 24, 6, 6);
+    ctx.fillStyle = '#eab308';
+    ctx.fillRect(x + 20, y + 28, 6, 6);
+
+    // Bàn điều khiển: cần joystick đỏ và 2 nút
+    ctx.fillStyle = '#3b0764';
+    ctx.fillRect(x + 2, y + 42, 32, 12);
     ctx.fillStyle = '#ef4444';
     ctx.beginPath();
-    ctx.arc(x + 12, y + 36, 3, 0, Math.PI * 2);
+    ctx.arc(x + 12, y + 46, 3, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#eab308';
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 22, y + 45, 3, 3);
+    ctx.fillRect(x + 27, y + 45, 3, 3);
+  }
+
+  /**
+   * Sofa da đỏ sang trọng phòng tiếp khách Giám đốc
+   */
+  private static drawLuxuryRedSofa(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+    // Tựa lưng sofa
+    ctx.fillStyle = '#991b1b';
+    ctx.fillRect(x, y, w, 14);
+    ctx.fillStyle = '#b91c1c';
+    ctx.fillRect(x + 2, y + 2, w - 4, 10);
+
+    // Đệm ngồi sofa
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(x, y + 14, w, h - 14);
+    // Tay vịn 2 bên
+    ctx.fillStyle = '#7f1d1d';
+    ctx.fillRect(x - 6, y + 6, 8, h - 6);
+    ctx.fillRect(x + w - 2, y + 6, 8, h - 6);
+  }
+
+  /**
+   * Ghế bành da đỏ
+   */
+  private static drawArmchair(ctx: CanvasRenderingContext2D, x: number, y: number, isLeft: boolean) {
+    ctx.fillStyle = '#991b1b';
+    ctx.fillRect(x, y, 26, 32);
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(x + 3, y + 3, 20, 24);
+    // Tay vịn
+    ctx.fillStyle = '#7f1d1d';
+    ctx.fillRect(isLeft ? x - 4 : x + 24, y + 4, 6, 26);
+  }
+
+  /**
+   * Bàn trà gỗ tiếp khách với 2 tách cà phê
+   */
+  private static drawCoffeeTable(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x, y, 50, 24);
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 2, y + 2, 46, 6);
+
+    // 2 Tách cà phê trắng
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + 12, y + 8, 7, 6);
+    ctx.fillRect(x + 30, y + 10, 7, 6);
+    ctx.fillStyle = '#451a03'; // Nước cà phê
+    ctx.fillRect(x + 13, y + 9, 5, 2);
+    ctx.fillRect(x + 31, y + 11, 5, 2);
+  }
+
+  /**
+   * Cây cảnh Ficus / Monstera trong chậu đất nung
+   */
+  private static drawPottedFicus(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    // Chậu đất nung
+    ctx.fillStyle = '#9a3412';
+    ctx.fillRect(x + 4, y + 16, 16, 16);
+    ctx.fillStyle = '#c2410c';
+    ctx.fillRect(x + 2, y + 14, 20, 4);
+
+    // Thân cây & Lá xanh pixel
+    ctx.fillStyle = '#14532d';
+    ctx.fillRect(x + 10, y + 6, 4, 10);
+    ctx.fillStyle = '#16a34a';
     ctx.beginPath();
-    ctx.arc(x + 22, y + 36, 2.5, 0, Math.PI * 2);
+    ctx.arc(x + 6, y + 6, 8, 0, Math.PI * 2);
+    ctx.arc(x + 18, y + 4, 9, 0, Math.PI * 2);
+    ctx.arc(x + 12, y - 2, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#22c55e';
+    ctx.beginPath();
+    ctx.arc(x + 10, y + 2, 5, 0, Math.PI * 2);
     ctx.fill();
   }
 
   /**
-   * Vẽ Nhân vật Pixel Art cho 4 Dũng kèm animation chân, gõ phím và bóng hội thoại
+   * Tủ sách gỗ đầy sách nhiều màu (như ảnh mẫu)
+   */
+  private static drawBookshelf(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#5c2d13';
+    ctx.fillRect(x, y, 42, 64);
+    ctx.strokeStyle = '#381a07';
+    ctx.strokeRect(x, y, 42, 64);
+
+    // 3 Tầng kệ sách
+    for (let shelf = 0; shelf < 3; shelf++) {
+      const sy = y + 14 + shelf * 18;
+      ctx.fillStyle = '#381a07';
+      ctx.fillRect(x + 2, sy, 38, 2);
+
+      // Sách các màu: đỏ, xanh, vàng, tím, lục
+      const colors = ['#ef4444', '#3b82f6', '#eab308', '#10b981', '#a855f7', '#f97316'];
+      for (let b = 0; b < 6; b++) {
+        ctx.fillStyle = colors[(shelf * 2 + b) % colors.length];
+        ctx.fillRect(x + 4 + b * 6, sy - 12, 5, 12);
+      }
+    }
+  }
+
+  /**
+   * Bình nước khoáng nóng lạnh (Water Dispenser có bình tròn xanh dương)
+   */
+  private static drawWaterDispenser(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    // Bình nước úp ngược xanh dương trong suốt
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(x + 10, y + 8, 8, 0, Math.PI * 2);
+    ctx.fill();
+    // Thân máy trắng
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x + 2, y + 14, 16, 36);
+    // Vòi nước đỏ & xanh
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(x + 5, y + 26, 3, 4);
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(x + 12, y + 26, 3, 4);
+  }
+
+  /**
+   * Máy bán nước tự động (Vending Machine)
+   */
+  private static drawVendingMachine(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(x, y, 32, 54);
+    // Kính trưng bày lon nước
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + 4, y + 6, 24, 28);
+    // Lon nước nhiều màu
+    const canColors = ['#ef4444', '#22c55e', '#3b82f6', '#eab308'];
+    for (let r = 0; r < 2; r++) {
+      for (let c = 0; c < 3; c++) {
+        ctx.fillStyle = canColors[(r * 3 + c) % canColors.length];
+        ctx.fillRect(x + 6 + c * 7, y + 10 + r * 12, 5, 8);
+      }
+    }
+    // Khe nhả lon
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x + 6, y + 42, 20, 6);
+  }
+
+  /**
+   * Quầy bếp & Bồn rửa Inox (Kitchen Counter)
+   */
+  private static drawKitchenCounter(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x, y, 58, 38);
+    ctx.fillStyle = '#f1f5f9';
+    ctx.fillRect(x, y, 58, 6); // Mặt đá bếp
+
+    // Bồn rửa Inox & vòi nước
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(x + 10, y + 8, 22, 18);
+    ctx.fillStyle = '#0284c7'; // Nước trong bồn
+    ctx.fillRect(x + 12, y + 10, 18, 14);
+    ctx.fillStyle = '#cbd5e1'; // Vòi rửa inox cong
+    ctx.fillRect(x + 20, y + 3, 3, 8);
+  }
+
+  /**
+   * Tủ lạnh 2 cánh trắng (Refrigerator)
+   */
+  private static drawRefrigerator(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x, y, 26, 54);
+    ctx.strokeStyle = '#94a3b8';
+    ctx.strokeRect(x, y, 26, 54);
+    // Ngăn trên
+    ctx.beginPath();
+    ctx.moveTo(x, y + 20);
+    ctx.lineTo(x + 26, y + 20);
+    ctx.stroke();
+    // Tay nắm cửa
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(x + 3, y + 12, 2, 6);
+    ctx.fillRect(x + 3, y + 24, 2, 8);
+  }
+
+  /**
+   * Bàn làm việc Workstation (có máy tính, màn hình LED, bàn phím)
+   */
+  private static drawWorkstationDesk(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, screenColor: string) {
+    // Mặt bàn gỗ
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x, y, w, 32);
+    ctx.fillStyle = '#92400e';
+    ctx.fillRect(x + 2, y + 2, w - 4, 6);
+
+    // Màn hình máy tính để bàn (PC Monitor)
+    const monitorX = x + w / 2 - 14;
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(monitorX, y - 16, 28, 18);
+    ctx.fillStyle = screenColor; // Màn hình sáng
+    ctx.fillRect(monitorX + 2, y - 14, 24, 14);
+
+    // Bàn phím cơ & Chuột
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x + w / 2 - 12, y + 12, 18, 6);
+    ctx.fillStyle = '#ef4444'; // Cốc cà phê
+    ctx.fillRect(x + w - 14, y + 10, 6, 8);
+
+    // Ghế xoay văn phòng có tựa lưng
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x + w / 2 - 8, y + 24, 16, 12);
+  }
+
+  /**
+   * Bàn họp hội đồng lớn (Conference Table) & Ghế xoay xanh lá (như hình mẫu)
+   */
+  private static drawConferenceTable(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    const w = 220;
+    const h = 75;
+
+    // Mặt bàn họp gỗ sồi bóng
+    ctx.fillStyle = '#5c2d13';
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 8);
+    ctx.fill();
+    ctx.strokeStyle = '#381a07';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Laptop hội nghị mở sẵn với màn hình phát sáng
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x + 175, y + 16, 22, 16);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 177, y + 18, 18, 12);
+
+    // Khay tài liệu & bình hoa trung tâm
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x + 85, y + 24, 40, 16);
+    ctx.fillStyle = '#22c55e'; // Chậu cây nhỏ trên bàn
+    ctx.beginPath();
+    ctx.arc(x + 105, y + 32, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 8 Ghế văn phòng bọc nỉ xanh lá xếp quanh bàn (như hình mẫu Image 4)
+    const topChairs = [x + 25, x + 75, x + 125, x + 175];
+    const bottomChairs = [x + 25, x + 75, x + 125, x + 175];
+
+    topChairs.forEach(cx => {
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(cx, y - 14, 18, 14);
+      ctx.fillStyle = '#166534';
+      ctx.fillRect(cx + 2, y - 12, 14, 4);
+    });
+
+    bottomChairs.forEach(cx => {
+      ctx.fillStyle = '#15803d';
+      ctx.fillRect(cx, y + h, 18, 14);
+      ctx.fillStyle = '#166534';
+      ctx.fillRect(cx + 2, y + h + 8, 14, 4);
+    });
+  }
+
+  /**
+   * Bảng trắng kiến trúc lớn (Architecture Whiteboard)
+   */
+  private static drawWhiteboard(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x, y, 100, 40);
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, 100, 40);
+
+    // Sơ đồ kiến trúc vẽ trên bảng (Boxes & Arrows)
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 10, y + 8, 20, 12);
+    ctx.strokeStyle = '#10b981';
+    ctx.strokeRect(x + 65, y + 8, 22, 12);
+
+    // Mũi tên kết nối
+    ctx.strokeStyle = '#ef4444';
+    ctx.beginPath();
+    ctx.moveTo(x + 30, y + 14);
+    ctx.lineTo(x + 65, y + 14);
+    ctx.stroke();
+
+    // Khay để bút viết bảng
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(x + 20, y + 40, 50, 3);
+  }
+
+  /**
+   * Đồng hồ treo tường kim tròn
+   */
+  private static drawWallClock(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.arc(x, y, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Kim đồng hồ
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + 3, y - 4);
+    ctx.moveTo(x, y);
+    ctx.lineTo(x - 3, y + 2);
+    ctx.stroke();
+  }
+
+  /**
+   * Tranh nghệ thuật treo tường viền vàng
+   */
+  private static drawWallArt(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, mainColor: string) {
+    ctx.fillStyle = mainColor;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = '#d97706'; // Viền khung mạ vàng
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, w, h);
+  }
+
+  /**
+   * Tủ tài liệu phòng họp (Credenza)
+   */
+  private static drawCredenza(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x, y, 120, 24);
+    ctx.strokeStyle = '#1e293b';
+    ctx.strokeRect(x, y, 120, 24);
+    for (let d = 0; d < 4; d++) {
+      ctx.strokeRect(x + d * 30, y, 30, 24);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(x + d * 30 + 13, y + 10, 4, 3);
+    }
+  }
+
+  /**
+   * Server Rack đèn LED
+   */
+  private static drawServerRack(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x, y, 34, 65);
+    ctx.strokeStyle = '#475569';
+    ctx.strokeRect(x, y, 34, 65);
+    for (let i = 0; i < 6; i++) {
+      ctx.fillStyle = i % 2 === 0 ? '#22c55e' : '#38bdf8';
+      ctx.fillRect(x + 5, y + 8 + i * 9, 4, 3);
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(x + 13, y + 8 + i * 9, 16, 3);
+    }
+  }
+
+  /**
+   * Thùng rác inox nhỏ
+   */
+  private static drawTrashBin(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x, y, 12, 16);
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(x, y, 12, 3);
+  }
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // 5. VẼ NHÂN VẬT PIXEL 4 DŨNG CHI TIẾT CAO & ANIMATION SỐNG ĐỘNG
+  // ═════════════════════════════════════════════════════════════════════════
+
+  /**
+   * Vẽ Nhân vật Pixel Art cho 4 Dũng kèm animation chân, gõ phím, biểu cảm phong phú
    */
   public static drawAgent(ctx: CanvasRenderingContext2D, agent: Agent, frame: number) {
     const x = agent.pos_x;
@@ -231,150 +774,175 @@ export class SpriteRenderer {
     const isMoving = agent.status === 'moving';
     const isWorking = agent.status === 'coding' || agent.status === 'testing' || agent.status === 'debating';
 
-    // Tính nhịp bước chân (Bobbing effect)
-    const legOffset = isMoving ? Math.sin(frame * 0.25) * 4 : 0;
-    const bodyOffset = isMoving ? Math.abs(Math.sin(frame * 0.25)) * 2 : 0;
+    // Animation nhịp bước chân 4 frame
+    const walkCycle = Math.floor((frame / 8) % 4);
+    const legOffset = isMoving ? (walkCycle === 0 ? -4 : walkCycle === 2 ? 4 : 0) : 0;
+    const bodyBob = isMoving ? Math.abs(Math.sin(frame * 0.25)) * 2 : 0;
+    const charY = y - bodyBob;
 
     ctx.save();
 
-    // 1. Bóng dưới chân (Drop Shadow)
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    // 1. Bóng đổ bóng mềm dưới chân
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
     ctx.beginPath();
-    ctx.ellipse(x, y + 14, 12, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(x, y + 16, 14, 6, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // 2. Chân và Giày Pixel
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x - 6, y + 6 - legOffset, 4, 8 + legOffset); // Chân trái
-    ctx.fillRect(x + 2, y + 6 + legOffset, 4, 8 - legOffset); // Chân phải
+    // 2. Chân & Giày da
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x - 7, charY + 8 - legOffset, 5, 9 + legOffset); // Chân trái
+    ctx.fillRect(x + 2, charY + 8 + legOffset, 5, 9 - legOffset); // Chân phải
 
-    // 3. Thân áo (Đặc trưng cho từng Dũng)
-    const charY = y - bodyOffset;
+    // 3. Quần dài
+    ctx.fillStyle = agent.code === 'dung_1' ? '#1e293b' : agent.code === 'dung_2' ? '#334155' : agent.code === 'dung_3' ? '#1e293b' : '#450a0a';
+    ctx.fillRect(x - 8, charY + 3, 16, 8);
+
+    // 4. Áo đặc trưng cho từng Dũng
     if (agent.code === 'dung_1') {
-      // Dũng 1: Áo vest Giám đốc xanh navy lịch lãm + Cà vạt xanh dương
+      // DŨNG 1 (Software Director): Vest xanh Navy sang trọng + Cà vạt xanh dương hoàng gia
       ctx.fillStyle = '#1e3a8a';
-      ctx.fillRect(x - 9, charY - 8, 18, 15);
-      ctx.fillStyle = '#38bdf8'; // Cà vạt
-      ctx.fillRect(x - 1, charY - 6, 3, 9);
+      ctx.fillRect(x - 10, charY - 11, 20, 16);
+      ctx.fillStyle = '#f8fafc'; // Cổ áo sơ mi trắng
+      ctx.fillRect(x - 4, charY - 11, 8, 4);
+      ctx.fillStyle = '#38bdf8'; // Cà vạt xanh
+      ctx.fillRect(x - 1.5, charY - 9, 3, 11);
     } else if (agent.code === 'dung_2') {
-      // Dũng 2: Áo gile tím đậm phong thái Kiến trúc sư 40 năm kinh nghiệm
-      ctx.fillStyle = '#4c1d95';
-      ctx.fillRect(x - 9, charY - 8, 18, 15);
-      ctx.fillStyle = '#c084fc'; // Cổ áo sơ mi
-      ctx.fillRect(x - 3, charY - 8, 6, 4);
+      // DŨNG 2 (Software Architect - 40 năm KN): Áo gile tím lịch lãm của bậc thầy kiến trúc
+      ctx.fillStyle = '#581c87';
+      ctx.fillRect(x - 10, charY - 11, 20, 16);
+      ctx.fillStyle = '#e9d5ff'; // Cổ sơ mi
+      ctx.fillRect(x - 4, charY - 11, 8, 4);
+      ctx.fillStyle = '#c084fc'; // Cà vạt nơ tím
+      ctx.fillRect(x - 2, charY - 9, 4, 4);
     } else if (agent.code === 'dung_3') {
-      // Dũng 3: Áo Hoodie xanh lá của Fullstack Hacker 40 năm
+      // DŨNG 3 (Senior Fullstack Dev - 40 năm KN): Hoodie xanh Hacker + Tai nghe công nghệ
       ctx.fillStyle = '#065f46';
-      ctx.fillRect(x - 9, charY - 8, 18, 15);
-      ctx.fillStyle = '#10b981';
-      ctx.fillRect(x - 4, charY - 4, 8, 6);
+      ctx.fillRect(x - 10, charY - 11, 20, 16);
+      ctx.fillStyle = '#10b981'; // Túi áo hoodie
+      ctx.fillRect(x - 5, charY - 4, 10, 7);
     } else {
-      // Dũng 4: Áo khoác an ninh đỏ của Test Engineer 40 năm
+      // DŨNG 4 (Test Engineer - 40 năm KN): Áo khoác an ninh đỏ + Thẻ an ninh mạ vàng
       ctx.fillStyle = '#991b1b';
-      ctx.fillRect(x - 9, charY - 8, 18, 15);
-      ctx.fillStyle = '#f87171';
-      ctx.fillRect(x - 5, charY - 5, 4, 4);
+      ctx.fillRect(x - 10, charY - 11, 20, 16);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(x - 6, charY - 7, 5, 5);
+      ctx.fillStyle = '#eab308'; // Thẻ huy hiệu an ninh vàng
+      ctx.fillRect(x + 2, charY - 6, 4, 4);
     }
 
-    // 4. Cánh tay & Bàn tay
+    // 5. Cánh tay & Hành động (Gõ phím hoặc vung tay)
     ctx.fillStyle = '#fbcfe8'; // Da tay
     if (isWorking && (agent.status === 'coding' || agent.status === 'testing')) {
-      // Tay gõ bàn phím nhịp nhàng
-      const armAnim = Math.sin(frame * 0.4) * 3;
-      ctx.fillRect(x - 12, charY - 4 + armAnim, 4, 8);
-      ctx.fillRect(x + 8, charY - 4 - armAnim, 4, 8);
+      const armMove = Math.sin(frame * 0.5) * 3;
+      ctx.fillRect(x - 13, charY - 7 + armMove, 4, 9);
+      ctx.fillRect(x + 9, charY - 7 - armMove, 4, 9);
+    } else if (isMoving) {
+      ctx.fillRect(x - 13, charY - 7 - legOffset, 4, 10);
+      ctx.fillRect(x + 9, charY - 7 + legOffset, 4, 10);
     } else {
-      ctx.fillRect(x - 12, charY - 4, 3, 10);
-      ctx.fillRect(x + 9, charY - 4, 3, 10);
+      ctx.fillRect(x - 13, charY - 7, 4, 11);
+      ctx.fillRect(x + 9, charY - 7, 4, 11);
     }
 
-    // 5. Khuôn mặt Pixel
-    ctx.fillStyle = '#fbcfe8'; // Màu da mặt
-    ctx.fillRect(x - 7, charY - 21, 14, 13);
+    // 6. Khuôn mặt Pixel
+    ctx.fillStyle = '#fed7aa'; // Màu da mặt ấm áp
+    ctx.fillRect(x - 8, charY - 26, 16, 15);
 
-    // 6. Tóc & Đặc điểm nhận diện
-    if (agent.code === 'dung_1') {
-      // Tóc đen vuốt gọn gàng
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(x - 8, charY - 25, 16, 6);
-      ctx.fillRect(x - 8, charY - 21, 3, 6);
-    } else if (agent.code === 'dung_2') {
-      // Tóc muối tiêu bạc (40 năm kinh nghiệm) + Kính mắt vàng
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillRect(x - 8, charY - 25, 16, 6);
-      ctx.fillStyle = '#fde047'; // Gọng kính
-      ctx.strokeRect(x - 6, charY - 17, 12, 3);
-    } else if (agent.code === 'dung_3') {
-      // Tai nghe chụp tai Gaming/Coding qua đầu
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(x - 8, charY - 25, 16, 5);
-      ctx.fillStyle = '#38bdf8'; // Chụp tai 2 bên
-      ctx.fillRect(x - 9, charY - 20, 3, 7);
-      ctx.fillRect(x + 6, charY - 20, 3, 7);
-    } else {
-      // Mũ lưỡi trai an ninh / Tóc ngắn chuyên nghiệp
-      ctx.fillStyle = '#dc2626';
-      ctx.fillRect(x - 8, charY - 25, 16, 5);
-      ctx.fillRect(x - 10, charY - 22, 6, 2); // Vành mũ
-    }
-
-    // Mắt
+    // 7. Mắt và Miệng
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x - 4, charY - 16, 2, 2);
-    ctx.fillRect(x + 2, charY - 16, 2, 2);
+    ctx.fillRect(x - 5, charY - 20, 3, 3);
+    ctx.fillRect(x + 2, charY - 20, 3, 3);
+    // Điểm sáng trong mắt
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - 5, charY - 20, 1, 1);
+    ctx.fillRect(x + 2, charY - 20, 1, 1);
 
-    // 7. Nhãn tên Agent trên đầu
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-    ctx.fillRect(x - 28, charY - 44, 56, 15);
+    // 8. Tóc & Đặc điểm nhận dạng chuẩn 4 Dũng
+    if (agent.code === 'dung_1') {
+      // Tóc đen tỉa gọn gàng phong độ Giám đốc
+      ctx.fillStyle = '#090d16';
+      ctx.fillRect(x - 9, charY - 30, 18, 7);
+      ctx.fillRect(x - 10, charY - 26, 3, 8);
+      ctx.fillRect(x + 7, charY - 26, 3, 6);
+    } else if (agent.code === 'dung_2') {
+      // Tóc muối tiêu ánh bạc (40 năm kinh nghiệm) + Kính mắt gọng vàng thông thái
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(x - 9, charY - 30, 18, 7);
+      ctx.fillRect(x - 10, charY - 26, 3, 8);
+      ctx.fillRect(x + 7, charY - 26, 3, 8);
+      // Kính gọng vàng
+      ctx.strokeStyle = '#eab308';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x - 6, charY - 21, 5, 4);
+      ctx.strokeRect(x + 1, charY - 21, 5, 4);
+    } else if (agent.code === 'dung_3') {
+      // Tai nghe Gaming/Coding trùm tai màu xanh cyan
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x - 9, charY - 30, 18, 6); // Tóc nâu đậm
+      ctx.fillStyle = '#38bdf8'; // Vành tai nghe
+      ctx.fillRect(x - 9, charY - 31, 18, 3);
+      ctx.fillRect(x - 11, charY - 25, 4, 8); // Chụp tai trái
+      ctx.fillRect(x + 7, charY - 25, 4, 8); // Chụp tai phải
+    } else {
+      // Nón kết bảo hộ / Mũ lưỡi trai an ninh đỏ
+      ctx.fillStyle = '#b91c1c';
+      ctx.fillRect(x - 9, charY - 31, 18, 7);
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(x - 12, charY - 26, 8, 3); // Vành mũ chìa ra
+    }
+
+    // 9. Bảng tên Pixel nổi trên đầu
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+    ctx.fillRect(x - 28, charY - 50, 56, 16);
     ctx.strokeStyle = agent.avatar_color;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x - 28, charY - 44, 56, 15);
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(x - 28, charY - 50, 56, 16);
 
     ctx.fillStyle = '#f8fafc';
     ctx.font = 'bold 9px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(agent.name, x, charY - 33);
+    ctx.fillText(agent.name, x, charY - 38);
 
-    // 8. Trạng thái hành động / Bubble
+    // 10. Bong bóng trạng thái động (Tranh luận / Code / Test)
     if (agent.status === 'debating') {
-      this.drawSpeechBubble(ctx, x, charY - 48, '💬 TRANH LUẬN');
+      this.drawSpeechBubble(ctx, x, charY - 56, '💬 TRANH LUẬN');
     } else if (agent.status === 'coding') {
-      this.drawSpeechBubble(ctx, x, charY - 48, '⚡ CLEAN CODE');
+      this.drawSpeechBubble(ctx, x, charY - 56, '⚡ CLEAN CODE');
     } else if (agent.status === 'testing') {
-      this.drawSpeechBubble(ctx, x, charY - 48, '🛡️ STRESS TEST');
+      this.drawSpeechBubble(ctx, x, charY - 56, '🛡️ STRESS TEST');
     }
 
     ctx.restore();
   }
 
   /**
-   * Vẽ bóng hội thoại Retro Pixel trên đầu Agent
+   * Vẽ bóng hội thoại Pixel
    */
   private static drawSpeechBubble(ctx: CanvasRenderingContext2D, x: number, y: number, text: string) {
-    const w = text.length * 6.5 + 12;
+    const w = text.length * 7 + 12;
     ctx.fillStyle = '#fef08a';
-    ctx.fillRect(x - w / 2, y - 14, w, 14);
-    ctx.strokeStyle = '#854d0e';
+    ctx.fillRect(x - w / 2, y - 14, w, 15);
+    ctx.strokeStyle = '#a16207';
     ctx.lineWidth = 1;
-    ctx.strokeRect(x - w / 2, y - 14, w, 14);
+    ctx.strokeRect(x - w / 2, y - 14, w, 15);
 
-    // Đuôi bóng hội thoại
+    // Mũi nhọn bóng thoại
     ctx.fillStyle = '#fef08a';
     ctx.beginPath();
-    ctx.moveTo(x - 3, y);
-    ctx.lineTo(x + 3, y);
-    ctx.lineTo(x, y + 4);
+    ctx.moveTo(x - 4, y + 1);
+    ctx.lineTo(x + 4, y + 1);
+    ctx.lineTo(x, y + 5);
     ctx.closePath();
     ctx.fill();
 
     ctx.fillStyle = '#713f12';
     ctx.font = 'bold 8px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(text, x, y - 4);
+    ctx.fillText(text, x, y - 3);
   }
 
   /**
-   * Lớp phủ hiệu ứng Camera an ninh (CCTV REC Overlay)
+   * Khung Camera an ninh CCTV chuẩn retro với thước ngắm ở 4 góc
    */
   public static drawCameraOverlay(
     ctx: CanvasRenderingContext2D,
@@ -392,55 +960,55 @@ export class SpriteRenderer {
     if (isBlinking) {
       ctx.fillStyle = '#ef4444';
       ctx.beginPath();
-      ctx.arc(40, 40, 6, 0, Math.PI * 2);
+      ctx.arc(36, 36, 6, 0, Math.PI * 2);
       ctx.fill();
     }
 
     ctx.fillStyle = '#f8fafc';
-    ctx.font = 'bold 12px "JetBrains Mono", monospace';
+    ctx.font = 'bold 11px "JetBrains Mono", monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('LIVE CCTV • REC', 55, 44);
+    ctx.fillText('LIVE CCTV • REC', 50, 40);
 
     // Tên Camera và Giờ hệ thống
     ctx.fillStyle = '#38bdf8';
-    ctx.fillText(`CAM: ${cameraName.toUpperCase()}`, 55, 62);
+    ctx.fillText(`CAM: ${cameraName.toUpperCase()}`, 50, 56);
     ctx.fillStyle = '#94a3b8';
-    ctx.fillText(now.toISOString().replace('T', ' ').substring(0, 19), width - 220, 44);
+    ctx.fillText(now.toISOString().replace('T', ' ').substring(0, 19), width - 210, 40);
 
-    // Khung ngắm góc camera (Corner Crosshairs)
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+    // Thước ngắm 4 góc (Corner Crosshairs) tinh tế
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
     ctx.lineWidth = 2;
-    const len = 20;
+    const len = 28;
 
     // Góc trên-trái
     ctx.beginPath();
-    ctx.moveTo(15, 15 + len);
-    ctx.lineTo(15, 15);
-    ctx.lineTo(15 + len, 15);
+    ctx.moveTo(14, 14 + len);
+    ctx.lineTo(14, 14);
+    ctx.lineTo(14 + len, 14);
     ctx.stroke();
 
     // Góc trên-phải
     ctx.beginPath();
-    ctx.moveTo(width - 15 - len, 15);
-    ctx.lineTo(width - 15, 15);
-    ctx.lineTo(width - 15, 15 + len);
+    ctx.moveTo(width - 14 - len, 14);
+    ctx.lineTo(width - 14, 14);
+    ctx.lineTo(width - 14, 14 + len);
     ctx.stroke();
 
     // Góc dưới-trái
     ctx.beginPath();
-    ctx.moveTo(15, height - 15 - len);
-    ctx.lineTo(15, height - 15);
-    ctx.lineTo(15 + len, height - 15);
+    ctx.moveTo(14, height - 14 - len);
+    ctx.lineTo(14, height - 14);
+    ctx.lineTo(14 + len, height - 14);
     ctx.stroke();
 
     // Góc dưới-phải
     ctx.beginPath();
-    ctx.moveTo(width - 15 - len, height - 15);
-    ctx.lineTo(width - 15, height - 15);
-    ctx.lineTo(width - 15, height - 15 - len);
+    ctx.moveTo(width - 14 - len, height - 14);
+    ctx.lineTo(width - 14, height - 14);
+    ctx.lineTo(width - 14, height - 14 - len);
     ctx.stroke();
 
-    // Hiệu ứng Scanline CRT nếu được bật
+    // Quét sọc CRT Scanlines nếu được kích hoạt
     if (showScanlines) {
       ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
       for (let y = 0; y < height; y += 4) {

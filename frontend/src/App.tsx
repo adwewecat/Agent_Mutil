@@ -124,45 +124,61 @@ export const App: React.FC = () => {
       />
 
       <main className="main-content">
-        {/* Thanh chuyển đổi góc quay camera an ninh */}
-        <SecurityCameraBar currentCamera={camera} onSelectCamera={setCamera} />
-
-        {/* Khung Canvas Game Engine mô phỏng văn phòng ảo Pixel Office */}
-        <OfficeCanvas
-          agents={agents}
-          camera={camera}
-          scanlinesEnabled={scanlinesEnabled}
-        />
-
-        {/* Danh sách 4 Dũng AI với 40 năm kinh nghiệm */}
-        <section className="agents-section">
-          <div className="agents-grid">
-            {agents.map(agent => (
-              <AgentCard
-                key={agent.id || agent.code}
-                agent={agent}
-                onDispatch={handleDispatchAgent}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Bảng nhập đề bài & điều phối chu trình */}
+        {/* 1. GIAO ĐỀ BÀI CHO BỘ TỨ DŨNG - ĐẶT Ở TRÊN CÙNG THEO YÊU CẦU */}
         <WorkflowPanel
           onRunWorkflow={handleRunWorkflow}
           isLoading={isLoading}
           currentStage={currentStageText}
         />
 
-        {/* Nhật ký tranh luận và sản phẩm bàn giao của 4 Dũng */}
-        <DeliberationChat
-          messages={messages}
-          sessionTitle={currentSession?.title}
-          onViewCode={code => setActiveCodeArtifact(code)}
-          onViewTestMatrix={matrix => setActiveTestMatrix(matrix)}
-        />
+        {/* 2. BỐ CỤC 2 CỘT CHÍNH: BÊN TRÁI (VĂN PHÒNG & CAMERA & CHAT) - BÊN PHẢI (4 DŨNG XẾP DỌC) */}
+        <div className="workspace-split-layout">
+          {/* CỘT BÊN TRÁI: Camera giám sát, Canvas Pixel Office 2.5D, Tiến trình tranh luận */}
+          <div className="left-stage-column">
+            {/* Thanh chuyển đổi góc quay camera an ninh */}
+            <SecurityCameraBar currentCamera={camera} onSelectCamera={setCamera} />
 
+            {/* Khung Canvas Game Engine 2.5D Isometric mô phỏng văn phòng ảo Pixel Office */}
+            <OfficeCanvas
+              agents={agents}
+              camera={camera}
+              scanlinesEnabled={scanlinesEnabled}
+            />
+
+            {/* Nhật ký tranh luận và sản phẩm bàn giao của 4 Dũng */}
+            <DeliberationChat
+              messages={messages}
+              sessionTitle={currentSession?.title}
+              onViewCode={code => setActiveCodeArtifact(code)}
+              onViewTestMatrix={matrix => setActiveTestMatrix(matrix)}
+            />
+          </div>
+
+          {/* CỘT BÊN PHẢI: BỘ TỨ DŨNG THEO CHIỀU DỌC ĐỂ DỄ NHÌN, LẤP ĐẦY KHOẢNG TRỐNG */}
+          <aside className="right-agents-sidebar">
+            <div className="sidebar-sticky-header">
+              <div className="flex items-center justify-between">
+                <span className="sidebar-badge-title">👥 BỘ TỨ DŨNG AI</span>
+                <span className="status-live-indicator">LIVE</span>
+              </div>
+              <p className="sidebar-desc">
+                Software Director, Architect 40 năm KN, Fullstack Dev 40 năm KN, Test Lead 40 năm KN.
+              </p>
+            </div>
+
+            <div className="agents-vertical-list">
+              {agents.map(agent => (
+                <AgentCard
+                  key={agent.id || agent.code}
+                  agent={agent}
+                  onDispatch={handleDispatchAgent}
+                />
+              ))}
+            </div>
+          </aside>
+        </div>
       </main>
+
 
       {/* Modal hiển thị mã nguồn Clean Code của Dũng 3 */}
       {activeCodeArtifact && (
