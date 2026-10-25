@@ -171,6 +171,24 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
 - [x] Đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-25] Hoàn thiện quy trình phân tích chiến lược, Cổng phê duyệt (Approval Gate) & Đồ họa Fallout Shelter
+- [x] **Chuẩn hóa quy trình tranh luận nghiệp vụ (Deliberation Business Flow)**:
+  - Tiếp nhận bài toán mẫu thực chiến: *"Phân tích rủi ro khi triển khai QR Code order menu cho khách hàng, đánh giá rủi ro vận hành & rủi ro hệ thống, kiến trúc giải pháp chống gian lận và rớt đơn"*.
+  - **Dũng 1 (Software Director)**: Phân tích thị trường sâu sắc, tâm lý khách hàng (hơn 60% khách trên 40 tuổi bực bội khi bị ép quét QR), rủi ro rớt đơn (Order Drop-off), gian lận tráo mã QR (QR Phishing), rủi ro nghẽn mạng 4G/WiFi cục bộ vào giờ cao điểm F&B.
+  - **Dũng 2 (Software Architect & PM - 40 năm KN)**: Phản biện kỹ thuật chuyên sâu, thiết kế kiến trúc Dynamic QR Token HMAC SHA-256 (hết hạn sau 5 phút), cơ chế Offline-First Local SQLite Sync đồng bộ mạng LAN nội bộ giữa máy khách - POS Thu ngân - Bếp KDS, chống duplicate đơn bằng Idempotency Key.
+- [x] **Cổng kiểm soát phê duyệt (Human-in-the-Loop Gate)**:
+  - Khi chạy chu trình, Dũng 1 và Dũng 2 tranh luận xong thì hệ thống **DỪNG LẠI và chuyển sang trạng thái `waiting_approval`**.
+  - Tuyệt đối không tự tiện cho Dũng 3 (Lập trình) và Dũng 4 (Kiểm thử) chạy trước.
+  - Hiển thị banner cảnh báo phong cách Vault-Tec với nút bấm: **"PHÊ DUYỆT PHƯƠNG ÁN & KÍCH HOẠT DŨNG 3, DŨNG 4 THỰC THI"**.
+  - Khi người dùng bấm Phê duyệt: Dũng 3 mới bước vào Dev Lab viết Clean Code, Dũng 4 vào QA Lab lập ma trận Stress Test 5,000 TPS.
+- [x] **Nâng cấp đồ họa chân thật phong cách Fallout Shelter (Vault-Tec Aesthetic)**:
+  - **Hệ thống đèn trần hình nón công nghiệp (Vault Conical Spotlights)**: 5 chao đèn kim loại thả trần rọi luồng sáng hình nón ấm áp xuống các cụm bàn làm việc, bàn họp và phòng giám đốc.
+  - **Khói cà phê nóng bốc lên (Animated Coffee Steam)**: Các tách cà phê tại bàn Dev Lab, bàn tiếp khách Giám đốc và bàn họp có luồng khói trắng lượn sóng bốc lên sống động.
+  - **Màn hình máy tính động (Animated CRT Terminals)**: 2 màn hình tại Dev Lab cuộn code matrix xanh lá liên tục kèm con trỏ nhấp nháy, màn hình phụ hiển thị biểu đồ mạng.
+  - **Bong bóng hành động Fallout Shelter (Vault Action Bubbles)**: Bong bóng nổi bồng bềnh (`floating bob`) có icon chuyên biệt: `🔍 THỊ TRƯỜNG & VẬN HÀNH` (Dũng 1), `⚙️ RỦI RO HỆ THỐNG & PM` (Dũng 2), `⚡ CLEAN CODE & REST API` (Dũng 3), `🎯 STRESS TEST 5,000 TPS` (Dũng 4).
+- [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Sẵn sàng commit và đẩy mã nguồn lên GitHub.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

@@ -32,6 +32,7 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentStageText, setCurrentStageText] = useState<string>('');
   const [selectedAgentCode, setSelectedAgentCode] = useState<string | null>(null);
+  const [isWaitingApproval, setIsWaitingApproval] = useState<boolean>(false);
 
   // Ref điều khiển Canvas trực tiếp
   const canvasRef = useRef<OfficeCanvasHandle | null>(null);
@@ -54,6 +55,9 @@ export const App: React.FC = () => {
       if (sessions.length > 0) {
         setCurrentSession(sessions[0]);
         setMessages(sessions[0].messages || []);
+        if (sessions[0].status === 'waiting_approval') {
+          setIsWaitingApproval(true);
+        }
       }
     } catch (err) {
       console.warn('Lỗi khi tải dữ liệu ban đầu:', err);
@@ -110,6 +114,7 @@ export const App: React.FC = () => {
   // 3. Xử lý kích hoạt chu trình làm việc 4 Dũng (Chạy tuần tự sống động có thời gian di chuyển & biểu diễn thực)
   const handleRunWorkflow = async (problem: string, step: string) => {
     setIsLoading(true);
+    setIsWaitingApproval(false);
 
     try {
       // Tạo session mới
@@ -118,9 +123,9 @@ export const App: React.FC = () => {
 
       if (step === 'full_cycle') {
         // ─────────────────────────────────────────────────────────────────────
-        // GIAI ĐOẠN 1: DŨNG 1 (Software Director)
+        // GIAI ĐOẠN 1: DŨNG 1 (Software Director - Nghiên cứu thị trường & Rủi ro vận hành)
         // ─────────────────────────────────────────────────────────────────────
-        setCurrentStageText('Giai đoạn 1: Dũng 1 (Software Director) tiếp nhận bài toán và bước vào phòng họp...');
+        setCurrentStageText('Giai đoạn 1: Dũng 1 (Software Director) phân tích thị trường & rủi ro vận hành sâu sắc...');
         setCamera('boardroom');
         soundFx.playAlert();
 
@@ -135,9 +140,9 @@ export const App: React.FC = () => {
         await sleep(2500);
 
         // ─────────────────────────────────────────────────────────────────────
-        // GIAI ĐOẠN 2: DŨNG 2 (Software Architect & PM - 40 năm KN)
+        // GIAI ĐOẠN 2: DŨNG 2 (Software Architect & PM - 40 năm KN - Phản biện hệ thống & chốt kiến trúc)
         // ─────────────────────────────────────────────────────────────────────
-        setCurrentStageText('Giai đoạn 2: Dũng 2 (40 năm KN) vào phòng họp phản biện kiến trúc & thẩm định rủi ro...');
+        setCurrentStageText('Giai đoạn 2: Dũng 2 (40 năm KN) vào phòng họp phản biện rủi ro hệ thống & chốt kiến trúc...');
         soundFx.playAlert();
 
         // Dũng 2 rời phòng kiến trúc đi qua hành lang vào Boardroom ngồi cạnh Dũng 1
@@ -146,41 +151,10 @@ export const App: React.FC = () => {
         const m2 = await api.triggerWorkflow(session.id, 'architect');
         setMessages(prev => [...prev, ...m2]);
 
-        // Chờ 3 giây để hai Dũng cùng ngồi họp bàn tròn tranh luận
-        await sleep(3000);
-
-        // ─────────────────────────────────────────────────────────────────────
-        // GIAI ĐOẠN 3: DŨNG 3 (Senior Fullstack Developer - 40 năm KN)
-        // ─────────────────────────────────────────────────────────────────────
-        setCurrentStageText('Giai đoạn 3: Dũng 3 vào Dev Lab ngồi vào ghế gõ phím viết Clean Code chuẩn xác...');
-        setCamera('dev_lab');
-        soundFx.playType();
-
-        // Dũng 3 đi vào Dev Lab ngồi vào ghế trước máy tính
-        handleDispatchAgent('dung_3', 'dev_lab', 'coding');
-
-        const m3 = await api.triggerWorkflow(session.id, 'developer');
-        setMessages(prev => [...prev, ...m3]);
-
-        // Chờ 3 giây cho người dùng thấy Dũng 3 gõ code với tiếng phím
-        await sleep(3000);
-
-        // ─────────────────────────────────────────────────────────────────────
-        // GIAI ĐOẠN 4: DŨNG 4 (Test Engineer & Security Lead - 40 năm KN)
-        // ─────────────────────────────────────────────────────────────────────
-        setCurrentStageText('Giai đoạn 4: Dũng 4 lập ma trận Stress Test 5,000 req/s & Quét lỗ hổng an ninh...');
-        setCamera('games_room');
+        // DỪNG LẠI CHỜ NGƯỜI DÙNG DUYỆT (Human-in-the-Loop Gate)
+        setIsWaitingApproval(true);
         soundFx.playAlert();
-
-        // Dũng 4 đi vào trạm kiểm thử cạnh bida
-        handleDispatchAgent('dung_4', 'games_room', 'testing');
-
-        const m4 = await api.triggerWorkflow(session.id, 'qa');
-        setMessages(prev => [...prev, ...m4]);
-
-        // Âm thanh hoàn thành xuất sắc
-        soundFx.playSuccess();
-        setCurrentStageText('✅ Hoàn thành 100%! Cả 4 Dũng đã hoàn tất xuất sắc nhiệm vụ!');
+        setCurrentStageText('⏸️ Dũng 1 & Dũng 2 đã chốt phương án! Đang chờ bạn phê duyệt để giao việc cho Dũng 3 & Dũng 4.');
       } else {
         // Thực thi từng bước đơn lẻ
         setCurrentStageText(`Đang thực thi: ${step.toUpperCase()}`);
@@ -204,6 +178,59 @@ export const App: React.FC = () => {
     } catch (err) {
       console.error('Lỗi khi chạy workflow:', err);
       alert('Đã xảy ra lỗi kết nối khi thực thi quy trình.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 4. Xử lý người dùng PHÊ DUYỆT phương án -> Kích hoạt Dũng 3 và Dũng 4 thực thi
+  const handleApproveWorkflow = async () => {
+    if (!currentSession) return;
+    setIsLoading(true);
+    setIsWaitingApproval(false);
+
+    try {
+      // ─────────────────────────────────────────────────────────────────────
+      // GIAI ĐOẠN 3: DŨNG 3 (Senior Fullstack Developer - 40 năm KN)
+      // ─────────────────────────────────────────────────────────────────────
+      setCurrentStageText('Giai đoạn 3: Đã phê duyệt! Dũng 3 vào Dev Lab ngồi vào bàn máy tính gõ phím viết Clean Code...');
+      setCamera('dev_lab');
+      soundFx.playType();
+
+      // Dũng 3 đi vào Dev Lab ngồi vào ghế trước máy tính
+      handleDispatchAgent('dung_3', 'dev_lab', 'coding');
+
+      // Chờ 2.5 giây cho Dũng 3 di chuyển tới bàn và gõ phím
+      await sleep(2500);
+
+      const approvedMessages = await api.approveWorkflow(currentSession.id);
+      // Lọc các tin nhắn mới (chỉ lấy stage developer và qa)
+      const newMessages = approvedMessages.filter(m => m.stage === '3_developer' || m.stage === '4_qa');
+      if (newMessages.length > 0) {
+        setMessages(prev => [...prev, ...newMessages]);
+      } else {
+        setMessages(approvedMessages);
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // GIAI ĐOẠN 4: DŨNG 4 (Test Engineer & Security Lead - 40 năm KN)
+      // ─────────────────────────────────────────────────────────────────────
+      setCurrentStageText('Giai đoạn 4: Dũng 4 lập ma trận Stress Test 5,000 req/s & Quét lỗ hổng an ninh...');
+      setCamera('games_room');
+      soundFx.playAlert();
+
+      // Dũng 4 đi vào trạm kiểm thử cạnh bida
+      handleDispatchAgent('dung_4', 'games_room', 'testing');
+
+      // Chờ 2.5 giây biểu diễn test
+      await sleep(2500);
+
+      // Âm thanh hoàn thành xuất sắc
+      soundFx.playSuccess();
+      setCurrentStageText('✅ Hoàn thành 100%! Cả 4 Dũng đã hoàn tất xuất sắc toàn bộ quy trình được bạn phê duyệt!');
+    } catch (err) {
+      console.error('Lỗi khi phê duyệt workflow:', err);
+      alert('Đã xảy ra lỗi kết nối khi phê duyệt quy trình.');
     } finally {
       setIsLoading(false);
     }
@@ -245,6 +272,8 @@ export const App: React.FC = () => {
           onRunWorkflow={handleRunWorkflow}
           isLoading={isLoading}
           currentStage={currentStageText}
+          isWaitingApproval={isWaitingApproval}
+          onApproveWorkflow={handleApproveWorkflow}
         />
 
         {/* 2. BỐ CỤC 2 CỘT CHÍNH: BÊN TRÁI (VĂN PHÒNG & CAMERA & CHAT) - BÊN PHẢI (4 DŨNG XẾP DỌC) */}

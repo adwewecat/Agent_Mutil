@@ -702,6 +702,106 @@ body {
   cursor: not-allowed;
 }
 
+/* Cổng phê duyệt chiến lược (Human-in-the-Loop Approval Gate) */
+.approval-gate-banner {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(15, 23, 42, 0.95));
+  border: 2px solid #f59e0b;
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.approval-gate-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #f59e0b, #eab308, #10b981, #f59e0b);
+  animation: sweep 3s linear infinite;
+}
+
+@keyframes sweep {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.approval-gate-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.approval-gate-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.approval-badge {
+  display: inline-block;
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 800;
+  background: #f59e0b;
+  color: #0f172a;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.approval-gate-title h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fef08a;
+}
+
+.approval-gate-desc {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  line-height: 1.5;
+}
+
+.approval-gate-action {
+  margin-top: 4px;
+}
+
+.action-btn-approve {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #ffffff;
+  border: 1px solid #34d399;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+}
+
+.action-btn-approve:hover:not(:disabled) {
+  background: linear-gradient(135deg, #047857, #059669);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(16, 185, 129, 0.6);
+}
+
+.sample-prompt-btn-highlight {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: #f59e0b !important;
+  color: #fef08a !important;
+  font-weight: 700;
+}
+
 /* Chat & Deliberation */
 .chat-card {
   background: var(--bg-card);

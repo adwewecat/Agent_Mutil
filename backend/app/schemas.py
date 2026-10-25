@@ -90,6 +90,10 @@ class WorkflowStepTrigger(BaseModel):
     step: str = Field(..., description="director, architect, developer, qa, hoặc full_cycle")
 
 
+class WorkflowApprovePayload(BaseModel):
+    session_id: int = Field(..., description="ID phiên làm việc được phê duyệt để triển khai code")
+
+
 class SystemHealthResponse(BaseModel):
     status: str
     app_name: str

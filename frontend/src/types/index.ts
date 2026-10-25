@@ -38,7 +38,7 @@ export interface ProjectSession {
   id: number;
   title: string;
   user_problem: string;
-  status: 'pending' | 'in_progress' | 'completed' | 'failed';
+  status: 'pending' | 'in_progress' | 'waiting_approval' | 'completed' | 'failed';
   current_stage: string;
   created_at: string;
   updated_at: string;

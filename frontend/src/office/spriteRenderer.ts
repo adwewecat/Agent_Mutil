@@ -90,10 +90,82 @@ export class SpriteRenderer {
       ctx.restore();
     });
 
+    // Hệ thống đèn trần hình nón công nghiệp phong cách Fallout Shelter Vault
+    this.drawVaultIndustrialLighting(ctx);
+
     // Tường bao quanh toàn bộ văn phòng bên ngoài
     ctx.strokeStyle = '#1e293b';
     ctx.lineWidth = 4;
     ctx.strokeRect(20, 20, width - 40, height - 40);
+  }
+
+  /**
+   * Hệ thống đèn trần hình nón công nghiệp phong cách Fallout Shelter Vault
+   */
+  public static drawVaultIndustrialLighting(ctx: CanvasRenderingContext2D) {
+    const lights = [
+      { x: 135, y: 315, floorY: 425, color: 'rgba(56, 189, 248, 0.08)', radius: 75 }, // Dev Lab (Cyan Matrix)
+      { x: 490, y: 315, floorY: 430, color: 'rgba(254, 240, 138, 0.10)', radius: 100 }, // Boardroom (Warm Golden)
+      { x: 800, y: 315, floorY: 430, color: 'rgba(168, 85, 247, 0.08)', radius: 85 },  // Games Room (Arcade Purple)
+      { x: 135, y: 80,  floorY: 185, color: 'rgba(56, 189, 248, 0.08)', radius: 75 },  // Architect Office (Drafting Lamp)
+      { x: 470, y: 80,  floorY: 175, color: 'rgba(251, 191, 36, 0.09)', radius: 90 },  // Director Office (Luxury Amber)
+    ];
+
+    lights.forEach(light => {
+      // Dây cáp treo đen
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(light.x - 1, light.y - 25, 2, 25);
+
+      // Chao đèn kim loại công nghiệp (Industrial Metal Lamp Shade)
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.moveTo(light.x - 10, light.y);
+      ctx.lineTo(light.x + 10, light.y);
+      ctx.lineTo(light.x + 5, light.y - 7);
+      ctx.lineTo(light.x - 5, light.y - 7);
+      ctx.closePath();
+      ctx.fill();
+
+      // Bóng đèn phát sáng
+      ctx.fillStyle = '#fef08a';
+      ctx.beginPath();
+      ctx.arc(light.x, light.y + 1, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Luồng sáng hình nón chiếu rọi xuống sàn (Conical Spotlight Beam)
+      const grad = ctx.createLinearGradient(light.x, light.y, light.x, light.floorY);
+      grad.addColorStop(0, light.color);
+      grad.addColorStop(0.7, light.color);
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(light.x - 5, light.y + 3);
+      ctx.lineTo(light.x + 5, light.y + 3);
+      ctx.lineTo(light.x + light.radius, light.floorY);
+      ctx.lineTo(light.x - light.radius, light.floorY);
+      ctx.closePath();
+      ctx.fill();
+    });
+  }
+
+  /**
+   * Khói bốc lên từ tách cà phê nóng (Coffee Steam Effect - Fallout Shelter style)
+   */
+  public static drawCoffeeSteam(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    const time = Date.now() / 250;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 2; i++) {
+      const offsetX = Math.sin(time + i * 2) * 2;
+      const offsetY = ((time * 4 + i * 8) % 14);
+      ctx.beginPath();
+      ctx.moveTo(x + i * 3, y - 1);
+      ctx.quadraticCurveTo(x + i * 3 + offsetX, y - 5 - offsetY, x + i * 3, y - 10 - offsetY);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
   /**
@@ -526,7 +598,7 @@ export class SpriteRenderer {
   }
 
   /**
-   * Bàn làm việc Fullstack Dev (2 màn hình LED matrix code xanh lá)
+   * Bàn làm việc Fullstack Dev (2 màn hình LED matrix code xanh lá và khói cà phê nóng)
    */
   private static drawDevWorkstation(ctx: CanvasRenderingContext2D, x: number, y: number) {
     const w = 100;
@@ -538,27 +610,45 @@ export class SpriteRenderer {
     ctx.fillStyle = '#78350f';
     ctx.fillRect(x + 2, y + 2, w - 4, 5);
 
-    // Màn hình 1 (Chính)
+    // Màn hình 1 (Chính) - Matrix code cuộn & con trỏ nhấp nháy
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 20, y - 18, 28, 20);
-    ctx.fillStyle = '#22c55e'; // Code sáng
-    ctx.fillRect(x + 22, y - 16, 24, 16);
+    ctx.fillRect(x + 18, y - 19, 30, 21);
+    ctx.fillStyle = '#052e16';
+    ctx.fillRect(x + 20, y - 17, 26, 17);
 
-    // Màn hình 2 (Phụ)
+    // Code lines matrix xanh lá
+    const tick = Math.floor(Date.now() / 220) % 4;
+    ctx.fillStyle = '#22c55e';
+    for (let row = 0; row < 3; row++) {
+      const lineLen = ((row + tick) % 3 + 1) * 6;
+      ctx.fillRect(x + 22, y - 14 + row * 4, Math.min(22, lineLen), 2);
+    }
+    // Con trỏ nhấp nháy
+    if (Math.floor(Date.now() / 350) % 2 === 0) {
+      ctx.fillStyle = '#4ade80';
+      ctx.fillRect(x + 38, y - 6, 3, 3);
+    }
+
+    // Màn hình 2 (Phụ) - Biểu đồ kiến trúc / Network
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 52, y - 18, 28, 20);
-    ctx.fillStyle = '#38bdf8'; // Preview sáng
-    ctx.fillRect(x + 54, y - 16, 24, 16);
+    ctx.fillRect(x + 52, y - 19, 28, 21);
+    ctx.fillStyle = '#082f49';
+    ctx.fillRect(x + 54, y - 17, 24, 17);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 56, y - 7, 4, 5);
+    ctx.fillRect(x + 62, y - 11, 4, 9);
+    ctx.fillRect(x + 68, y - 15, 4, 13);
 
-    // Bàn phím cơ & Cốc cà phê
+    // Bàn phím cơ & Cốc cà phê đỏ có khói nóng
     ctx.fillStyle = '#1e293b';
     ctx.fillRect(x + 35, y + 14, 25, 7);
     ctx.fillStyle = '#ef4444'; // Cốc cà phê đỏ
     ctx.fillRect(x + 85, y + 10, 6, 8);
+    this.drawCoffeeSteam(ctx, x + 88, y + 10);
   }
 
   /**
-   * Bàn làm việc Kiến trúc sư (2 màn hình hiển thị blueprint)
+   * Bàn làm việc Kiến trúc sư (2 màn hình hiển thị blueprint và bản vẽ)
    */
   private static drawArchitectDesk(ctx: CanvasRenderingContext2D, x: number, y: number) {
     const w = 90;
@@ -571,9 +661,16 @@ export class SpriteRenderer {
 
     // Màn hình kiến trúc lớn
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 25, y - 18, 38, 20);
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(x + 27, y - 16, 34, 16);
+    ctx.fillRect(x + 25, y - 19, 40, 21);
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(x + 27, y - 17, 36, 17);
+
+    // Sơ đồ khối kiến trúc trên màn hình
+    ctx.fillStyle = '#bae6fd';
+    ctx.fillRect(x + 30, y - 14, 8, 5);
+    ctx.fillRect(x + 42, y - 14, 8, 5);
+    ctx.fillRect(x + 54, y - 14, 6, 5);
+    ctx.fillRect(x + 36, y - 6, 14, 4);
 
     // Bản vẽ blueprint xanh trên bàn
     ctx.fillStyle = '#0284c7';
@@ -604,7 +701,7 @@ export class SpriteRenderer {
   }
 
   /**
-   * Bàn trà tiếp khách mặt gỗ sồi với 2 tách cà phê
+   * Bàn trà tiếp khách mặt gỗ sồi với 2 tách cà phê nóng
    */
   private static drawCoffeeTable(ctx: CanvasRenderingContext2D, x: number, y: number) {
     ctx.fillStyle = '#78350f';
@@ -612,10 +709,12 @@ export class SpriteRenderer {
     ctx.fillStyle = '#92400e';
     ctx.fillRect(x + 2, y + 2, 56, 5);
 
-    // 2 Tách cà phê trắng
+    // 2 Tách cà phê trắng với khói nóng bốc lên
     ctx.fillStyle = '#f8fafc';
     ctx.fillRect(x + 15, y + 9, 7, 6);
     ctx.fillRect(x + 38, y + 9, 7, 6);
+    this.drawCoffeeSteam(ctx, x + 18, y + 9);
+    this.drawCoffeeSteam(ctx, x + 41, y + 9);
   }
 
   /**
@@ -997,33 +1096,97 @@ export class SpriteRenderer {
     ctx.textAlign = 'center';
     ctx.fillText(agent.name, x, charY - 38);
 
-    // 11. Bong bóng trạng thái động
-    if (agent.status === 'debating') {
-      this.drawSpeechBubble(ctx, x, charY - 56, '💬 TRANH LUẬN');
-    } else if (agent.status === 'coding') {
-      this.drawSpeechBubble(ctx, x, charY - 56, '⚡ CLEAN CODE');
-    } else if (agent.status === 'testing') {
-      this.drawSpeechBubble(ctx, x, charY - 56, '🛡️ STRESS TEST');
-    }
+    // 11. Bong bóng trạng thái động phong cách Fallout Shelter Vault Action Bubbles
+    this.drawFalloutThoughtBubble(ctx, x, charY - 54, agent, frame);
 
     ctx.restore();
   }
 
   /**
-   * Bong bóng hội thoại ngắn gọn
+   * Bong bóng hành động / suy nghĩ chuẩn phong cách Fallout Shelter Vault Action Bubbles
    */
-  private static drawSpeechBubble(ctx: CanvasRenderingContext2D, x: number, y: number, text: string) {
-    const w = 84;
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x - w / 2, y - 14, w, 16);
-    ctx.strokeStyle = '#0284c7';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x - w / 2, y - 14, w, 16);
+  public static drawFalloutThoughtBubble(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    agent: Agent,
+    frame: number
+  ) {
+    // Độ nhấp nhô nhẹ nhàng (Floating Bob)
+    const bob = Math.sin(frame * 0.09) * 3;
+    const bubbleY = y + bob;
 
-    ctx.fillStyle = '#0f172a';
+    let text = '';
+    let icon = '';
+    let borderColor = '#38bdf8';
+    let bgColor = 'rgba(15, 23, 42, 0.95)';
+    let textColor = '#f8fafc';
+
+    if (agent.status === 'debating') {
+      if (agent.code === 'dung_1') {
+        text = 'THỊ TRƯỜNG & VẬN HÀNH';
+        icon = '🔍';
+        borderColor = '#f59e0b';
+        textColor = '#fef08a';
+      } else {
+        text = 'RỦI RO HỆ THỐNG & PM';
+        icon = '⚙️';
+        borderColor = '#c084fc';
+        textColor = '#f3e8ff';
+      }
+    } else if (agent.status === 'coding') {
+      text = 'CLEAN CODE & REST API';
+      icon = '⚡';
+      borderColor = '#10b981';
+      textColor = '#6ee7b7';
+    } else if (agent.status === 'testing') {
+      text = 'STRESS TEST 5,000 TPS';
+      icon = '🎯';
+      borderColor = '#ef4444';
+      textColor = '#fca5a5';
+    } else if (agent.status === 'moving') {
+      text = 'ĐANG BƯỚC ĐI...';
+      icon = '🚶';
+      borderColor = '#64748b';
+      textColor = '#cbd5e1';
+    } else {
+      // Idle
+      return;
+    }
+
+    const displayText = `${icon} ${text}`;
+    const w = Math.min(220, displayText.length * 6.8 + 20);
+    const h = 20;
+
+    // 2 vòng tròn nối từ đầu nhân vật lên bong bóng (Fallout Shelter thought connectors)
+    ctx.fillStyle = borderColor;
+    ctx.beginPath();
+    ctx.arc(x, bubbleY + 12, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(x + 2, bubbleY + 7, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hộp bong bóng thoại bo góc mềm mại
+    ctx.save();
+    ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    ctx.roundRect(x - w / 2, bubbleY - h, w, h, 6);
+    ctx.fill();
+
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(x - w / 2, bubbleY - h, w, h, 6);
+    ctx.stroke();
+
+    // Icon & Text sắc nét
+    ctx.fillStyle = textColor;
     ctx.font = 'bold 8.5px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(text, x, y - 3);
+    ctx.fillText(displayText, x, bubbleY - 6);
+    ctx.restore();
   }
 
   /**

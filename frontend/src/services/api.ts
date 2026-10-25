@@ -52,6 +52,19 @@ export const api = {
   },
 
   /**
+   * Phê duyệt phương án của Dũng 1 & Dũng 2 để kích hoạt Dũng 3 & Dũng 4
+   */
+  async approveWorkflow(sessionId: number): Promise<DeliberationMessage[]> {
+    const res = await fetch(`${API_BASE}/workflow/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId }),
+    });
+    if (!res.ok) throw new Error('Lỗi phê duyệt phương án');
+    return res.json();
+  },
+
+  /**
    * Điều động Agent sang phòng khác
    */
   async moveAgent(code: string, room: string): Promise<Agent> {
