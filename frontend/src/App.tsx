@@ -64,20 +64,20 @@ export const App: React.FC = () => {
     loadInitialData();
   }, [loadInitialData]);
 
-  // 2. Xử lý điều động Agent sang phòng làm việc (Phản hồi tức thì 0 delay trên Canvas)
+  // 2. Xử lý điều động Agent sang phòng làm việc (Đã căn chuẩn tọa độ ghế ngồi, tuyệt đối không trèo lên bàn)
   const handleDispatchAgent = (code: string, room: string, statusOverride?: string) => {
     const targetCoords: Record<string, { x: number; y: number }> = {
       boardroom: {
-        dung_1: { x: 690, y: 360 },
-        dung_2: { x: 750, y: 360 },
-        dung_3: { x: 810, y: 360 },
-        dung_4: { x: 650, y: 360 },
-      }[code] || { x: 720, y: 360 },
-      director_office: { x: 590, y: 110 },
-      architect_office: { x: 130, y: 115 },
-      dev_lab: { x: 140, y: 340 },
-      games_room: { x: 380, y: 410 },
-      kitchen_pantry: { x: 830, y: 115 },
+        dung_1: { x: 715, y: 318 }, // Ghế họp dãy trên bên trái (mặt bàn phủ chân tự nhiên)
+        dung_2: { x: 765, y: 318 }, // Ghế họp dãy trên bên phải
+        dung_3: { x: 715, y: 418 }, // Ghế họp dãy dưới
+        dung_4: { x: 765, y: 418 }, // Ghế họp dãy dưới
+      }[code] || { x: 715, y: 318 },
+      director_office: { x: 595, y: 65 },   // Ngồi ghế sofa da đỏ tiếp khách
+      architect_office: { x: 140, y: 152 }, // Ngồi ghế xoay trước bàn vẽ kiến trúc
+      dev_lab: { x: 120, y: 402 },          // Ngồi ghế văn phòng trước máy tính Dev Lab
+      games_room: { x: 320, y: 400 },       // Đứng cạnh thành bàn bida (không đứng trên bàn)
+      kitchen_pantry: { x: 850, y: 88 },    // Đứng trước quầy pha cà phê
     };
 
     const target = targetCoords[room] || { x: 500, y: 250 };
@@ -124,7 +124,7 @@ export const App: React.FC = () => {
         setCamera('boardroom');
         soundFx.playAlert();
 
-        // Dũng 1 đi vào Boardroom
+        // Dũng 1 đi vào ghế họp Boardroom dãy trên
         handleDispatchAgent('dung_1', 'boardroom', 'debating');
 
         // Gọi API lấy ý kiến Dũng 1
@@ -152,11 +152,11 @@ export const App: React.FC = () => {
         // ─────────────────────────────────────────────────────────────────────
         // GIAI ĐOẠN 3: DŨNG 3 (Senior Fullstack Developer - 40 năm KN)
         // ─────────────────────────────────────────────────────────────────────
-        setCurrentStageText('Giai đoạn 3: Dũng 3 vào Dev Lab gõ phím viết Clean Code chuẩn xác...');
+        setCurrentStageText('Giai đoạn 3: Dũng 3 vào Dev Lab ngồi vào ghế gõ phím viết Clean Code chuẩn xác...');
         setCamera('dev_lab');
         soundFx.playType();
 
-        // Dũng 3 đi vào Dev Lab ngồi vào bàn máy tính
+        // Dũng 3 đi vào Dev Lab ngồi vào ghế trước máy tính
         handleDispatchAgent('dung_3', 'dev_lab', 'coding');
 
         const m3 = await api.triggerWorkflow(session.id, 'developer');
@@ -172,7 +172,7 @@ export const App: React.FC = () => {
         setCamera('games_room');
         soundFx.playAlert();
 
-        // Dũng 4 đi vào phòng test
+        // Dũng 4 đi vào trạm kiểm thử cạnh bida
         handleDispatchAgent('dung_4', 'games_room', 'testing');
 
         const m4 = await api.triggerWorkflow(session.id, 'qa');
@@ -208,6 +208,7 @@ export const App: React.FC = () => {
       setIsLoading(false);
     }
   };
+
 
   // Xử lý khi click vào Agent trên Canvas
   const handleSelectAgentOnCanvas = (agent: Agent) => {

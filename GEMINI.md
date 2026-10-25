@@ -122,9 +122,30 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - Dũng 2 rời phòng kiến trúc đi qua hành lang gạch caro vào Boardroom ngồi cạnh Dũng 1 tranh luận, phản biện rủi ro và chốt kiến trúc.
   - Dũng 3 bước vào Dev Lab, ngồi vào bàn máy tính gõ bàn phím liên tục sinh mã nguồn Clean Code.
   - Dũng 4 bước vào trạm kiểm thử chạy ma trận Stress Test 5,000 req/s, quét an ninh và phát âm thanh chiến thắng.
-- [x] Build bản đóng gói sạch sẽ và đẩy mã nguồn lên GitHub.
-
-
+### [2026-10-25] Khắc phục triệt để hiện tượng nhân vật trèo lên bàn & căn chỉnh vị trí ghế ngồi
+- [x] **Nguyên nhân cốt lõi**:
+  - Tọa độ ban đầu trong Database bị trùng vào giữa mặt bàn máy tính, mặt bàn bida hoặc mặt bàn trà phòng khách.
+  - Vòng lặp render cũ vẽ toàn bộ bản đồ trước rồi vẽ nhân vật lên sau, khiến nhân vật ngồi sau bàn họp bị vẽ đè lên mặt bàn, tạo cảm giác như đang đứng/trèo trên mặt bàn.
+- [x] **Giải pháp đã thực hiện**:
+  1. **Căn chuẩn tọa độ ghế ngồi thực tế (Pixel-Perfect Seating Coordinates)**:
+     - Dũng 1 (Giám đốc): Tọa độ `(595, 65)` - Ngồi chính giữa đệm ghế sofa da đỏ phòng Giám đốc, bàn trà cà phê đặt phía trước.
+     - Dũng 2 (Kiến trúc sư): Tọa độ `(140, 152)` - Ngồi ghế xoay bọc da trước bàn vẽ thiết kế kiến trúc và 2 màn hình lớn.
+     - Dũng 3 (Dev Fullstack): Tọa độ `(120, 402)` - Ngồi ghế xoay trước bàn máy tính Dev Lab, tay vươn gõ phím cơ trên bàn tại `y = 372`.
+     - Dũng 4 (Test Lead): Tọa độ `(320, 400)` - Đứng bên cạnh bàn bida trên nền gạch tím hoa văn, tay cầm gậy cơ chĩa vào bàn bida (tuyệt đối không đứng lên mặt nỉ xanh của bàn bida).
+     - Phòng họp (Boardroom): Dũng 1 tại `(715, 318)` và Dũng 2 tại `(765, 318)` - Ngồi đúng vào dãy ghế phía trên bàn họp hội nghị.
+  2. **Áp dụng kỹ thuật xếp tầng chiều sâu 2.5D Isometric (Y-Depth Sorting)**:
+     - `SpriteRenderer.drawBackground`: Vẽ sàn gạch, tường 3D, tủ sách, tranh tường, quầy pantry và dãy ghế phía sau của bàn họp.
+     - Dựng các nhân vật ngồi ở dãy ghế sau (`pos_y < 330`).
+     - `SpriteRenderer.drawForeground`: Vẽ mặt bàn họp hội đồng (kèm laptop, tài liệu, bình hoa), bàn Dev Lab, bàn bida, bàn trà và ghế dãy trước. Bàn họp tự động phủ lên chân và nửa thân dưới của nhân vật một cách tự nhiên.
+     - Dựng các nhân vật ngồi trước bàn / đứng sàn còn lại.
+  3. **Tư thế ngồi và hành động đặc thù (Sitting Pose & Micro-animations)**:
+     - Khi ngồi sau bàn họp: Bàn che nửa thân dưới, hai tay đặt lên bàn tranh luận sôi nổi (`debating`), cử chỉ tay nhịp nhàng.
+     - Khi ở Dev Lab: Tựa ghế xoay đỡ lưng, hai tay gõ phím liên tục sinh Clean Code.
+     - Khi ở phòng Giám đốc: Ngồi đệm sofa đỏ thư thái, quyền uy.
+     - Khi ở phòng Bida: Cầm gậy cơ bằng gỗ chĩa vào bàn bi-a.
+- [x] Cập nhật Database SQLite / SQL Server và dữ liệu cấu hình đồng bộ.
+- [x] Build bản đóng gói `frontend/dist` thành công sạch sẽ 100%, 0 lỗi, 0 cảnh báo.
+- [x] Commit và đẩy code lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git`.
 
 ---
 

@@ -280,34 +280,23 @@ export class OfficeEngine {
     ctx.scale(this.zoom, this.zoom);
     ctx.translate(-this.viewX, -this.viewY);
 
-    // 1. Dựng bản đồ 2.5D Isometric và toàn bộ nội thất
-    SpriteRenderer.drawMap(ctx, OFFICE_WIDTH, OFFICE_HEIGHT);
+    // 1. Dựng tầng nền: Sàn gạch, tường 3D, tủ sách, tranh tường, quầy bếp và ghế dãy trên bàn họp
+    SpriteRenderer.drawBackground(ctx, OFFICE_WIDTH, OFFICE_HEIGHT);
 
-    // 2. Dựng 4 Nhân vật Dũng
-    this.agents.forEach(agent => {
-      const isSelected = agent.code === this.selectedAgentCode;
-      const customBubble = this.customBubbles[agent.code]?.text;
+    // 2. Dựng các nhân vật ngồi ở dãy ghế trên của phòng họp (pos_y < 330 và đang ở boardroom)
+    // Các nhân vật này được vẽ TRƯỚC mặt bàn họp để khi bàn họp vẽ sau sẽ che chân tự nhiên
+    const backRowAgents = this.agents.filter(a => a.current_room === 'boardroom' && a.pos_y < 330);
+    backRowAgents.forEach(agent => {
+      this.renderAgentWithEffects(ctx, agent, true);
+    });
 
-      // Vẽ vòng phát sáng dưới chân nếu đang được chọn
-      if (isSelected) {
-        ctx.save();
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 2.5;
-        ctx.setLineDash([4, 2]);
-        ctx.beginPath();
-        const pulse = Math.sin(this.frameCount * 0.1) * 3;
-        ctx.ellipse(agent.pos_x, agent.pos_y + 16, 20 + pulse, 9 + pulse * 0.5, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
-      }
+    // 3. Dựng tầng nổi phía trước: Mặt bàn họp lớn, bàn Dev Lab, bàn Kiến trúc, bàn Bida, bàn trà và ghế trước
+    SpriteRenderer.drawForeground(ctx);
 
-      // Dựng nhân vật và bóng thoại
-      SpriteRenderer.drawAgent(ctx, agent, this.frameCount);
-
-      // Nếu có bong bóng thoại đặc biệt thì vẽ đè lên
-      if (customBubble) {
-        this.drawSpecialBubble(ctx, agent.pos_x, agent.pos_y - 58, customBubble);
-      }
+    // 4. Dựng các nhân vật còn lại (ở phía trước bàn, ở Dev Lab, Games Room, phòng Giám đốc...)
+    const otherAgents = this.agents.filter(a => !(a.current_room === 'boardroom' && a.pos_y < 330));
+    otherAgents.forEach(agent => {
+      this.renderAgentWithEffects(ctx, agent, false);
     });
 
     ctx.restore();
@@ -333,6 +322,35 @@ export class OfficeEngine {
         ctx.fillText(`🎮 ĐÃ CHỌN [${sel.name.toUpperCase()}] • BẤM ĐIỂM BẤT KỲ TRÊN SÀN ĐỂ ĐIỀU ĐỘNG`, canvas.width / 2, canvas.height - 20);
         ctx.restore();
       }
+    }
+  }
+
+  /**
+   * Dựng một Agent kèm theo hiệu ứng chọn và bong bóng thoại
+   */
+  private renderAgentWithEffects(ctx: CanvasRenderingContext2D, agent: Agent, isBehindTable: boolean) {
+    const isSelected = agent.code === this.selectedAgentCode;
+    const customBubble = this.customBubbles[agent.code]?.text;
+
+    // Vẽ vòng phát sáng dưới chân nếu đang được chọn
+    if (isSelected && !isBehindTable) {
+      ctx.save();
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([4, 2]);
+      ctx.beginPath();
+      const pulse = Math.sin(this.frameCount * 0.1) * 3;
+      ctx.ellipse(agent.pos_x, agent.pos_y + 16, 20 + pulse, 9 + pulse * 0.5, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Dựng nhân vật với tư thế phù hợp
+    SpriteRenderer.drawAgent(ctx, agent, this.frameCount, isBehindTable);
+
+    // Nếu có bong bóng thoại đặc biệt thì vẽ đè lên
+    if (customBubble) {
+      this.drawSpecialBubble(ctx, agent.pos_x, agent.pos_y - 58, customBubble);
     }
   }
 

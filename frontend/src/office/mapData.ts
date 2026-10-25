@@ -19,8 +19,8 @@ export const ROOMS: OfficeRoom[] = [
     color: '#0f172a',
     floorColor: '#1e3a5f',
     description: 'Sofa da đỏ, bàn trà tiếp khách, chậu cây phong thủy và tranh nghệ thuật viền vàng.',
-    targetX: 590,
-    targetY: 110,
+    targetX: 595,
+    targetY: 65,
   },
   {
     id: 'architect_office',
@@ -32,8 +32,8 @@ export const ROOMS: OfficeRoom[] = [
     color: '#0f172a',
     floorColor: '#4a3319',
     description: 'Bàn thiết kế kiến trúc, tủ sách kỹ thuật 40 năm kinh nghiệm và server rack.',
-    targetX: 130,
-    targetY: 115,
+    targetX: 140,
+    targetY: 152,
   },
   {
     id: 'kitchen_pantry',
@@ -45,8 +45,8 @@ export const ROOMS: OfficeRoom[] = [
     color: '#0f172a',
     floorColor: '#e2e8f0',
     description: 'Bình nước nóng lạnh, máy bán đồ uống tự động, bồn rửa inox và tủ lạnh.',
-    targetX: 830,
-    targetY: 115,
+    targetX: 850,
+    targetY: 88,
   },
   {
     id: 'dev_lab',
@@ -58,8 +58,8 @@ export const ROOMS: OfficeRoom[] = [
     color: '#0f172a',
     floorColor: '#5c3d1e',
     description: 'Dãy bàn gỗ sồi, máy tính màn hình đôi gõ phím liên tục, cây cảnh và giá sách.',
-    targetX: 140,
-    targetY: 340,
+    targetX: 120,
+    targetY: 402,
   },
   {
     id: 'games_room',
@@ -71,8 +71,8 @@ export const ROOMS: OfficeRoom[] = [
     color: '#0f172a',
     floorColor: '#4c2859',
     description: 'Bàn bida nỉ xanh lá viền gỗ, bóng bi-a, gậy cơ và máy chơi game arcade cổ điển.',
-    targetX: 380,
-    targetY: 410,
+    targetX: 320,
+    targetY: 400,
   },
   {
     id: 'boardroom',
@@ -84,7 +84,8 @@ export const ROOMS: OfficeRoom[] = [
     color: '#0f172a',
     floorColor: '#1b3b4b',
     description: 'Bàn họp hội nghị lớn, máy tính điều hành, ghế da xoay và bảng trắng kiến trúc.',
-    targetX: 740,
-    targetY: 360,
+    targetX: 715,
+    targetY: 318,
   },
 ];
+
