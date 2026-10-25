@@ -319,6 +319,9 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - Tự động tìm PID và tắt sạch toàn bộ tiến trình đang lắng nghe tại cổng 8000 và 5173, giải phóng tài nguyên CPU/RAM.
 - [x] **File `run.ps1` (PowerShell Runner)**:
   - Dành cho lập trình viên thích sử dụng PowerShell terminal.
+- [x] **Khắc phục triệt để lỗi mất ký tự đầu dòng trên Windows CMD (`'olor'`, `'cho'`, `'f'`)**:
+  - Nguyên nhân: File `.bat` được tạo ban đầu có line endings kiểu Unix (LF `\n`), khiến bộ thông dịch `cmd.exe` bị lệch byte con trỏ và nuốt mất chữ cái đầu tiên của từng dòng (`color` -> `olor`, `echo` -> `cho`, `if` -> `f`).
+  - Giải pháp: Chuyển đổi toàn bộ `run.bat` và `stop.bat` sang định dạng chuẩn Windows CRLF (`\r\n`), đồng thời bổ sung file `.gitattributes` để ép buộc Git luôn giữ CRLF cho các file `.bat`, `.cmd` trên mọi máy tính.
 - [x] Cập nhật hướng dẫn trong `README.md` và `GEMINI.md`.
 
 ---
