@@ -72,16 +72,16 @@ export const App: React.FC = () => {
   const handleDispatchAgent = (code: string, room: string, statusOverride?: string) => {
     const targetCoords: Record<string, { x: number; y: number }> = {
       boardroom: {
-        dung_1: { x: 445, y: 350 }, // Ghế họp dãy trên bên trái (bàn che nửa thân dưới)
-        dung_2: { x: 525, y: 350 }, // Ghế họp dãy trên bên phải
-        dung_3: { x: 445, y: 435 }, // Ghế họp dãy dưới
-        dung_4: { x: 525, y: 435 }, // Ghế họp dãy dưới
-      }[code] || { x: 445, y: 350 },
-      director_office: { x: 470, y: 130 },   // Ngồi ghế sofa da đỏ tiếp khách
-      architect_office: { x: 125, y: 195 }, // Ngồi ghế xoay trước bàn thiết kế
-      dev_lab: { x: 135, y: 410 },          // Ngồi ghế văn phòng trước máy tính Dev Lab
-      games_room: { x: 710, y: 405 },       // Đứng cạnh bàn bida (tay cầm gậy cơ)
-      kitchen_pantry: { x: 740, y: 165 },   // Đứng trước quầy bar cà phê
+        dung_1: { x: 700, y: 380 },
+        dung_2: { x: 770, y: 380 },
+        dung_3: { x: 700, y: 440 },
+        dung_4: { x: 770, y: 440 },
+      }[code] || { x: 740, y: 410 },
+      director_office: { x: 180, y: 180 },   // Ngồi ghế sofa nỉ Royal Blue tiếp khách
+      architect_office: { x: 415, y: 205 }, // Ngồi ghế xoay trước bàn CAD thiết kế
+      dev_lab: { x: 415, y: 410 },          // Ngồi ghế xoay trước máy tính Dev Lab
+      games_room: { x: 740, y: 205 },       // Ngồi ghế xoay trước màn hình QA & Security
+      kitchen_pantry: { x: 160, y: 410 },   // Đứng trước quầy pantry / máy in
     };
 
     const target = targetCoords[room] || { x: 500, y: 250 };

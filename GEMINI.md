@@ -286,6 +286,30 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Bản build `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
 - [x] Đã commit và đẩy toàn bộ mã nguồn lên GitHub.
 
+### [2026-10-25] Nâng cấp Toàn diện Sàn gạch Diamond 2:1 Isometric, Bốt Tardis, Chú mèo ngủ & Đồng bộ 6 Phân vùng (Chuẩn Artwork)
+- [x] **Sàn gạch Diamond 2:1 Isometric Chuẩn Habbo / Retro Vector Art**:
+  - Thay thế toàn bộ sàn phẳng 2D bằng hệ lưới hình thoi Isometric 2:1 (`tileW: 28px, tileH: 14px`) sắc nét.
+  - Phối màu gạch lam hoa cà / xanh tím nhạt xen kẽ (`#c8d4ec` / `#bcc8e4`), chỉ ron gạch tinh tế (`#9aaac7`) và vệt phản quang viền trên của từng viên gạch.
+- [x] **Tích hợp các Chi tiết Iconic Độc bản từ Artwork Tham Khảo**:
+  - **Bốt điện thoại Retro Tardis / Police Box**: Bốt xanh navy hoàng gia (`#1e3a8a`), nóc mái dốc, đèn đỉnh phát sáng vàng, biển hiệu chữ trắng `POLICE BOX`, 4 ô kính cửa sổ xanh nhạt và tay nắm bạc đặt tại góc phòng hậu cần.
+  - **Chú mèo ngủ cuộn tròn trên bàn làm việc**: Chú mèo lông trắng đốm cam (`#f97316`) gối đầu ngủ ngon lành, tai tam giác nhỏ, mắt nhắm tít và đuôi uốn cong nằm yên bình trên bàn làm việc trạm QA.
+  - **Tủ Sideboard gắn tường màu xanh dương**: Cửa kính trượt mờ (`rgba(186, 230, 253, 0.6)`), tay nắm trượt, trên nóc có xấp giấy A4 trắng và khay gỗ đựng hồ sơ.
+  - **Ghế xoay văn phòng có Cặp da nâu**: Chiếc cặp da nâu công tác (`#78350f`) kèm khóa đồng và quai xách đặt ngay ngắn trên mặt ghế xoay góc phòng.
+  - **Poster Quả địa cầu & Tranh hoa tươi viền gỗ**: Globe Infographics Poster và Framed Floral Art treo tường sắc sảo.
+  - **Đồng hồ tròn treo tường viền xanh lá**: Kim giờ và phút chỉ 10:10 thanh lịch.
+  - **Hộp lưu trữ hồ sơ Carton**: Bộ hộp tài liệu văn phòng màu vàng cam và xanh lá có nhãn dán và lỗ xách.
+- [x] **Đồng bộ hóa 6 Phân vùng Không gian & Z-Depth Sorting Không Chồng chéo**:
+  1. **Executive Lounge & Director Hub (Dũng 1)**: Thảm sọc xanh ngọc bích, sofa nỉ góc Royal Blue kèm gối cam, bàn trà đĩa hoa quả tươi, tủ kính tài liệu hồ sơ, tranh nghệ thuật viền vàng và cây Topiary.
+  2. **Cubicle Kiến Trúc Sư & PM (Dũng 2)**: Trạm vẽ kỹ thuật CAD 2 màn hình, thước chữ T, bản vẽ blueprint, kệ sách tường sau, mini server rack đèn LED và ghế xoay nỉ xanh.
+  3. **Cubicle QA & Security Lead (Dũng 4)**: Trạm kiểm thử cubicle hiện đại, màn hình CRT, desk phone, chú mèo ngủ cuộn tròn, tủ sideboard kính trượt và ghế xoay cặp da.
+  4. **Khu Hậu Cần & Bốt Tardis**: Bốt điện thoại Tardis, đồng hồ tròn xanh lá, tủ lạnh có lò vi sóng trên nóc, quầy pantry inox, bình nước nóng lạnh và máy bán nước tự động.
+  5. **Dev Lab & Workstations (Dũng 3)**: Trạm lập trình Fullstack 2 màn hình code matrix & microservice DAG, phím cơ RGB, cốc cà phê Dev Fuel, bàn Peer Dev và cây Monstera lá xẻ.
+  6. **Khu Thảo Luận Chiến Lược & Máy In**: Bàn họp thảo luận gỗ óc chó, bảng kính kiến trúc whiteboard, máy in đa khay laser có thùng rác tái chế, đôn cây Bonsai Nhật Bản và tủ kính hồ sơ.
+- [x] **Kiểm tra Clean Code & Đóng gói Production**:
+  - Dọn sạch 100% dead code, no unused variables/imports (`TS6133` = 0).
+  - Bản build đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Sẵn sàng đẩy toàn bộ mã nguồn lên GitHub.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

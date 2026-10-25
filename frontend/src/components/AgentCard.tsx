@@ -86,9 +86,9 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, onDispatch }) => {
         <button
           onClick={() => onDispatch(agent.code, 'games_room')}
           className="dispatch-chip"
-          title="Ra phòng chơi Bida & Arcade giải trí"
+          title="Đến trạm kiểm thử QA & Security"
         >
-          Bida
+          QA Lab
         </button>
         <button
           onClick={() => onDispatch(agent.code, 'kitchen_pantry')}

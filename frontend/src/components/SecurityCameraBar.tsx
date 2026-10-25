@@ -19,7 +19,7 @@ const CAMERAS: CamConfig[] = [
   { id: 'architect_office' as CameraView, code: 'CAM-03', name: 'P. Kiến Trúc (Dũng 2)' },
   { id: 'boardroom', code: 'CAM-04', name: 'Phòng Họp Tranh Luận' },
   { id: 'dev_lab', code: 'CAM-05', name: 'Dev Lab (Dũng 3)' },
-  { id: 'games_room' as CameraView, code: 'CAM-06', name: 'Phòng Bida & Arcade' },
+  { id: 'games_room' as CameraView, code: 'CAM-06', name: 'Trạm QA & Security (Dũng 4)' },
   { id: 'kitchen_pantry' as CameraView, code: 'CAM-07', name: 'Cà Phê & Bếp Pantry' },
 ];
 
