@@ -37,46 +37,78 @@ export class SpriteRenderer {
     ctx.fillStyle = '#1e293b';
     ctx.fillRect(20, 76, width - 40, 1.5);
 
-    // Các cửa sổ kính lớn Isometric (Windows) chiếu ánh sáng thành phố hoặc ánh sao đêm 4D
+    // Các cửa sổ kính lớn Isometric (Windows) chiếu ánh sáng mặt trời ấm áp 4D (Pinterest Pin A & Pin B)
     const windows = [120, 280, 480, 680, 840];
-    windows.forEach(wx => {
-      // Bầu trời đêm sâu thẳm
-      ctx.fillStyle = '#03142e';
+    const time = Date.now() / 1000;
+    windows.forEach((wx, idx) => {
+      // 1. Cảnh ngoài cửa sổ: Bầu trời xanh ban ngày & tán cây xanh mát ngập nắng (như Pin A)
+      const skyGrad = ctx.createLinearGradient(wx, 34, wx, 70);
+      skyGrad.addColorStop(0, '#38bdf8');
+      skyGrad.addColorStop(0.6, '#7dd3fc');
+      skyGrad.addColorStop(1, '#bae6fd');
+      ctx.fillStyle = skyGrad;
       ctx.fillRect(wx, 34, 48, 36);
 
-      // Tòa nhà chọc trời pixel ngoài xa (City Skyline)
-      ctx.fillStyle = '#062044';
-      ctx.fillRect(wx + 4, 44, 12, 26);
-      ctx.fillRect(wx + 20, 38, 14, 32);
-      ctx.fillRect(wx + 36, 48, 10, 22);
+      // Tán lá cây xanh mát ngoài trời (Lush foliage in sunlight)
+      ctx.fillStyle = '#15803d';
+      ctx.beginPath();
+      ctx.arc(wx + 10, 65, 14, 0, Math.PI * 2);
+      ctx.arc(wx + 30, 62, 16, 0, Math.PI * 2);
+      ctx.arc(wx + 44, 68, 12, 0, Math.PI * 2);
+      ctx.fill();
 
-      // Đèn vàng của các tòa nhà thành phố
-      ctx.fillStyle = '#fde047';
-      ctx.fillRect(wx + 8, 48, 2, 2);
-      ctx.fillRect(wx + 12, 54, 2, 2);
-      ctx.fillRect(wx + 24, 42, 2, 2);
-      ctx.fillRect(wx + 28, 50, 2, 2);
-      ctx.fillRect(wx + 24, 58, 2, 2);
+      // Đốm nắng xuyên qua kẽ lá
+      ctx.fillStyle = '#4ade80';
+      ctx.beginPath();
+      ctx.arc(wx + 12, 60, 6, 0, Math.PI * 2);
+      ctx.arc(wx + 28, 56, 8, 0, Math.PI * 2);
+      ctx.fill();
 
-      // Khung kính viền ngoài phát sáng
-      ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 1;
+      // Khung cửa sổ gỗ trắng cách tân 4 ô kính (White Architectural Window Panes - Pin A)
+      ctx.strokeStyle = '#f8fafc';
+      ctx.lineWidth = 2;
       ctx.strokeRect(wx, 34, 48, 36);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(wx + 23, 34, 2, 36); // Thanh dọc
+      ctx.fillRect(wx, 51, 48, 2);      // Thanh ngang
 
-      // Nan cửa sổ
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(wx + 22, 34, 4, 36);
-      ctx.fillRect(wx, 50, 48, 4);
+      // Gờ bệ cửa sổ gỗ (Window Sill - Pin A)
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(wx - 3, 68, 54, 4);
 
-      // Ánh sáng chiếu nghiêng xuống sàn
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.06)';
+      // 2. Chùm tia sáng mặt trời chiếu nghiêng 4D (Volumetric God Rays - Pin A)
+      const rayAlpha = 0.08 + Math.sin(time * 1.5 + idx) * 0.03;
+      const rayGrad = ctx.createLinearGradient(wx + 24, 70, wx + 60, 180);
+      rayGrad.addColorStop(0, `rgba(254, 240, 138, ${rayAlpha * 1.6})`);
+      rayGrad.addColorStop(0.5, `rgba(254, 240, 138, ${rayAlpha})`);
+      rayGrad.addColorStop(1, 'rgba(254, 240, 138, 0)');
+
+      ctx.fillStyle = rayGrad;
       ctx.beginPath();
       ctx.moveTo(wx, 70);
       ctx.lineTo(wx + 48, 70);
-      ctx.lineTo(wx + 75, 145);
-      ctx.lineTo(wx - 25, 145);
+      ctx.lineTo(wx + 110, 180);
+      ctx.lineTo(wx + 20, 180);
       ctx.closePath();
       ctx.fill();
+
+      // Vệt nắng chiếu sáng hình thang trên mặt sàn (Floor Sunlight Patch - Pin A)
+      ctx.fillStyle = `rgba(254, 240, 138, ${rayAlpha * 0.7})`;
+      ctx.beginPath();
+      ctx.moveTo(wx + 20, 170);
+      ctx.lineTo(wx + 105, 170);
+      ctx.lineTo(wx + 125, 200);
+      ctx.lineTo(wx + 30, 200);
+      ctx.closePath();
+      ctx.fill();
+
+      // Hạt bụi bay lơ lửng trong vệt nắng (Animated Floating Dust Motes)
+      for (let m = 0; m < 3; m++) {
+        const moteX = wx + 15 + ((time * 8 + idx * 12 + m * 20) % 75);
+        const moteY = 75 + ((time * 12 + idx * 15 + m * 30) % 95);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+        ctx.fillRect(moteX, moteY, 1.5, 1.5);
+      }
     });
 
     // Đổ bóng chiều sâu 4D chân tường hậu (Ambient Occlusion Shadow)
@@ -318,20 +350,41 @@ export class SpriteRenderer {
   }
 
   /**
-   * Vách ngăn lửng kính mờ 2.5D giữa các phòng (Partition Dividers)
+   * Vách ngăn lửng kính mờ 2.5D giữa các phòng chuẩn phong cách Office Cubicle (Pinterest Pin B)
    */
   private static drawRoomPartition(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-    // Viền khung nhôm đen phía dưới
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 2;
+    // 1. Đế tường lửng hợp kim nhôm (Baseboard Partition)
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5;
     ctx.strokeRect(x, y, w, h);
 
-    // Cửa ra vào phòng rộng mở 44px
-    const doorW = 44;
+    // 2. Tấm vách kính mờ văn phòng (Frosted Glass Panel - Pin B)
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.08)';
+    ctx.fillRect(x + 1, y + 1, w - 2, 8); // Dải kính chạy dọc mép tường
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(x + 1, y + 1, w - 2, 8);
+
+    // Trụ góc nhôm
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(x - 2, y - 2, 4, 12);
+    ctx.fillRect(x + w - 2, y - 2, 4, 12);
+
+    // Giấy ghi chú dán trên vách kính (Sticky Notes)
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(x + 18, y + 2, 4, 4);
+    ctx.fillStyle = '#f472b6';
+    ctx.fillRect(x + w - 26, y + 2, 4, 4);
+
+    // 3. Cửa ra vào phòng rộng mở 46px với nẹp chỉ gỗ tự nhiên
+    const doorW = 46;
     const doorX = x + w / 2 - doorW / 2;
     ctx.clearRect(doorX, y + h - 2, doorW, 4);
-    ctx.fillStyle = '#92400e'; // Ngưỡng cửa gỗ
+    ctx.fillStyle = '#78350f'; // Ngưỡng cửa gỗ sồi
     ctx.fillRect(doorX, y + h - 2, doorW, 3);
+    // Nẹp đồng vàng
+    ctx.fillStyle = '#ca8a04';
+    ctx.fillRect(doorX, y + h - 3, doorW, 1);
   }
 
   /**
@@ -391,17 +444,22 @@ export class SpriteRenderer {
       zY: 105,
       draw: ctx => this.drawBookshelf(ctx, 45, 60),
     });
+    // Kệ cây leo Ivy trên tường (Pinterest Pin A)
+    drawables.push({
+      zY: 108,
+      draw: ctx => this.drawWallIvyShelf(ctx, 160, 48),
+    });
     // Mini Server Rack đèn LED
     drawables.push({
       zY: 110,
       draw: ctx => this.drawServerRack(ctx, 235, 55),
     });
-    // Cây cảnh góc phòng
+    // Cây Bonsai Nhật Bản trên đôn gỗ (Pinterest Pin B)
     drawables.push({
       zY: 115,
-      draw: ctx => this.drawPottedPlant(ctx, 275, 85),
+      draw: ctx => this.drawBonsaiTree(ctx, 275, 82),
     });
-    // Bàn làm việc kiến trúc sư (màn hình, bản vẽ)
+    // Bàn làm việc kiến trúc sư (màn hình, bản vẽ, thước T-square)
     drawables.push({
       zY: 175,
       draw: ctx => this.drawArchitectDesk(ctx, 80, 140),
@@ -415,22 +473,22 @@ export class SpriteRenderer {
       zY: 65,
       draw: ctx => this.drawWallArt(ctx, 450, 35, 60, 22, '#0284c7'),
     });
-    // Chậu cây ficus tán rộng góc trái
+    // Cây cảnh hình cầu Topiary trong chậu gốm nung (Pinterest Pin B)
     drawables.push({
       zY: 115,
-      draw: ctx => this.drawPottedPlant(ctx, 350, 85),
+      draw: ctx => this.drawTopiaryPlant(ctx, 350, 85),
     });
-    // Chậu cây ficus góc phải
+    // Tủ kính trưng bày tài liệu hồ sơ có file kẹp màu sắc (Pinterest Pin B)
     drawables.push({
-      zY: 115,
-      draw: ctx => this.drawPottedPlant(ctx, 615, 85),
+      zY: 118,
+      draw: ctx => this.drawGlassFilingCabinet(ctx, 595, 78),
     });
-    // Sofa dài da đỏ sang trọng (Đệm ngồi ở y = 120-135)
+    // Sofa bọc nỉ Royal Blue kèm gối tựa cam trên thảm sọc xanh (Pinterest Pin B)
     drawables.push({
       zY: 140,
-      draw: ctx => this.drawLuxuryRedSofa(ctx, 410, 105, 120, 36),
+      draw: ctx => this.drawModularBlueSofa(ctx, 410, 105, 120, 38),
     });
-    // Bàn trà tiếp khách với 2 tách cà phê (nằm phía trước sofa)
+    // Bàn trà mặt kính tiếp khách với tách trà và đĩa hoa quả (nằm trước sofa)
     drawables.push({
       zY: 175,
       draw: ctx => this.drawCoffeeTable(ctx, 440, 155),
@@ -444,10 +502,10 @@ export class SpriteRenderer {
       zY: 55,
       draw: ctx => this.drawWallClock(ctx, 770, 45),
     });
-    // Tủ lạnh 2 cánh
+    // Tủ lạnh Inox thương mại có Lò vi sóng đặt trên nóc (Pinterest Pin A)
     drawables.push({
       zY: 135,
-      draw: ctx => this.drawRefrigerator(ctx, 825, 82),
+      draw: ctx => this.drawRefrigeratorWithMicrowave(ctx, 825, 76),
     });
     // Máy bán nước tự động
     drawables.push({
@@ -459,15 +517,15 @@ export class SpriteRenderer {
       zY: 130,
       draw: ctx => this.drawWaterDispenser(ctx, 685, 88),
     });
-    // Quầy bếp & bồn rửa inox
+    // Quầy bếp & bồn rửa inox, máy pha espresso bốc khói (Pinterest Pin A & Pin B)
     drawables.push({
       zY: 145,
       draw: ctx => this.drawKitchenCounter(ctx, 720, 92),
     });
-    // Cây xanh góc bếp
+    // Cây Topiary xanh góc bếp
     drawables.push({
       zY: 190,
-      draw: ctx => this.drawPottedPlant(ctx, 900, 160),
+      draw: ctx => this.drawTopiaryPlant(ctx, 900, 160),
     });
 
     // ───────────────────────────────────────────────────────────────────────
@@ -478,7 +536,12 @@ export class SpriteRenderer {
       zY: 345,
       draw: ctx => this.drawBookshelf(ctx, 45, 318),
     });
-    // Bàn làm việc Fullstack Dev với 2 màn hình code matrix xanh lá
+    // Máy photocopy / máy in văn phòng đa năng đa khay (Pinterest Pin B Hardware)
+    drawables.push({
+      zY: 385,
+      draw: ctx => this.drawOfficeCopier(ctx, 230, 348),
+    });
+    // Bàn làm việc Fullstack Dev với 2 màn hình code matrix xanh lá & case PC (Pin A & B)
     drawables.push({
       zY: 395,
       draw: ctx => this.drawDevWorkstation(ctx, 85, 355),
@@ -488,10 +551,10 @@ export class SpriteRenderer {
       zY: 410,
       draw: ctx => this.drawTrashBin(ctx, 205, 395),
     });
-    // Chậu cây góc phòng dev
+    // Cây Topiary góc phòng dev (Pinterest Pin B)
     drawables.push({
       zY: 470,
-      draw: ctx => this.drawPottedPlant(ctx, 275, 455),
+      draw: ctx => this.drawTopiaryPlant(ctx, 275, 455),
     });
 
     // ───────────────────────────────────────────────────────────────────────
@@ -522,6 +585,11 @@ export class SpriteRenderer {
         this.drawConferenceChair(ctx, 445, 435);
         this.drawConferenceChair(ctx, 525, 435);
       },
+    });
+    // Cây Monstera nhiệt đới 4D đung đưa theo gió góc phòng họp
+    drawables.push({
+      zY: 480,
+      draw: ctx => this.drawPottedPlant(ctx, 360, 465),
     });
 
     // ───────────────────────────────────────────────────────────────────────
@@ -984,82 +1052,134 @@ export class SpriteRenderer {
   }
 
   /**
-   * Sofa dài da đỏ Chesterfield sang trọng phòng Giám đốc (Luxury Button-Tufted Leather Suite)
+   * Sofa góc nỉ Royal Blue kèm gối tựa cam trên thảm sọc xanh (Pinterest Pin B - Luxury Modular Lounge)
    */
-  private static drawLuxuryRedSofa(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+  private static drawModularBlueSofa(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
     ctx.save();
-    // Đổ bóng sofa mềm mại xuống thảm sapphire
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+
+    // 1. Thảm trải sàn sọc xanh ngọc bích (Pinterest Pin B - Emerald Green Striped Area Rug)
+    const rugW = w + 36;
+    const rugH = h + 28;
+    const rugX = x - 18;
+    const rugY = y - 4;
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+    ctx.fillRect(rugX + 4, rugY + 4, rugW, rugH);
+
+    // Nền thảm xanh
+    ctx.fillStyle = '#15803d';
+    ctx.fillRect(rugX, rugY, rugW, rugH);
+
+    // Các sọc xanh lá sáng song song
+    ctx.fillStyle = '#22c55e';
+    for (let sx = rugX + 6; sx < rugX + rugW - 6; sx += 12) {
+      ctx.fillRect(sx, rugY + 2, 6, rugH - 4);
+    }
+    // Viền thảm thêu
+    ctx.strokeStyle = '#166534';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(rugX, rugY, rugW, rugH);
+
+    // 2. Đổ bóng sofa xuống thảm
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
     ctx.beginPath();
-    ctx.roundRect(x - 4, y + 6, w + 8, h + 4, 8);
+    ctx.roundRect(x - 3, y + 4, w + 6, h + 4, 6);
     ctx.fill();
 
-    // 4 Chân sofa gỗ hồ đào tiện tròn (Mahogany Bun Feet)
-    ctx.fillStyle = '#1c0a02';
-    ctx.fillRect(x + 4, y + h, 8, 4);
-    ctx.fillRect(x + w - 12, y + h, 8, 4);
+    // 3. 4 Chân sofa gỗ sồi tự nhiên vát thon (Tapered Oak Legs)
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x + 4, y + h - 1, 4, 5);
+    ctx.fillRect(x + w - 8, y + h - 1, 4, 5);
+    ctx.fillRect(x + w / 2 - 2, y + h - 1, 4, 5);
 
-    // Tựa lưng sofa bọc da đỏ gụ (Tufted Deep Backrest)
+    // 4. Tựa lưng sofa màu Royal Blue (Tufted Modular Backrest)
     const backGrad = ctx.createLinearGradient(x, y, x, y + 16);
-    backGrad.addColorStop(0, '#7f1d1d');
-    backGrad.addColorStop(1, '#991b1b');
+    backGrad.addColorStop(0, '#1e40af');
+    backGrad.addColorStop(1, '#1d4ed8');
     ctx.fillStyle = backGrad;
     ctx.beginPath();
-    ctx.roundRect(x, y, w, 16, 6);
+    ctx.roundRect(x, y, w, 16, 4);
     ctx.fill();
 
-    // Họa tiết múi cúc da quả trám (Diamond Button Tufting)
-    ctx.fillStyle = '#450a0a';
-    for (let i = 12; i < w - 12; i += 15) {
+    // Chỉ may múi đệm tựa lưng
+    ctx.strokeStyle = '#1e3a8a';
+    ctx.lineWidth = 1;
+    for (let c = 1; c < 4; c++) {
+      const cx = x + (w / 4) * c;
       ctx.beginPath();
-      ctx.arc(x + i, y + 8, 1.5, 0, Math.PI * 2);
-      ctx.fill();
-      // Nếp gấp da chéo
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
-      ctx.lineWidth = 0.5;
-      ctx.beginPath();
-      ctx.moveTo(x + i - 6, y + 4);
-      ctx.lineTo(x + i + 6, y + 12);
+      ctx.moveTo(cx, y + 1);
+      ctx.lineTo(cx, y + 15);
       ctx.stroke();
     }
 
-    // Đệm ngồi êm ái bọc da đỏ tươi (Plush Dual Cushions)
-    const seatGrad = ctx.createLinearGradient(x, y + 16, x, y + h);
-    seatGrad.addColorStop(0, '#b91c1c');
-    seatGrad.addColorStop(1, '#991b1b');
+    // 5. Đệm ngồi nỉ Royal Blue êm ái đa khối (Plush Modular Seat Cushions)
+    const seatGrad = ctx.createLinearGradient(x, y + 15, x, y + h);
+    seatGrad.addColorStop(0, '#2563eb');
+    seatGrad.addColorStop(1, '#1d4ed8');
     ctx.fillStyle = seatGrad;
     ctx.beginPath();
-    ctx.roundRect(x + 2, y + 15, w - 4, h - 15, 4);
+    ctx.roundRect(x + 2, y + 14, w - 4, h - 14, 3);
     ctx.fill();
 
-    // Rãnh phân chia giữa 2 đệm ngồi
-    ctx.strokeStyle = '#450a0a';
+    // Mép đệm bóng sáng
+    ctx.fillStyle = '#60a5fa';
+    ctx.fillRect(x + 4, y + 15, w - 8, 2);
+
+    // Phân rãnh giữa các khối ghế
+    ctx.strokeStyle = '#172554';
     ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(x + w / 2, y + 16);
-    ctx.lineTo(x + w / 2, y + h);
-    ctx.stroke();
-
-    // Mép đệm phản chiếu ánh sáng da bóng
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(x + 6, y + 16, w / 2 - 10, 2);
-    ctx.fillRect(x + w / 2 + 4, y + 16, w / 2 - 10, 2);
-
-    // Tay vịn cuộn tròn bọc đinh tán đồng 2 bên (Rolled Armrests with Brass Studs)
-    ctx.fillStyle = '#7f1d1d';
-    ctx.beginPath();
-    ctx.roundRect(x - 6, y + 4, 10, h - 3, 5);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.roundRect(x + w - 4, y + 4, 10, h - 3, 5);
-    ctx.fill();
-
-    // Hàng đinh tán mạ đồng vàng
-    ctx.fillStyle = '#eab308';
-    for (let st = y + 8; st < y + h; st += 6) {
-      ctx.fillRect(x - 4, st, 1.5, 1.5);
-      ctx.fillRect(x + w + 2, st, 1.5, 1.5);
+    for (let c = 1; c < 4; c++) {
+      const cx = x + (w / 4) * c;
+      ctx.beginPath();
+      ctx.moveTo(cx, y + 15);
+      ctx.lineTo(cx, y + h);
+      ctx.stroke();
     }
+
+    // 6. Tay vịn sofa 2 bên
+    ctx.fillStyle = '#1d4ed8';
+    ctx.beginPath();
+    ctx.roundRect(x - 5, y + 4, 8, h - 4, 4);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.roundRect(x + w - 3, y + 4, 8, h - 4, 4);
+    ctx.fill();
+
+    // Viền tay vịn
+    ctx.fillStyle = '#93c5fd';
+    ctx.fillRect(x - 4, y + 5, 2, h - 6);
+    ctx.fillRect(x + w + 1, y + 5, 2, h - 6);
+
+    // 7. Gối tựa màu cam rực rỡ ở 2 góc (Pinterest Pin B - Vibrant Orange Throw Pillows)
+    // Gối góc trái
+    ctx.save();
+    ctx.translate(x + 8, y + 16);
+    ctx.rotate(-0.15);
+    ctx.fillStyle = '#ea580c';
+    ctx.beginPath();
+    ctx.roundRect(0, 0, 14, 14, 3);
+    ctx.fill();
+    ctx.fillStyle = '#fb923c';
+    ctx.fillRect(2, 2, 10, 3);
+    ctx.strokeStyle = '#9a3412';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+
+    // Gối góc phải
+    ctx.save();
+    ctx.translate(x + w - 22, y + 14);
+    ctx.rotate(0.18);
+    ctx.fillStyle = '#f97316';
+    ctx.beginPath();
+    ctx.roundRect(0, 0, 14, 14, 3);
+    ctx.fill();
+    ctx.fillStyle = '#fdba74';
+    ctx.fillRect(2, 2, 10, 3);
+    ctx.strokeStyle = '#c2410c';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
 
     ctx.restore();
   }
@@ -1422,14 +1542,67 @@ export class SpriteRenderer {
   }
 
   /**
-   * Tủ lạnh 2 cánh Inox thương mại hiển thị nhiệt độ số (Pinterest Pin 1)
+   * Tủ lạnh Inox 2 cánh có Lò vi sóng điện tử trên nóc (Pinterest Pin A - Cozy Tech Kitchen Suite)
    */
-  private static drawRefrigerator(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  private static drawRefrigeratorWithMicrowave(ctx: CanvasRenderingContext2D, x: number, y: number) {
     const w = 32;
     const h = 54;
 
     ctx.save();
-    // Thân tủ thép xước không gỉ
+
+    // ───────────────────────────────────────────────────────────────────────
+    // 1. LÒ VI SÓNG ĐẶT TRÊN NÓC TỦ LẠNH (Pinterest Pin A - Microwave on Fridge)
+    // ───────────────────────────────────────────────────────────────────────
+    const mwW = 28;
+    const mwH = 15;
+    const mwX = x + 2;
+    const mwY = y - 16;
+
+    // Bóng đổ lò vi sóng xuống nóc tủ lạnh
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillRect(mwX + 2, y - 2, mwW - 4, 3);
+
+    // Vỏ máy lò vi sóng kim loại màu xám than
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.roundRect(mwX, mwY, mwW, mwH, 2);
+    ctx.fill();
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Cửa kính tối màu quan sát khoang lò
+    ctx.fillStyle = '#090d16';
+    ctx.fillRect(mwX + 2, mwY + 2, 17, mwH - 4);
+    // Vệt phản chiếu ánh sáng trên cửa kính lò
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(mwX + 4, mwY + 3);
+    ctx.lineTo(mwX + 11, mwY + 3);
+    ctx.stroke();
+
+    // Tay nắm cửa lò vi sóng
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(mwX + 17, mwY + 3, 1.5, mwH - 6);
+
+    // Bảng điều khiển điện tử
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(mwX + 20, mwY + 2, 6, mwH - 4);
+
+    // Màn hình số LED xanh Cyan phát sáng "0:45"
+    ctx.fillStyle = '#06b6d4';
+    ctx.fillRect(mwX + 21, mwY + 3, 4, 2);
+
+    // Núm vặn hẹn giờ & các phím bấm
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(mwX + 22, mwY + 7, 2, 2);
+    ctx.fillStyle = '#ef4444'; // Nút Start/Stop đỏ
+    ctx.fillRect(mwX + 22, mwY + 10, 2, 1.5);
+
+    // ───────────────────────────────────────────────────────────────────────
+    // 2. THÂN TỦ LẠNH THÉP XƯỚC KHÔNG GỈ (Stainless Steel Refrigerator)
+    // ───────────────────────────────────────────────────────────────────────
     const fridgeGrad = ctx.createLinearGradient(x, y, x + w, y);
     fridgeGrad.addColorStop(0, '#94a3b8');
     fridgeGrad.addColorStop(0.5, '#e2e8f0');
@@ -1444,30 +1617,399 @@ export class SpriteRenderer {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Khe ngăn cách 2 cánh tủ (Ngăn đá trên, ngăn mát dưới)
+    // Khe phân cách ngăn đá trên và ngăn mát dưới
     ctx.strokeStyle = '#334155';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(x, y + 20);
-    ctx.lineTo(x + w, y + 20);
+    ctx.moveTo(x, y + 18);
+    ctx.lineTo(x + w, y + 18);
     ctx.stroke();
 
     // 2 Tay nắm thanh dài bằng hợp kim
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x + 4, y + 6, 2, 10);
-    ctx.fillRect(x + 4, y + 24, 2, 22);
+    ctx.fillRect(x + 4, y + 5, 2, 9);
+    ctx.fillRect(x + 4, y + 22, 2, 24);
 
-    // Màn hình LED báo nhiệt độ điện tử (-18°C / 4°C)
+    // Màn hình LED nhiệt độ điện tử (-18°C / 4°C)
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 12, y + 6, 14, 6);
+    ctx.fillRect(x + 12, y + 5, 14, 6);
     ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(x + 14, y + 8, 10, 2);
+    ctx.fillRect(x + 14, y + 7, 10, 2);
 
     // Giấy ghi chú nam châm dán trên cửa
     ctx.fillStyle = '#fde047';
-    ctx.fillRect(x + 16, y + 26, 6, 6);
+    ctx.fillRect(x + 16, y + 25, 6, 6);
     ctx.fillStyle = '#f472b6';
-    ctx.fillRect(x + 18, y + 36, 5, 5);
+    ctx.fillRect(x + 18, y + 35, 5, 5);
+
+    ctx.restore();
+  }
+
+  /**
+   * Tủ kính trưng bày tài liệu hồ sơ có file kẹp nhiều màu (Pinterest Pin B - Glass-Front Document Cabinet)
+   */
+  private static drawGlassFilingCabinet(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    const w = 38;
+    const h = 54;
+
+    ctx.save();
+    // Đổ bóng chân tủ
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillRect(x + 2, y + 4, w, h);
+
+    // Khung tủ kim loại sơn tĩnh điện xanh than
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 3);
+    ctx.fill();
+
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // 3 Tầng đợt kệ bên trong với các file còng, tài liệu rực rỡ (Pinterest Pin B)
+    const shelfH = 15;
+    for (let s = 0; s < 3; s++) {
+      const sy = y + 4 + s * shelfH;
+      // Thanh đợt gỗ
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(x + 3, sy + shelfH - 2, w - 6, 2);
+
+      if (s === 0) {
+        // Tầng 1: File tài liệu Đỏ, Vàng, Xanh dương
+        const binders = ['#ef4444', '#f59e0b', '#0284c7', '#3b82f6'];
+        binders.forEach((col, idx) => {
+          ctx.fillStyle = col;
+          ctx.fillRect(x + 5 + idx * 7, sy + 2, 6, shelfH - 4);
+          // Nhãn trắng trên gáy
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(x + 6 + idx * 7, sy + 4, 4, 3);
+        });
+      } else if (s === 1) {
+        // Tầng 2: File tài liệu Xanh ngọc, Tím, Cam
+        const binders = ['#10b981', '#8b5cf6', '#ea580c', '#06b6d4'];
+        binders.forEach((col, idx) => {
+          ctx.fillStyle = col;
+          ctx.fillRect(x + 5 + idx * 7, sy + 2, 6, shelfH - 4);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(x + 6 + idx * 7, sy + 4, 4, 3);
+        });
+      } else {
+        // Tầng 3: Các tập hồ sơ và hộp lưu trữ màu xám / vàng
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(x + 6, sy + 4, 12, shelfH - 6);
+        ctx.fillStyle = '#eab308';
+        ctx.fillRect(x + 20, sy + 3, 12, shelfH - 5);
+      }
+    }
+
+    // Cánh cửa kính trong suốt phản chiếu vát chéo (Glass Front Panel)
+    ctx.fillStyle = 'rgba(186, 230, 253, 0.2)';
+    ctx.fillRect(x + 3, y + 3, w - 6, h - 6);
+
+    // Vệt phản chiếu ánh sáng trên mặt kính
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 6, y + 6);
+    ctx.lineTo(x + 26, y + 30);
+    ctx.stroke();
+
+    // 2 Tay nắm thanh nhôm dài
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(x + w / 2 - 2, y + 14, 1.5, 14);
+    ctx.fillRect(x + w / 2 + 1, y + 14, 1.5, 14);
+
+    ctx.restore();
+  }
+
+  /**
+   * Máy Photocopy / Máy in laser đa khay văn phòng (Pinterest Pin B Hardware Suite)
+   */
+  private static drawOfficeCopier(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    const w = 38;
+    const h = 48;
+
+    ctx.save();
+    // Đổ bóng máy xuống sàn
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillRect(x + 2, y + 6, w, h);
+
+    // Thân máy in kim loại trắng sứ & xám hiện đại
+    ctx.fillStyle = '#f1f5f9';
+    ctx.beginPath();
+    ctx.roundRect(x, y + 14, w, h - 14, 2);
+    ctx.fill();
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // 2 Khay đựng giấy A4/A3 kéo ra có tay nắm nhôm
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x + 4, y + 28, w - 8, 8);
+    ctx.fillRect(x + 4, y + 38, w - 8, 8);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x + 14, y + 31, 10, 2);
+    ctx.fillRect(x + 14, y + 41, 10, 2);
+
+    // Mặt kính quét Scanner & Nắp nạp tài liệu tự động (ADF Top Feeder)
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x + 2, y + 2, w - 4, 12);
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x + 4, y, w - 8, 6); // Khay nạp trên cùng
+
+    // Màn hình cảm ứng điều khiển nghiêng có đèn LED
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + w - 14, y + 10, 12, 10);
+    ctx.fillStyle = '#06b6d4'; // Màn hình sáng xanh
+    ctx.fillRect(x + w - 13, y + 11, 10, 8);
+
+    // Đèn LED trạng thái máy (Xanh lá Online / Đỏ Data)
+    const isReady = Math.floor(Date.now() / 400) % 2 === 0;
+    ctx.fillStyle = isReady ? '#22c55e' : '#15803d';
+    ctx.fillRect(x + 6, y + 18, 3, 3);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 11, y + 18, 3, 3);
+
+    // Khay đỡ giấy in ra bên hông kèm tập tài liệu trắng vừa in
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x - 8, y + 22, 9, 3);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - 7, y + 19, 7, 3);
+
+    // Thùng rác tái chế giấy màu xanh dương đặt bên cạnh (Pinterest Pin B - Blue Recycle Bin)
+    const binX = x + w + 4;
+    const binY = y + 26;
+    ctx.fillStyle = '#0284c7';
+    ctx.beginPath();
+    ctx.moveTo(binX, binY);
+    ctx.lineTo(binX + 13, binY);
+    ctx.lineTo(binX + 11, binY + 18);
+    ctx.lineTo(binX + 2, binY + 18);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#0369a1';
+    ctx.stroke();
+
+    // Biểu tượng tam giác tái chế trắng
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(binX + 6.5, binY + 5);
+    ctx.lineTo(binX + 9.5, binY + 11);
+    ctx.lineTo(binX + 3.5, binY + 11);
+    ctx.closePath();
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  /**
+   * Cây cảnh hình cầu Topiary trong chậu gốm nung (Pinterest Pin B - Manicured Ball Topiary)
+   */
+  private static drawTopiaryPlant(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    const time = Date.now() / 900;
+    const sway = Math.sin(time + x * 0.1) * 0.8;
+
+    ctx.save();
+    // 1. Bóng đổ chậu xuống sàn
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    ctx.beginPath();
+    ctx.ellipse(x, y + 18, 12, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. Chậu gốm nung Terracotta vát tròn
+    ctx.fillStyle = '#c2410c';
+    ctx.beginPath();
+    ctx.moveTo(x - 8, y + 6);
+    ctx.lineTo(x + 8, y + 6);
+    ctx.lineTo(x + 6, y + 18);
+    ctx.lineTo(x - 6, y + 18);
+    ctx.closePath();
+    ctx.fill();
+
+    // Vành chậu và điểm sáng
+    ctx.fillStyle = '#ea580c';
+    ctx.fillRect(x - 9, y + 4, 18, 3);
+    ctx.fillStyle = '#ffedd5';
+    ctx.fillRect(x - 7, y + 5, 4, 1);
+
+    // Đất màu nâu xốp
+    ctx.fillStyle = '#1c1917';
+    ctx.fillRect(x - 7, y + 5, 14, 2);
+
+    // 3. Thân cây gỗ thẳng đứng
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(x, y + 6);
+    ctx.lineTo(x + sway, y - 6);
+    ctx.stroke();
+
+    // 4. Vương miện lá hình cầu tròn cắt tỉa hoàn hảo (Manicured Spherical Crown)
+    const ballX = x + sway;
+    const ballY = y - 14;
+    const radius = 13;
+
+    // Lớp bóng tối
+    ctx.fillStyle = '#14532d';
+    ctx.beginPath();
+    ctx.arc(ballX + 1, ballY + 1, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Khối tán lá xanh tươi
+    ctx.fillStyle = '#15803d';
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Lớp lá xanh sáng hướng sáng
+    ctx.fillStyle = '#22c55e';
+    ctx.beginPath();
+    ctx.arc(ballX - 2, ballY - 3, radius * 0.75, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Đốm nắng phản chiếu trên vòm lá
+    ctx.fillStyle = '#86efac';
+    ctx.beginPath();
+    ctx.arc(ballX - 4, ballY - 5, radius * 0.4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  /**
+   * Cây Bonsai Nhật Bản trên đôn gỗ (Pinterest Pin B - Japanese Zen Bonsai Plinth)
+   */
+  private static drawBonsaiTree(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.save();
+
+    // 1. Đôn trưng bày bằng gỗ trắc đen (Carved Rosewood Plinth)
+    ctx.fillStyle = '#261306';
+    ctx.fillRect(x - 14, y + 10, 28, 4);
+    ctx.fillRect(x - 12, y + 14, 4, 6);
+    ctx.fillRect(x + 8, y + 14, 4, 6);
+    ctx.fillRect(x - 14, y + 19, 28, 2);
+
+    // 2. Chậu gốm Bonsai dẹt hình oval tráng men xanh lục
+    ctx.fillStyle = '#064e3b';
+    ctx.beginPath();
+    ctx.roundRect(x - 12, y + 5, 24, 6, 2);
+    ctx.fill();
+    ctx.strokeStyle = '#047857';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Đất rêu phong xanh đậm
+    ctx.fillStyle = '#14532d';
+    ctx.fillRect(x - 10, y + 4, 20, 2);
+
+    // 3. Thân gỗ gồ ghề uốn lượn phong cách Zen (Gnarled Twisted Trunk)
+    ctx.strokeStyle = '#543519';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x - 2, y + 5);
+    ctx.quadraticCurveTo(x - 7, y - 2, x - 3, y - 8);
+    ctx.quadraticCurveTo(x + 2, y - 14, x + 6, y - 18);
+    ctx.stroke();
+
+    // Nhánh phụ vươn sang trái
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y - 6);
+    ctx.lineTo(x - 12, y - 9);
+    ctx.stroke();
+
+    // 4. Các cụm tán lá mây đa tầng (Cloud Foliage Pads)
+    const pads = [
+      { px: x - 13, py: y - 10, rw: 9, rh: 4 },
+      { px: x + 1, py: y - 15, rw: 11, rh: 4.5 },
+      { px: x + 7, py: y - 21, rw: 10, rh: 4 },
+    ];
+
+    pads.forEach(p => {
+      // Tầng lá tối
+      ctx.fillStyle = '#0f3d1f';
+      ctx.beginPath();
+      ctx.ellipse(p.px, p.py + 1, p.rw, p.rh, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tầng lá xanh lục
+      ctx.fillStyle = '#16a34a';
+      ctx.beginPath();
+      ctx.ellipse(p.px, p.py, p.rw, p.rh, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Đốm kim lá xanh mạ vàng
+      ctx.fillStyle = '#4ade80';
+      ctx.beginPath();
+      ctx.ellipse(p.px - 1, p.py - 1, p.rw * 0.6, p.rh * 0.6, 0, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    ctx.restore();
+  }
+
+  /**
+   * Kệ cây leo Ivy trên tường (Pinterest Pin A - Cozy Wall Ivy Shelf)
+   */
+  private static drawWallIvyShelf(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    const time = Date.now() / 800;
+    const flutter = Math.sin(time + x * 0.2) * 1.2;
+
+    ctx.save();
+    // 1. Kệ gỗ treo tường có giá đỡ đồng
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(x - 14, y, 28, 3);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(x - 14, y, 28, 1);
+
+    // 2 Ke đỡ bằng kim loại vàng đồng
+    ctx.fillStyle = '#d97706';
+    ctx.fillRect(x - 10, y + 3, 2, 6);
+    ctx.fillRect(x + 8, y + 3, 2, 6);
+
+    // 2. Chậu gốm sứ trắng tinh trên kệ
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x - 6, y - 8, 12, 8);
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(x - 7, y - 9, 14, 2);
+
+    // 3. Tán lá cây xum xuê trên miệng chậu
+    ctx.fillStyle = '#15803d';
+    ctx.beginPath();
+    ctx.arc(x, y - 8, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#22c55e';
+    ctx.beginPath();
+    ctx.arc(x - 2, y - 10, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4. Các dây leo Ivy rủ xuống tường dài sống động (Cascading Trailing Vines)
+    const vines = [
+      { vx: x - 4, len: 18, wave: flutter },
+      { vx: x, len: 24, wave: -flutter * 0.8 },
+      { vx: x + 4, len: 14, wave: flutter * 1.1 },
+    ];
+
+    vines.forEach(v => {
+      ctx.strokeStyle = '#166534';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(v.vx, y);
+      ctx.quadraticCurveTo(v.vx + v.wave, y + v.len * 0.5, v.vx + v.wave * 1.2, y + v.len);
+      ctx.stroke();
+
+      // Các lá thường xuân hình trái tim dọc theo dây leo
+      for (let ly = y + 4; ly < y + v.len; ly += 5) {
+        ctx.fillStyle = '#22c55e';
+        ctx.beginPath();
+        ctx.arc(v.vx + v.wave * 0.6 + ((ly % 2 === 0) ? 2 : -2), ly, 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#86efac';
+        ctx.fillRect(v.vx + v.wave * 0.6 + ((ly % 2 === 0) ? 2 : -2), ly, 1, 1);
+      }
+    });
 
     ctx.restore();
   }

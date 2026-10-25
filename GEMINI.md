@@ -228,6 +228,25 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Bản build đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
 - [x] Đã commit và đẩy toàn bộ mã nguồn lên GitHub.
 
+### [2026-10-25] Nâng cấp Không gian Ánh sáng 4D Tự nhiên (Pin A) & Trọn bộ Nội thất Văn phòng Isometric (Pin B)
+- [x] **Tham khảo & Nghiên cứu trực tiếp**:
+  - `https://www.pinterest.com/pin/788974428470075560/` (Pin A: Phòng Isometric ấm cúng, tia nắng tự nhiên chiếu xiên qua cửa sổ xuống sàn gỗ, bụi hạt ánh sáng lơ lửng, kệ cây leo tường, lò vi sóng trên nóc tủ lạnh).
+  - `https://www.pinterest.com/pin/412290540892514371/` (Pin B: Trọn bộ hơn 80 chi tiết văn phòng isometric - Bộ sofa nỉ góc Royal Blue kèm 2 gối tựa cam trên thảm sọc xanh lá, máy photocopy laser đa khay văn phòng có thùng rác tái chế xanh, tủ kính trưng bày tài liệu hồ sơ có file kẹp nhiều màu sắc, cây bonsai Nhật Bản uốn lượn trên đôn gỗ trắc, cây cảnh hình cầu cắt tỉa Topiary trong chậu gốm nung, vách ngăn kính mờ nhôm xước).
+- [x] **Triển khai kỹ thuật Chiều sâu 4D & Hiệu ứng Ánh sáng (Pin A)**:
+  - **Tia nắng xiên tự nhiên (Volumetric Sunlight God Rays)**: Khung cửa sổ kiến trúc đa ô kính trắng đón ánh nắng vàng ấm (`#fef08a`), tạo dải sáng xiên tự nhiên chiếu rọi xuống sàn gỗ sồi tạo vệt sáng hình thang 3D ấm áp.
+  - **Hạt bụi ánh sáng động (Floating Dust Motes)**: Tích hợp các hạt vi bụi vàng lơ lửng bồng bềnh chuyển động trong luồng sáng mặt trời, mang lại cảm giác chân thực sống động.
+  - **Kệ cây leo thường xuân (Wall Ivy Shelf)**: Kệ gỗ gắn tường giá đỡ đồng, chậu gốm sứ trắng với các nhánh dây leo English Ivy rủ dài xuống tường, lá thường xuân rung rinh theo gió.
+  - **Lò vi sóng điện tử trên nóc tủ lạnh (Microwave on Fridge)**: Lò vi sóng kim loại xám than đặt trên nóc tủ lạnh inox pantry, cửa kính tối, tay nắm nhôm, bảng điều khiển số màn hình LED xanh cyan phát sáng `0:45` và núm vặn hẹn giờ.
+- [x] **Triển khai Trọn bộ Nội thất Isometric Chuẩn xác (Pin B)**:
+  - **Sofa nỉ góc Royal Blue & Thảm sọc xanh lá (Executive Lounge Suite)**: Thảm trải sàn sọc xanh ngọc bích (`#15803d` / `#22c55e`), bộ sofa góc modular màu xanh hoàng gia (Royal Blue) với tựa lưng rút múi, đệm ngồi êm ái, chân gỗ sồi vát thon và điểm nhấn là 2 gối tựa màu cam rực rỡ (`#ea580c` / `#f97316`) ở 2 góc sofa.
+  - **Máy Photocopy & In Laser Đa Khay (Office Multifunction Copier)**: Thân máy kim loại trắng sứ & xám hiện đại, 2 khay kéo đựng giấy A4/A3, nắp nạp tài liệu tự động ADF, màn hình cảm ứng điều khiển góc nghiêng đèn LED nhấp nháy, khay xuất tài liệu bên hông và thùng rác tái chế giấy màu xanh dương có logo recycling trắng.
+  - **Tủ kính trưng bày tài liệu hồ sơ (Glass Filing Cabinet)**: Khung tủ thép tĩnh điện, 3 tầng đợt kệ bên trong chứa đầy các file còng tài liệu màu sắc rực rỡ (đỏ, vàng, xanh dương, xanh lục, tím, cam có nhãn gáy trắng), cánh cửa kính trong suốt phản chiếu vệt sáng vát chéo và tay nắm nhôm dài.
+  - **Cây cảnh hình cầu Topiary (Manicured Ball Topiary)**: Chậu gốm nung Terracotta vát tròn có viền và đốm sáng, đất mùn đen, thân gỗ đứng, vương miện lá hình cầu tròn cắt tỉa hoàn hảo với nhiều lớp chuyển màu xanh lá và đốm nắng.
+  - **Cây Bonsai Nhật Bản (Japanese Zen Bonsai)**: Đôn trưng bày bằng gỗ trắc đen chạm trổ, chậu gốm oval dẹt tráng men xanh lục, đất rêu phong, thân gỗ gồ ghề uốn lượn và 3 cụm tán lá mây đa tầng vươn ngang.
+  - **Vách ngăn lửng kính mờ hiện đại (Frosted Glass Cubicle Partitions)**: Khung cột nhôm phay xước, tấm kính mờ cường lực dán các mẩu giấy ghi chú sticky note và thanh nẹp gỗ sồi chân tường viền đồng thau.
+- [x] Kiểm tra bản build `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Đã commit và đẩy toàn bộ mã nguồn lên GitHub.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER
