@@ -205,7 +205,28 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - Nâng cấp toàn diện hàm `drawPottedPlant`: Thay thế chậu cây tròn đơn điệu bằng cây trầu bà lá xẻ **Monstera Deliciosa** nhiệt đới chân thực với chậu gốm nung men sứ 3D có bóng đổ, thân cây nâu gỗ và các phiến lá Monstera to bản xếp tầng, có gân lá trắng chi tiết và hiệu ứng đung đưa theo gió nhịp nhàng (`subtle wind sway`).
   - Tăng cường chiều sâu 4D cho các phòng: Phào chân tường 3D (Baseboard Skirting), bóng đổ chân tường tiếp giáp sàn (Ambient Occlusion Shadow), skyline thành phố về đêm ngoài cửa sổ kính với các tòa cao ốc nhấp nháy đèn vàng ấm áp.
 - [x] Kiểm tra bản build `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
-- [x] Commit và sẵn sàng push toàn bộ mã nguồn lên GitHub.
+- [x] Đã đẩy mã nguồn lên GitHub.
+
+### [2026-10-25] Tinh Chỉnh Khung Hình Vừa Vặn & Nâng Cấp Toàn Diện Bàn Ghế Nội Thất 2.5D (Chuẩn Pinterest)
+- [x] **Khắc phục triệt để hiện tượng "Màn hình quá to, không nhìn thấy gì"**:
+  - Tinh chỉnh `.main-content`: Đặt `max-width: 1440px; margin: 0 auto; padding: 12px 20px 40px` tạo bố cục cân đối hoàn hảo trên mọi kích thước màn hình.
+  - Tinh chỉnh `.canvas-wrapper`: Giới hạn `max-width: 980px; max-height: 520px; margin: 0 auto` đảm bảo Canvas hiển thị trọn vẹn trong 1 màn hình nhìn (viewport), không bị tràn kéo dài gây che mất thanh công cụ và khung chat bên dưới.
+  - Tinh chỉnh Camera Engine: Điều chỉnh độ zoom phòng khi chuyển camera từ `1.35x` thành `1.12x` nhẹ nhàng, kèm thuật toán kẹp biên (`Math.max(0, Math.min(raw, max))`) chống giật khung hình và không bao giờ bị cắt mất mép phòng.
+  - Loại bỏ biển tên phòng to quá khổ: Thay thế bằng bảng biển tên phòng kiến trúc tinh tế (`height: 14px`, `font: 7.5px`) đặt sát góc trên bên trái, tuyệt đối không bao giờ đè lên bàn ghế, sofa hay nhân vật.
+  - Tinh giản bong bóng hành động Fallout Shelter: Đưa về kích thước nhỏ gọn (`height: 15px`, `font: 7.5px`) kèm mũi tên chỉ định hướng thanh lịch, không che khuất nhân vật khác khi đứng gần.
+- [x] **Nâng cấp Toàn diện Bàn Ghế & Nội thất 2.5D Isometric Chuẩn Pinterest**:
+  - Dựa trên tư liệu tham khảo Pinterest `https://www.pinterest.com/pin/677791812714105149/` (Tech Workshop & Lab) và `https://www.pinterest.com/pin/633811347596055880/` (Retro Cyberpunk Lounge & Cafe):
+    - **Dev Lab (Dũng 3)**: Trạm làm việc kỹ thuật cao với khung chân thép nòng súng, thanh giằng chịu lực, mặt bàn gỗ dày butcher block, hộc tủ 3 ngăn tay nắm nhôm xước; giá đỡ kép màn hình uốn cong 32" hiển thị terminal code ma trận đổi màu cú pháp, màn hình phụ dọc 24" đo TPS/Microservices DAG, bàn phím cơ gầm LED RGB, lót chuột pad và cốc cà phê đỏ bốc khói.
+    - **Phòng Kiến Trúc Sư (Dũng 2)**: Bàn vẽ kỹ thuật khung thép, mặt gỗ sáng, bản vẽ blueprint thực tế trải rộng có thước T-Square, màn hình lớn vẽ sơ đồ kiến trúc hệ thống, ống đựng bản vẽ cuộn.
+    - **Phòng Giám Đốc (Dũng 1)**: Bộ sofa da đỏ phong cách Chesterfield cao cấp với kỹ thuật may rút cúc quả trám (Diamond Button Tufting), tay vịn cuộn tròn đóng hàng đinh tán mạ đồng, chân gỗ hồ đào bun feet; bàn trà mặt kính cường lực đen trong suốt phản chiếu vát cạnh, khung mạ vàng, kệ tạp chí bên dưới và 2 tách cà phê sứ trắng bốc khói.
+    - **Phòng Họp Boardroom**: Bàn họp hội đồng dáng thuyền (Boat-shaped) bằng gỗ óc chó vát góc, hộp máng cáp nhôm xước trung tâm có cổng cắm LED, thảm da lót bàn tại 4 góc ngồi, 2 chiếc laptop siêu mỏng mở sẵn trình chiếu slide chiến lược, ly nước đá pha lê.
+    - **Bảng Kính Kiến Trúc (Whiteboard)**: Mặt kính mờ gắn 4 chốt inox góc, sơ đồ luồng hệ thống kết nối 4 Dũng kèm các mẩu giấy ghi chú Sticky Notes vàng/hồng/xanh.
+    - **Server Datacenter Rack 42U**: Vỏ thép đen, cửa kính tối, màn hình LCD xanh giám sát CPU, 5 khay máy chủ server blades với dãy đèn LED trạng thái (CPU xanh lá, Network xanh cyan, Disk vàng cam nhấp nháy liên tục).
+    - **Phòng Bida (Dũng 4)**: Bàn bida 9-foot thi đấu chuẩn quốc tế, mặt nỉ Simonis xanh lục đổ bóng, thành bàn gỗ gụ khảm điểm ngắm ngọc trai (Diamond Sights), 6 lỗ bọc góc đồng, tam giác xếp 15 bi bóng có phản chiếu ánh sáng và gậy cơ bịt lơ xanh.
+    - **Máy Arcade Retro '84**: Thân tím neon cyberpunk, biển hiệu phát sáng "PIXEL '84", màn hình CRT cong có scanlines hiển thị game bắn phi thuyền 8-bit, 2 cần gạt joystick đỏ và 4 nút bấm, cửa nhét xu 25¢ sáng đèn.
+    - **Khu Cafe & Pantry**: Quầy bar mặt đá granite đen bóng, bồn rửa inox vòi cổ ngỗng, máy pha Espresso 2 cần chuyên nghiệp có đồng hồ áp suất và khói bốc lên; tủ lạnh 2 cánh inox thương mại có màn hình LED nhiệt độ `-18°C/4°C` và giấy nhớ nam châm; máy bán nước tự động có đèn LED phát sáng và 3 tầng lon nước giải khát.
+- [x] Bản build đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Đã commit và đẩy toàn bộ mã nguồn lên GitHub.
 
 ---
 

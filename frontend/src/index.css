@@ -68,13 +68,13 @@ body {
 
 .main-content {
   flex: 1;
-  max-width: 100%;
+  max-width: 1440px;
   width: 100%;
-  margin: 0;
-  padding: 16px 24px 60px;
+  margin: 0 auto;
+  padding: 12px 20px 40px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 /* Header */
@@ -270,12 +270,15 @@ body {
 .canvas-wrapper {
   position: relative;
   width: 100%;
+  max-width: 980px;
+  max-height: 520px;
   aspect-ratio: 16 / 9;
   background: #020617;
   border-radius: 12px;
   overflow: hidden;
   border: 2px solid #1e293b;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  margin: 0 auto;
 }
 
 .interactive-canvas {

@@ -118,9 +118,13 @@ export class OfficeEngine {
       if (room) {
         const centerX = room.x + room.width / 2;
         const centerY = room.y + room.height / 2;
-        this.targetZoom = 1.35;
-        this.targetViewX = centerX - OFFICE_WIDTH / (2 * this.targetZoom);
-        this.targetViewY = centerY - OFFICE_HEIGHT / (2 * this.targetZoom);
+        this.targetZoom = 1.12; // Zoom tinh tế, không làm vỡ tỉ lệ hoặc che khuất tầm nhìn
+        const viewW = OFFICE_WIDTH / this.targetZoom;
+        const viewH = OFFICE_HEIGHT / this.targetZoom;
+        const rawX = centerX - viewW / 2;
+        const rawY = centerY - viewH / 2;
+        this.targetViewX = Math.max(0, Math.min(rawX, OFFICE_WIDTH - viewW));
+        this.targetViewY = Math.max(0, Math.min(rawY, OFFICE_HEIGHT - viewH));
       }
     }
   }

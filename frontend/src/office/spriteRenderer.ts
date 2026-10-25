@@ -116,7 +116,7 @@ export class SpriteRenderer {
       this.drawRoomPartition(ctx, room.x, room.y, room.width, room.height);
 
       // Biển LED tên phòng kiểu Pixel Art
-      this.drawRoomBadge(ctx, room.name, room.x, room.y);
+      this.drawRoomBadge(ctx, room.id, room.x, room.y);
 
       ctx.restore();
     });
@@ -335,18 +335,42 @@ export class SpriteRenderer {
   }
 
   /**
-   * Biển LED tên phòng kiểu Pixel Art
+   * Biển LED tên phòng kiểu Pixel Art kiến trúc tinh tế, nhỏ gọn, tuyệt đối không che khuất đồ đạc hay người
    */
-  private static drawRoomBadge(ctx: CanvasRenderingContext2D, name: string, x: number, y: number) {
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-    ctx.fillRect(x + 8, y + 8, name.length * 7 + 14, 16);
-    ctx.strokeStyle = '#38bdf8';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x + 8, y + 8, name.length * 7 + 14, 16);
+  private static drawRoomBadge(ctx: CanvasRenderingContext2D, roomId: string, x: number, y: number) {
+    const titles: Record<string, { label: string; icon: string; color: string }> = {
+      architect_office: { label: 'KIẾN TRÚC & PM (D2)', icon: '📐', color: '#a78bfa' },
+      director_office: { label: 'GIÁM ĐỐC & VIP (D1)', icon: '👑', color: '#38bdf8' },
+      kitchen_pantry: { label: 'PANTRY & CAFE BAR', icon: '☕', color: '#fbbf24' },
+      dev_lab: { label: 'DEV LAB WORKSTATION (D3)', icon: '💻', color: '#34d399' },
+      boardroom: { label: 'PHÒNG HỌP BOARDROOM', icon: '📊', color: '#60a5fa' },
+      games_room: { label: 'BIDA & ARCADE (D4)', icon: '🎱', color: '#f87171' },
+    };
 
-    ctx.fillStyle = '#e2e8f0';
-    ctx.font = 'bold 8.5px "JetBrains Mono", monospace';
-    ctx.fillText(name, x + 14, y + 20);
+    const info = titles[roomId] || { label: 'VĂN PHÒNG', icon: '🏢', color: '#94a3b8' };
+    const text = `${info.icon} ${info.label}`;
+    const badgeW = text.length * 6.2 + 12;
+    const badgeH = 14;
+
+    ctx.save();
+    // Khung biển nền kính mờ tối
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+    ctx.beginPath();
+    ctx.roundRect(x + 10, y + 4, badgeW, badgeH, 3);
+    ctx.fill();
+
+    // Viền phát sáng neon
+    ctx.strokeStyle = info.color;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(x + 10, y + 4, badgeW, badgeH, 3);
+    ctx.stroke();
+
+    // Text tên phòng thanh lịch
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = 'bold 7.5px "JetBrains Mono", monospace';
+    ctx.fillText(text, x + 15, y + 14);
+    ctx.restore();
   }
 
   // ═════════════════════════════════════════════════════════════════════════
@@ -527,373 +551,1006 @@ export class SpriteRenderer {
   // ─────────────────────────────────────────────────────────────────────────
 
   /**
-   * Bàn bida nỉ xanh chuẩn thi đấu
+   * Bàn bida nỉ xanh chuẩn thi đấu quốc tế (Tournament 9-ft Pool Table)
    */
   private static drawBilliardTable(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const w = 130;
-    const h = 72;
-    // Chân bàn gỗ bóng
-    ctx.fillStyle = '#271206';
-    ctx.fillRect(x + 10, y + h, 12, 16);
-    ctx.fillRect(x + w - 22, y + h, 12, 16);
+    const w = 136;
+    const h = 74;
 
-    // Thành bàn gỗ sồi
-    ctx.fillStyle = '#451a03';
-    ctx.fillRect(x, y, w, h);
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(x + 3, y + 3, w - 6, 6);
+    ctx.save();
+    // Đổ bóng chân bàn trên sàn 4D
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.beginPath();
+    ctx.ellipse(x + w / 2, y + h + 12, w / 2 + 10, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-    // Mặt nỉ xanh chuẩn thi đấu
-    ctx.fillStyle = '#15803d';
-    ctx.fillRect(x + 10, y + 10, w - 20, h - 20);
+    // 4 Chân bàn tiện gỗ đặc
+    ctx.fillStyle = '#1c0a02';
+    ctx.fillRect(x + 12, y + h - 2, 14, 18);
+    ctx.fillRect(x + w - 26, y + h - 2, 14, 18);
+    ctx.fillStyle = '#2e1205';
+    ctx.fillRect(x + 14, y + h, 10, 14);
+    ctx.fillRect(x + w - 24, y + h, 10, 14);
 
-    // 6 Lỗ bida (Pockets)
-    ctx.fillStyle = '#0f172a';
+    // Thành bàn gỗ gụ cao cấp với vân gỗ bóng
+    ctx.fillStyle = '#361203';
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 6);
+    ctx.fill();
+
+    ctx.strokeStyle = '#541f07';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Gờ vát thành bàn
+    ctx.fillStyle = '#5c2207';
+    ctx.fillRect(x + 4, y + 4, w - 8, 4);
+
+    // Điểm ngắm ngọc trai (Diamond sights) khảm dọc 4 thành bàn
+    ctx.fillStyle = '#f8fafc';
+    const sights = [
+      [x + 35, y + 5], [x + w / 2, y + 5], [x + w - 35, y + 5],
+      [x + 35, y + h - 6], [x + w / 2, y + h - 6], [x + w - 35, y + h - 6],
+      [x + 5, y + h / 2], [x + w - 6, y + h / 2]
+    ];
+    sights.forEach(([sx, sy]) => {
+      ctx.fillRect(sx - 1, sy - 1, 2, 2);
+    });
+
+    // Mặt nỉ Simonis xanh thi đấu
+    const feltGrad = ctx.createLinearGradient(x + 12, y + 12, x + w - 12, y + h - 12);
+    feltGrad.addColorStop(0, '#15803d');
+    feltGrad.addColorStop(1, '#166534');
+    ctx.fillStyle = feltGrad;
+    ctx.beginPath();
+    ctx.roundRect(x + 12, y + 12, w - 24, h - 24, 3);
+    ctx.fill();
+
+    // Bóng đổ mép nỉ (Cloth Depth Shadow)
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // 6 Lỗ bida bọc góc đồng (Brass Pockets)
     const pockets = [
-      [x + 10, y + 10], [x + w / 2, y + 9], [x + w - 10, y + 10],
-      [x + 10, y + h - 10], [x + w / 2, y + h - 9], [x + w - 10, y + h - 10],
+      [x + 12, y + 12], [x + w / 2, y + 11], [x + w - 12, y + 12],
+      [x + 12, y + h - 12], [x + w / 2, y + h - 11], [x + w - 12, y + h - 12],
     ];
     pockets.forEach(([px, py]) => {
+      ctx.fillStyle = '#ca8a04'; // Viền đồng
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#020617'; // Lòng lỗ đen
       ctx.beginPath();
       ctx.arc(px, py, 4, 0, Math.PI * 2);
       ctx.fill();
     });
 
-    // Các quả bi-a nhiều màu
+    // Cụm 15 quả bi-a xếp tam giác
     const balls = [
-      { x: x + 40, y: y + 32, c: '#ef4444' },
-      { x: x + 48, y: y + 38, c: '#eab308' },
-      { x: x + 43, y: y + 44, c: '#3b82f6' },
-      { x: x + 90, y: y + 34, c: '#f8fafc' }, // Bi cái
+      { x: x + 40, y: y + 36, c: '#ef4444' }, // Bi 1 đỏ
+      { x: x + 46, y: y + 32, c: '#eab308' }, // Bi 2 vàng
+      { x: x + 46, y: y + 40, c: '#3b82f6' }, // Bi 3 xanh
+      { x: x + 52, y: y + 28, c: '#a855f7' },
+      { x: x + 52, y: y + 36, c: '#0f172a' }, // Bi 8 đen trung tâm
+      { x: x + 52, y: y + 44, c: '#f97316' },
+      { x: x + 94, y: y + 36, c: '#f8fafc' }, // Bi cái trắng
     ];
     balls.forEach(b => {
+      // Đổ bóng bi
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+      ctx.beginPath();
+      ctx.arc(b.x + 1, b.y + 1, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Quả bi bóng
       ctx.fillStyle = b.c;
       ctx.beginPath();
-      ctx.arc(b.x, b.y, 2.5, 0, Math.PI * 2);
+      ctx.arc(b.x, b.y, 3, 0, Math.PI * 2);
       ctx.fill();
+
+      // Điểm phản chiếu ánh sáng trên bi
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.fillRect(b.x - 1, b.y - 1, 1, 1);
     });
 
-    // Gậy cơ bida bằng gỗ sồi đặt chéo
+    // Gậy cơ bida bằng gỗ sồi
     ctx.strokeStyle = '#d97706';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(x + 85, y + 38);
-    ctx.lineTo(x + 55, y + 56);
+    ctx.moveTo(x + 90, y + 42);
+    ctx.lineTo(x + 62, y + 58);
     ctx.stroke();
+    // Đầu bịt lơ xanh
+    ctx.strokeStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.moveTo(x + 62, y + 58);
+    ctx.lineTo(x + 60, y + 59);
+    ctx.stroke();
+
+    ctx.restore();
   }
 
   /**
-   * Bàn họp hội đồng lớn bằng gỗ óc chó (Conference Table Surface & Props)
+   * Bàn họp hội đồng lớn bằng gỗ óc chó (Executive Boat-Shaped Boardroom Suite)
    */
   private static drawConferenceTableSurface(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const w = 190;
-    const h = 65;
+    const w = 195;
+    const h = 68;
 
-    // Mặt bàn gỗ óc chó bóng
-    ctx.fillStyle = '#3b1807';
+    ctx.save();
+    // Đổ bóng bàn họp xuống sàn ngọc thạch
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
     ctx.beginPath();
-    ctx.roundRect(x, y, w, h, 6);
+    ctx.roundRect(x + 6, y + 6, w, h, 14);
     ctx.fill();
-    ctx.strokeStyle = '#78350f';
-    ctx.lineWidth = 1.5;
+
+    // Mặt bàn gỗ óc chó vát góc oval (Boat-shape)
+    const tableGrad = ctx.createLinearGradient(x, y, x, y + h);
+    tableGrad.addColorStop(0, '#451a03');
+    tableGrad.addColorStop(0.5, '#5c2406');
+    tableGrad.addColorStop(1, '#3b1502');
+
+    ctx.fillStyle = tableGrad;
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 12);
+    ctx.fill();
+
+    // Viền vát cạnh bóng kim loại mạ đồng
+    ctx.strokeStyle = '#85370d';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 12);
     ctx.stroke();
 
-    // Mép bàn phản chiếu ánh sáng
-    ctx.fillStyle = '#54230c';
-    ctx.fillRect(x + 4, y + 3, w - 8, 4);
+    // Hộp quản lý dây cáp trung tâm bằng nhôm xước (Cable Raceway & Outlets)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + 45, y + 26, 105, 16);
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 45, y + 26, 105, 16);
 
-    // Laptop hội nghị mở sẵn với màn hình phát sáng
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(x + 150, y + 14, 20, 14);
+    // Cổng cắm điện & mạng LED
+    ctx.fillStyle = '#22c55e';
+    ctx.fillRect(x + 55, y + 33, 4, 3);
     ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(x + 152, y + 16, 16, 10);
+    ctx.fillRect(x + 65, y + 33, 4, 3);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(x + 135, y + 33, 4, 3);
 
-    // Khay tài liệu trung tâm
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x + 75, y + 20, 35, 14);
-    // Bình hoa xanh
-    ctx.fillStyle = '#10b981';
-    ctx.beginPath();
-    ctx.arc(x + 92, y + 27, 4, 0, Math.PI * 2);
-    ctx.fill();
+    // Thảm đệm da đặt máy tính tại 4 góc ngồi (Leather Blotters)
+    const blotters = [
+      [x + 18, y + 8], [x + 138, y + 8],
+      [x + 18, y + 46], [x + 138, y + 46]
+    ];
+    blotters.forEach(([bx, by]) => {
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      ctx.beginPath();
+      ctx.roundRect(bx, by, 38, 14, 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 0.5;
+      ctx.stroke();
+    });
+
+    // 2 Laptop siêu mỏng mở sẵn đang trình chiếu slide chiến lược
+    // Laptop 1
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(x + 24, y + 9, 24, 12);
+    ctx.fillStyle = '#0284c7'; // Màn hình xanh dương
+    ctx.fillRect(x + 26, y + 10, 20, 9);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + 28, y + 12, 10, 2);
+    ctx.fillRect(x + 28, y + 15, 14, 2);
+
+    // Laptop 2
+    ctx.fillStyle = '#cbd5e1';
+    ctx.fillRect(x + 145, y + 9, 24, 12);
+    ctx.fillStyle = '#047857'; // Màn hình xanh lá
+    ctx.fillRect(x + 147, y + 10, 20, 9);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + 149, y + 12, 12, 2);
+    ctx.fillRect(x + 149, y + 15, 8, 2);
+
+    // Ly nước thủy tinh có đá mát lạnh
+    ctx.fillStyle = 'rgba(186, 230, 253, 0.6)';
+    ctx.fillRect(x + 85, y + 10, 6, 8);
+    ctx.fillRect(x + 105, y + 10, 6, 8);
+
+    ctx.restore();
   }
 
   /**
-   * Ghế xoay văn phòng họp nỉ xanh
+   * Ghế xoay văn phòng họp nỉ bọc da cao cấp (Executive Conference Chair)
    */
   private static drawConferenceChair(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#15803d';
-    ctx.fillRect(x - 8, y, 16, 12);
-    ctx.fillStyle = '#166534';
-    ctx.fillRect(x - 6, y + 2, 12, 3);
+    ctx.save();
+    // Đệm ngồi da
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.roundRect(x - 10, y, 20, 14, 4);
+    ctx.fill();
+    // Chỉ may thêu
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x - 8, y + 2, 16, 4);
+    // Viền kim loại
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
   }
 
   /**
-   * Bàn làm việc Fullstack Dev (2 màn hình LED matrix code xanh lá và khói cà phê nóng)
+   * Bàn làm việc Fullstack Dev chuẩn phong cách Cyberpunk & Tech Lab (Pinterest Pin 1)
    */
   private static drawDevWorkstation(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const w = 100;
-    const h = 40;
+    const w = 108;
+    const h = 42;
 
-    // Mặt bàn gỗ sồi
-    ctx.fillStyle = '#5c2d13';
-    ctx.fillRect(x, y, w, h);
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(x + 2, y + 2, w - 4, 5);
+    ctx.save();
+    // Đổ bóng bàn xuống sàn
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.fillRect(x + 4, y + 8, w, h);
 
-    // Màn hình 1 (Chính) - Matrix code cuộn & con trỏ nhấp nháy
+    // Khung chân thép sơn tĩnh điện màu xám nòng súng (Heavy Gunmetal Frame)
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 18, y - 19, 30, 21);
-    ctx.fillStyle = '#052e16';
-    ctx.fillRect(x + 20, y - 17, 26, 17);
+    ctx.fillRect(x + 2, y + 6, 6, h);
+    ctx.fillRect(x + w - 8, y + 6, 6, h);
+    ctx.fillRect(x + 2, y + h - 4, w - 4, 4); // Thanh giằng chịu lực
 
-    // Code lines matrix xanh lá
-    const tick = Math.floor(Date.now() / 220) % 4;
-    ctx.fillStyle = '#22c55e';
-    for (let row = 0; row < 3; row++) {
-      const lineLen = ((row + tick) % 3 + 1) * 6;
-      ctx.fillRect(x + 22, y - 14 + row * 4, Math.min(22, lineLen), 2);
-    }
-    // Con trỏ nhấp nháy
-    if (Math.floor(Date.now() / 350) % 2 === 0) {
-      ctx.fillStyle = '#4ade80';
-      ctx.fillRect(x + 38, y - 6, 3, 3);
-    }
+    // Mặt bàn gỗ dẻ gai thịt dày có vát cạnh (Solid Butcher Block)
+    const woodGrad = ctx.createLinearGradient(x, y, x, y + 16);
+    woodGrad.addColorStop(0, '#543016');
+    woodGrad.addColorStop(1, '#3b1d09');
+    ctx.fillStyle = woodGrad;
+    ctx.fillRect(x, y, w, 18);
 
-    // Màn hình 2 (Phụ) - Biểu đồ kiến trúc / Network
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 52, y - 19, 28, 21);
-    ctx.fillStyle = '#082f49';
-    ctx.fillRect(x + 54, y - 17, 24, 17);
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(x + 56, y - 7, 4, 5);
-    ctx.fillRect(x + 62, y - 11, 4, 9);
-    ctx.fillRect(x + 68, y - 15, 4, 13);
+    // Mép bàn phản chiếu ánh sáng vát chéo
+    ctx.fillStyle = '#854b20';
+    ctx.fillRect(x + 2, y + 1, w - 4, 3);
 
-    // Bàn phím cơ & Cốc cà phê đỏ có khói nóng
+    // Hộc tủ 3 ngăn bên phải với tay nắm nhôm xước (3-Drawer Steel Unit)
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x + 35, y + 14, 25, 7);
-    ctx.fillStyle = '#ef4444'; // Cốc cà phê đỏ
-    ctx.fillRect(x + 85, y + 10, 6, 8);
-    this.drawCoffeeSteam(ctx, x + 88, y + 10);
+    ctx.fillRect(x + w - 32, y + 18, 30, h - 18);
+    for (let d = 0; d < 3; d++) {
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x + w - 30, y + 20 + d * 7, 26, 6);
+      ctx.fillStyle = '#94a3b8'; // Tay nắm
+      ctx.fillRect(x + w - 20, y + 22 + d * 7, 6, 2);
+    }
+
+    // Giá đỡ 2 màn hình bằng thép đen gắn bàn (Dual Articulated Monitor Mount)
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x + 50, y - 5, 8, 12);
+    ctx.fillRect(x + 28, y - 8, 52, 3);
+
+    // Màn hình 1 (Chính 32" Curved) - Terminal code ma trận xanh lá & con trỏ nhấp nháy
+    ctx.fillStyle = '#020617';
+    ctx.beginPath();
+    ctx.roundRect(x + 12, y - 26, 42, 28, 2);
+    ctx.fill();
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Màn hình Obsidian Terminal
+    ctx.fillStyle = '#05190f';
+    ctx.fillRect(x + 14, y - 24, 38, 24);
+
+    // Dòng code IDE có màu cú pháp (Syntax Highlighted Matrix Code)
+    const tick = Math.floor(Date.now() / 200) % 4;
+    const codeColors = ['#22c55e', '#38bdf8', '#fb923c', '#a855f7'];
+    for (let r = 0; r < 4; r++) {
+      ctx.fillStyle = codeColors[(r + tick) % codeColors.length];
+      const lineW = ((r * 7 + tick * 3) % 18) + 12;
+      ctx.fillRect(x + 16, y - 22 + r * 5, Math.min(32, lineW), 2);
+    }
+    // Con trỏ Terminal nhấp nháy xanh lá
+    if (Math.floor(Date.now() / 320) % 2 === 0) {
+      ctx.fillStyle = '#4ade80';
+      ctx.fillRect(x + 36, y - 7, 4, 3);
+    }
+
+    // Màn hình 2 (Dọc 24" Portrait) - Biểu đồ Microservices DAG & TPS Monitor
+    ctx.fillStyle = '#020617';
+    ctx.beginPath();
+    ctx.roundRect(x + 58, y - 28, 28, 30, 2);
+    ctx.fill();
+    ctx.strokeStyle = '#1e293b';
+    ctx.stroke();
+
+    ctx.fillStyle = '#082f49';
+    ctx.fillRect(x + 60, y - 26, 24, 26);
+
+    // Sơ đồ Nodes & Metrics
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 64, y - 22, 5, 4);
+    ctx.fillRect(x + 75, y - 22, 5, 4);
+    ctx.fillRect(x + 69, y - 13, 6, 4);
+    // Đồ thị nhịp tim (Heartbeat graph)
+    ctx.strokeStyle = '#34d399';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 62, y - 5);
+    ctx.lineTo(x + 67, y - 7);
+    ctx.lineTo(x + 71, y - 3);
+    ctx.lineTo(x + 76, y - 8);
+    ctx.lineTo(x + 82, y - 5);
+    ctx.stroke();
+
+    // Bàn phím cơ có đèn nền RGB (RGB Mechanical Keyboard)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + 22, y + 4, 28, 9);
+    // Đèn LED gầm phím
+    const rgbTick = (Date.now() / 600) % 1;
+    ctx.fillStyle = rgbTick < 0.5 ? '#a855f7' : '#06b6d4';
+    ctx.fillRect(x + 23, y + 11, 26, 1.5);
+
+    // Lót chuột cỡ lớn (Desk Pad)
+    ctx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+    ctx.fillRect(x + 18, y + 2, 48, 14);
+
+    // Chuột không dây
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 54, y + 6, 5, 7);
+
+    // Cốc cà phê đỏ có khói bốc lên sống động
+    ctx.fillStyle = '#dc2626';
+    ctx.fillRect(x + 74, y + 4, 7, 9);
+    ctx.fillStyle = '#7f1d1d';
+    ctx.fillRect(x + 75, y + 5, 5, 2);
+    this.drawCoffeeSteam(ctx, x + 77, y + 4);
+
+    ctx.restore();
   }
 
   /**
-   * Bàn làm việc Kiến trúc sư (2 màn hình hiển thị blueprint và bản vẽ)
+   * Bàn làm việc Kiến trúc sư & Project Manager (Architectural Drafting Station - Pinterest Pin 1)
    */
   private static drawArchitectDesk(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const w = 90;
-    const h = 38;
+    const w = 96;
+    const h = 40;
 
-    ctx.fillStyle = '#5c2d13';
-    ctx.fillRect(x, y, w, h);
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(x + 2, y + 2, w - 4, 4);
+    ctx.save();
+    // Đổ bóng chân bàn
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.fillRect(x + 4, y + 8, w, h);
 
-    // Màn hình kiến trúc lớn
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 25, y - 19, 40, 21);
+    // Khung thép sơn tĩnh điện màu đen
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x + 2, y + 6, 5, h);
+    ctx.fillRect(x + w - 7, y + 6, 5, h);
+
+    // Mặt bàn vẽ kiến trúc bằng gỗ bạch dương sáng (Natural Birch)
+    ctx.fillStyle = '#5c3818';
+    ctx.fillRect(x, y, w, 18);
+    ctx.fillStyle = '#855122';
+    ctx.fillRect(x + 2, y + 1, w - 4, 3);
+
+    // Màn hình kiến trúc lớn hiển thị CAD / System Blueprints
+    ctx.fillStyle = '#020617';
+    ctx.beginPath();
+    ctx.roundRect(x + 28, y - 24, 46, 26, 2);
+    ctx.fill();
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Bản thiết kế hệ thống trên màn hình
+    ctx.fillStyle = '#0369a1';
+    ctx.fillRect(x + 30, y - 22, 42, 22);
+
+    // Khối kiến trúc & dây nối dữ liệu
+    ctx.fillStyle = '#e0f2fe';
+    ctx.fillRect(x + 34, y - 18, 10, 6);
+    ctx.fillRect(x + 48, y - 18, 10, 6);
+    ctx.fillRect(x + 62, y - 18, 8, 6);
+    ctx.fillRect(x + 42, y - 8, 18, 5);
+
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 39, y - 12);
+    ctx.lineTo(x + 51, y - 8);
+    ctx.moveTo(x + 53, y - 12);
+    ctx.lineTo(x + 51, y - 8);
+    ctx.stroke();
+
+    // Bản vẽ Blueprint thực tế trải rộng trên bàn với thước đo T-Square
     ctx.fillStyle = '#0284c7';
-    ctx.fillRect(x + 27, y - 17, 36, 17);
-
-    // Sơ đồ khối kiến trúc trên màn hình
-    ctx.fillStyle = '#bae6fd';
-    ctx.fillRect(x + 30, y - 14, 8, 5);
-    ctx.fillRect(x + 42, y - 14, 8, 5);
-    ctx.fillRect(x + 54, y - 14, 6, 5);
-    ctx.fillRect(x + 36, y - 6, 14, 4);
-
-    // Bản vẽ blueprint xanh trên bàn
-    ctx.fillStyle = '#0284c7';
-    ctx.fillRect(x + 10, y + 10, 24, 16);
+    ctx.fillRect(x + 6, y + 3, 26, 14);
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 0.5;
-    ctx.strokeRect(x + 12, y + 12, 20, 12);
+    ctx.strokeRect(x + 8, y + 5, 22, 10);
+    // Đường gióng kích thước
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.fillRect(x + 10, y + 7, 8, 1);
+    ctx.fillRect(x + 10, y + 11, 14, 1);
+
+    // Thước kẻ gỗ & bút chì kỹ thuật
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(x + 5, y + 2, 2, 16);
+
+    // Ống đựng bản vẽ giấy cuộn (Blueprint Tube)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + w - 16, y + 2, 12, 14);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + w - 14, y - 1, 4, 3);
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + w - 9, y - 3, 4, 5);
+
+    ctx.restore();
   }
 
   /**
-   * Sofa dài da đỏ sang trọng phòng Giám đốc
+   * Sofa dài da đỏ Chesterfield sang trọng phòng Giám đốc (Luxury Button-Tufted Leather Suite)
    */
   private static drawLuxuryRedSofa(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
-    // Tựa lưng sofa
-    ctx.fillStyle = '#991b1b';
-    ctx.fillRect(x, y, w, 14);
-    ctx.fillStyle = '#b91c1c';
-    ctx.fillRect(x + 2, y + 2, w - 4, 10);
+    ctx.save();
+    // Đổ bóng sofa mềm mại xuống thảm sapphire
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.beginPath();
+    ctx.roundRect(x - 4, y + 6, w + 8, h + 4, 8);
+    ctx.fill();
 
-    // Đệm ngồi sofa
-    ctx.fillStyle = '#dc2626';
-    ctx.fillRect(x, y + 14, w, h - 14);
+    // 4 Chân sofa gỗ hồ đào tiện tròn (Mahogany Bun Feet)
+    ctx.fillStyle = '#1c0a02';
+    ctx.fillRect(x + 4, y + h, 8, 4);
+    ctx.fillRect(x + w - 12, y + h, 8, 4);
 
-    // Tay vịn 2 bên
+    // Tựa lưng sofa bọc da đỏ gụ (Tufted Deep Backrest)
+    const backGrad = ctx.createLinearGradient(x, y, x, y + 16);
+    backGrad.addColorStop(0, '#7f1d1d');
+    backGrad.addColorStop(1, '#991b1b');
+    ctx.fillStyle = backGrad;
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, 16, 6);
+    ctx.fill();
+
+    // Họa tiết múi cúc da quả trám (Diamond Button Tufting)
+    ctx.fillStyle = '#450a0a';
+    for (let i = 12; i < w - 12; i += 15) {
+      ctx.beginPath();
+      ctx.arc(x + i, y + 8, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+      // Nếp gấp da chéo
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(x + i - 6, y + 4);
+      ctx.lineTo(x + i + 6, y + 12);
+      ctx.stroke();
+    }
+
+    // Đệm ngồi êm ái bọc da đỏ tươi (Plush Dual Cushions)
+    const seatGrad = ctx.createLinearGradient(x, y + 16, x, y + h);
+    seatGrad.addColorStop(0, '#b91c1c');
+    seatGrad.addColorStop(1, '#991b1b');
+    ctx.fillStyle = seatGrad;
+    ctx.beginPath();
+    ctx.roundRect(x + 2, y + 15, w - 4, h - 15, 4);
+    ctx.fill();
+
+    // Rãnh phân chia giữa 2 đệm ngồi
+    ctx.strokeStyle = '#450a0a';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x + w / 2, y + 16);
+    ctx.lineTo(x + w / 2, y + h);
+    ctx.stroke();
+
+    // Mép đệm phản chiếu ánh sáng da bóng
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(x + 6, y + 16, w / 2 - 10, 2);
+    ctx.fillRect(x + w / 2 + 4, y + 16, w / 2 - 10, 2);
+
+    // Tay vịn cuộn tròn bọc đinh tán đồng 2 bên (Rolled Armrests with Brass Studs)
     ctx.fillStyle = '#7f1d1d';
-    ctx.fillRect(x - 6, y + 6, 8, h - 6);
-    ctx.fillRect(x + w - 2, y + 6, 8, h - 6);
+    ctx.beginPath();
+    ctx.roundRect(x - 6, y + 4, 10, h - 3, 5);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.roundRect(x + w - 4, y + 4, 10, h - 3, 5);
+    ctx.fill();
+
+    // Hàng đinh tán mạ đồng vàng
+    ctx.fillStyle = '#eab308';
+    for (let st = y + 8; st < y + h; st += 6) {
+      ctx.fillRect(x - 4, st, 1.5, 1.5);
+      ctx.fillRect(x + w + 2, st, 1.5, 1.5);
+    }
+
+    ctx.restore();
   }
 
   /**
-   * Bàn trà tiếp khách mặt gỗ sồi với 2 tách cà phê nóng
+   * Bàn trà tiếp khách mặt kính cường lực khung mạ đồng với 2 tách cà phê nóng
    */
   private static drawCoffeeTable(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#78350f';
-    ctx.fillRect(x, y, 60, 24);
-    ctx.fillStyle = '#92400e';
-    ctx.fillRect(x + 2, y + 2, 56, 5);
+    const w = 64;
+    const h = 26;
 
-    // 2 Tách cà phê trắng với khói nóng bốc lên
+    ctx.save();
+    // Đổ bóng bàn trà
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.beginPath();
+    ctx.roundRect(x + 2, y + 4, w, h, 4);
+    ctx.fill();
+
+    // Khung kim loại mạ vàng đồng (Brass Leg Frame)
+    ctx.fillStyle = '#ca8a04';
+    ctx.fillRect(x + 4, y + 6, 2, h - 6);
+    ctx.fillRect(x + w - 6, y + 6, 2, h - 6);
+    ctx.fillRect(x + 4, y + h - 2, w - 8, 2);
+
+    // Kệ dưới bằng gỗ óc chó (Lower Magazine Shelf)
+    ctx.fillStyle = '#3f1f0a';
+    ctx.fillRect(x + 6, y + 16, w - 12, 6);
+    // Tạp chí kiến trúc đặt bên dưới
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(x + 12, y + 17, 16, 4);
+
+    // Mặt kính cường lực đen trong suốt phản chiếu vát cạnh (Tempered Glass Top)
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, 14, 3);
+    ctx.fill();
+
+    ctx.strokeStyle = '#eab308';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Vệt sáng phản chiếu góc kính (Glass Glint)
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 8, y + 3);
+    ctx.lineTo(x + 24, y + 3);
+    ctx.stroke();
+
+    // 2 Tách cà phê gốm trắng tinh trên đĩa lót (Ceramic Espresso Cups)
+    // Tách 1
     ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(x + 15, y + 9, 7, 6);
-    ctx.fillRect(x + 38, y + 9, 7, 6);
-    this.drawCoffeeSteam(ctx, x + 18, y + 9);
-    this.drawCoffeeSteam(ctx, x + 41, y + 9);
+    ctx.fillRect(x + 16, y + 5, 8, 6);
+    ctx.fillStyle = '#451a03'; // Nước cà phê nâu
+    ctx.fillRect(x + 17, y + 6, 6, 2);
+    this.drawCoffeeSteam(ctx, x + 20, y + 5);
+
+    // Tách 2
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + 40, y + 5, 8, 6);
+    ctx.fillStyle = '#451a03';
+    ctx.fillRect(x + 41, y + 6, 6, 2);
+    this.drawCoffeeSteam(ctx, x + 44, y + 5);
+
+    ctx.restore();
   }
 
   /**
-   * Kệ sách gỗ tài liệu
+   * Kệ sách thép & gỗ công nghiệp chuẩn Tech Workshop (Pinterest Pin 1)
    */
   private static drawBookshelf(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#451a03';
-    ctx.fillRect(x, y, 45, 42);
-    ctx.fillStyle = '#78350f';
-    ctx.strokeRect(x, y, 45, 42);
+    const w = 48;
+    const h = 46;
 
-    // Sách màu sắc xếp trên kệ
-    const colors = ['#ef4444', '#3b82f6', '#22c55e', '#eab308', '#ec4899'];
-    for (let r = 0; r < 2; r++) {
-      for (let c = 0; c < 5; c++) {
-        ctx.fillStyle = colors[(r * 5 + c) % colors.length];
-        ctx.fillRect(x + 5 + c * 7, y + 6 + r * 18, 5, 12);
-      }
+    ctx.save();
+    // Khung ống thép sơn đen
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x, y, 3, h);
+    ctx.fillRect(x + w - 3, y, 3, h);
+
+    // 3 Tầng đợt gỗ dày
+    for (let tier = 0; tier < 3; tier++) {
+      ctx.fillStyle = '#5c2d13';
+      ctx.fillRect(x, y + 14 + tier * 15, w, 3);
+      ctx.fillStyle = '#78350f';
+      ctx.fillRect(x, y + 14 + tier * 15, w, 1);
     }
+
+    // Tầng 1: Sách kỹ thuật kiến trúc & AI nhiều màu
+    const bookColors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
+    for (let b = 0; b < 5; b++) {
+      ctx.fillStyle = bookColors[b % bookColors.length];
+      const bh = 10 + (b % 3);
+      ctx.fillRect(x + 4 + b * 8, y + 14 - bh, 6, bh);
+      // Gáy sách viền vàng
+      ctx.fillStyle = '#fef08a';
+      ctx.fillRect(x + 4 + b * 8, y + 14 - bh + 2, 6, 1);
+    }
+
+    // Tầng 2: Tài liệu hộp & sổ dự án 40 năm kinh nghiệm
+    for (let b = 0; b < 4; b++) {
+      ctx.fillStyle = b % 2 === 0 ? '#334155' : '#475569';
+      ctx.fillRect(x + 6 + b * 9, y + 29 - 11, 7, 11);
+    }
+
+    // Tầng 3: Hộp linh kiện điện tử / chậu sen đá nhỏ
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(x + 8, y + 44 - 8, 16, 8);
+    // Chậu sen đá
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 30, y + 44 - 6, 8, 6);
+    ctx.fillStyle = '#10b981';
+    ctx.beginPath();
+    ctx.arc(x + 34, y + 44 - 8, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
   }
 
   /**
-   * Mini Server Rack đèn LED nhấp nháy
+   * Tủ Server Rack 42U đèn LED nhấp nháy chuẩn Datacenter (Pinterest Pin 1)
    */
   private static drawServerRack(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x, y, 30, 50);
-    ctx.strokeStyle = '#475569';
-    ctx.strokeRect(x, y, 30, 50);
-    for (let i = 0; i < 5; i++) {
-      ctx.fillStyle = i % 2 === 0 ? '#22c55e' : '#38bdf8';
-      ctx.fillRect(x + 4, y + 6 + i * 9, 3, 3);
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(x + 10, y + 6 + i * 9, 15, 3);
+    const w = 34;
+    const h = 54;
+
+    ctx.save();
+    // Vỏ tủ thép đen phủ mờ
+    ctx.fillStyle = '#020617';
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 3);
+    ctx.fill();
+
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Cửa kính tối quan sát bên trong
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+    ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
+
+    // Màn hình LCD xanh giám sát thông số CPU / Network trên cùng
+    ctx.fillStyle = '#0369a1';
+    ctx.fillRect(x + 5, y + 5, w - 10, 5);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 7, y + 6, 8, 2);
+
+    // 5 Khay máy chủ Server Blades với quạt thông gió và dãy đèn LED
+    const timeTick = Math.floor(Date.now() / 250);
+    for (let blade = 0; blade < 5; blade++) {
+      const by = y + 13 + blade * 7.5;
+      // Khay kim loại
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(x + 4, by, w - 8, 6);
+
+      // Đèn LED trạng thái CPU (Xanh lá)
+      ctx.fillStyle = (timeTick + blade) % 2 === 0 ? '#22c55e' : '#15803d';
+      ctx.fillRect(x + 6, by + 2, 2.5, 2.5);
+
+      // Đèn LED Network (Xanh cyan nhấp nháy nhanh)
+      ctx.fillStyle = (timeTick + blade * 2) % 3 === 0 ? '#38bdf8' : '#0284c7';
+      ctx.fillRect(x + 10, by + 2, 2.5, 2.5);
+
+      // Đèn LED Disk I/O (Vàng cam)
+      ctx.fillStyle = (timeTick + blade) % 4 === 0 ? '#f59e0b' : '#78350f';
+      ctx.fillRect(x + 14, by + 2, 2.5, 2.5);
+
+      // Khe tản nhiệt
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(x + 19, by + 1.5, 8, 3);
     }
+
+    ctx.restore();
   }
 
   /**
-   * Máy chơi game Arcade Retro màu tím neon
+   * Máy chơi game Arcade Retro màu tím neon 80s (Pinterest Pin 2)
    */
   private static drawArcadeCabinet(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#581c87';
-    ctx.fillRect(x, y, 34, 60);
-    // Viền marquee
-    ctx.fillStyle = '#ec4899';
-    ctx.fillRect(x + 4, y + 4, 26, 8);
-    // Màn hình game pixel
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 4, y + 16, 26, 20);
-    ctx.fillStyle = '#22c55e';
-    ctx.fillRect(x + 8, y + 20, 6, 6);
-    // Nút điều khiển
+    const w = 36;
+    const h = 64;
+
+    ctx.save();
+    // Đổ bóng máy
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(x + 2, y + 6, w, h);
+
+    // Thân máy Arcade màu tím cyberpunk
+    ctx.fillStyle = '#3b0764';
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = '#a855f7';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x, y, w, h);
+
+    // Marquee phát sáng đèn Neon "PIXEL '84"
+    ctx.fillStyle = '#db2777';
+    ctx.fillRect(x + 3, y + 3, w - 6, 10);
+    ctx.fillStyle = '#fdf2f8';
+    ctx.font = 'bold 6px "Press Start 2P", monospace';
+    ctx.fillText('PIXEL', x + 5, y + 10);
+
+    // Màn hình CRT cong hiển thị game bắn phi thuyền 8-bit
+    ctx.fillStyle = '#020617';
+    ctx.fillRect(x + 4, y + 16, w - 8, 22);
+
+    // Scanlines mờ CRT
+    ctx.fillStyle = '#052e16';
+    ctx.fillRect(x + 5, y + 17, w - 10, 20);
+
+    // Phi thuyền & Quái vật pixel
+    const invaderY = y + 20 + Math.sin(Date.now() / 300) * 2;
+    ctx.fillStyle = '#ef4444'; // Quái vật đỏ
+    ctx.fillRect(x + 14, invaderY, 6, 4);
+    ctx.fillStyle = '#38bdf8'; // Phi thuyền xanh bên dưới
+    ctx.fillRect(x + 14, y + 32, 6, 3);
+    ctx.fillStyle = '#eab308'; // Tia đạn
+    ctx.fillRect(x + 16, y + 27, 2, 3);
+
+    // Bàn điều khiển vát nghiêng với 2 Joystick đỏ và 6 nút bấm
+    ctx.fillStyle = '#1e1b4b';
+    ctx.fillRect(x + 2, y + 40, w - 4, 11);
+
+    // Cần gạt joystick
     ctx.fillStyle = '#ef4444';
     ctx.beginPath();
-    ctx.arc(x + 12, y + 44, 3, 0, Math.PI * 2);
+    ctx.arc(x + 10, y + 44, 2.5, 0, Math.PI * 2);
     ctx.fill();
+    ctx.arc(x + 18, y + 44, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 4 nút bấm nhiều màu
+    const btnColors = ['#22c55e', '#3b82f6', '#eab308', '#ec4899'];
+    for (let b = 0; b < 4; b++) {
+      ctx.fillStyle = btnColors[b];
+      ctx.fillRect(x + 24 + (b % 2) * 4, y + 42 + Math.floor(b / 2) * 4, 2.5, 2.5);
+    }
+
+    // Cửa nhét xu 25¢ sáng đèn đỏ (Dual Coin Door)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + 6, y + 53, w - 12, 9);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(x + 10, y + 55, 4, 2);
+    ctx.fillRect(x + 20, y + 55, 4, 2);
+
+    ctx.restore();
   }
 
   /**
-   * Bảng trắng kiến trúc lớn
+   * Bảng kính kiến trúc trong suốt gắn tường (Frosted Glass Architecture Board)
    */
   private static drawWhiteboard(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(x, y, 100, 32);
-    ctx.strokeStyle = '#64748b';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(x, y, 100, 32);
+    const w = 110;
+    const h = 36;
 
-    // Sơ đồ hộp và mũi tên
-    ctx.strokeStyle = '#3b82f6';
-    ctx.strokeRect(x + 8, y + 6, 18, 10);
-    ctx.strokeStyle = '#10b981';
-    ctx.strokeRect(x + 65, y + 6, 20, 10);
-    ctx.strokeStyle = '#ef4444';
+    ctx.save();
+    // Mặt bảng kính mờ
+    ctx.fillStyle = 'rgba(248, 250, 252, 0.92)';
     ctx.beginPath();
-    ctx.moveTo(x + 26, y + 11);
-    ctx.lineTo(x + 65, y + 11);
-    ctx.stroke();
-  }
-
-  /**
-   * Bình nước khoáng nóng lạnh
-   */
-  private static drawWaterDispenser(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    // Bình nước úp ngược
-    ctx.fillStyle = '#38bdf8';
-    ctx.beginPath();
-    ctx.arc(x + 9, y + 8, 7, 0, Math.PI * 2);
+    ctx.roundRect(x, y, w, h, 3);
     ctx.fill();
-    // Thân máy
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fillRect(x + 2, y + 15, 14, 30);
-    // 2 vòi
+
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // 4 Chốt inox gắn tường ở 4 góc
+    ctx.fillStyle = '#64748b';
+    const standoffs = [
+      [x + 3, y + 3], [x + w - 4, y + 3],
+      [x + 3, y + h - 4], [x + w - 4, y + h - 4]
+    ];
+    standoffs.forEach(([sx, sy]) => {
+      ctx.fillRect(sx, sy, 2, 2);
+    });
+
+    // Sơ đồ luồng hệ thống: Director -> Architect -> Dev -> QA
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(x + 8, y + 8, 18, 10);
+    ctx.fillStyle = '#8b5cf6';
+    ctx.fillRect(x + 34, y + 8, 18, 10);
+    ctx.fillStyle = '#10b981';
+    ctx.fillRect(x + 60, y + 8, 18, 10);
     ctx.fillStyle = '#ef4444';
-    ctx.fillRect(x + 4, y + 25, 3, 3);
-    ctx.fillStyle = '#3b82f6';
-    ctx.fillRect(x + 10, y + 25, 3, 3);
+    ctx.fillRect(x + 86, y + 8, 18, 10);
+
+    // Mũi tên kết nối
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x + 26, y + 13); ctx.lineTo(x + 34, y + 13);
+    ctx.moveTo(x + 52, y + 13); ctx.lineTo(x + 60, y + 13);
+    ctx.moveTo(x + 78, y + 13); ctx.lineTo(x + 86, y + 13);
+    ctx.stroke();
+
+    // Giấy ghi chú Sticky Notes dán trên bảng (Vàng, Hồng, Xanh)
+    ctx.fillStyle = '#fde047'; // Vàng
+    ctx.fillRect(x + 12, y + 21, 8, 8);
+    ctx.fillStyle = '#f472b6'; // Hồng
+    ctx.fillRect(x + 38, y + 21, 8, 8);
+    ctx.fillStyle = '#67e8f9'; // Cyan
+    ctx.fillRect(x + 66, y + 21, 8, 8);
+
+    // Khay bút lông bên dưới
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x + 25, y + h - 1, 60, 2);
+
+    ctx.restore();
   }
 
   /**
-   * Máy bán nước tự động (Vending Machine)
-   */
-  private static drawVendingMachine(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#475569';
-    ctx.fillRect(x, y, 32, 52);
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 4, y + 6, 24, 26);
-    // Lon nước
-    const cans = ['#ef4444', '#22c55e', '#3b82f6'];
-    for (let i = 0; i < 3; i++) {
-      ctx.fillStyle = cans[i];
-      ctx.fillRect(x + 6 + i * 7, y + 12, 5, 8);
-    }
-    // Khe nhả
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x + 6, y + 40, 20, 6);
-  }
-
-  /**
-   * Quầy bếp & Bồn rửa Inox
+   * Quầy bếp Pantry mặt đá đen & Máy pha cà phê Espresso chuyên nghiệp (Pinterest Pin 2)
    */
   private static drawKitchenCounter(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#64748b';
-    ctx.fillRect(x, y, 75, 36);
-    ctx.fillStyle = '#f1f5f9';
-    ctx.fillRect(x, y, 75, 5); // Mặt đá bếp
+    const w = 84;
+    const h = 38;
 
-    // Bồn rửa & vòi nước
-    ctx.fillStyle = '#475569';
-    ctx.fillRect(x + 10, y + 8, 20, 16);
+    ctx.save();
+    // Thùng quầy bếp gỗ sồi sơn xám
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x, y + 5, w, h - 5);
+
+    // Mặt bàn đá Granite đen bóng (Black Granite Countertop)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x - 2, y, w + 4, 6);
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x - 1, y + 1, w + 2, 2);
+
+    // Bồn rửa chén inox & vòi nước cổ ngỗng (Gooseneck Chrome Faucet)
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(x + 8, y + 8, 22, 18);
+    ctx.fillStyle = '#0284c7'; // Nước trong bồn
+    ctx.fillRect(x + 10, y + 10, 18, 14);
+
+    // Vòi nước inox
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x + 17, y + 2, 4, 7);
+    ctx.fillRect(x + 15, y + 2, 6, 2);
+
+    // Máy pha Espresso 2 cần chuyên nghiệp phong cách quán Cafe Retro
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fillRect(x + 42, y - 10, 36, 16);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x + 44, y - 8, 32, 12);
+
+    // 2 Đồng hồ áp suất & tay cầm cần pha
     ctx.fillStyle = '#0284c7';
-    ctx.fillRect(x + 12, y + 10, 16, 12);
-    ctx.fillStyle = '#cbd5e1';
-    ctx.fillRect(x + 18, y + 3, 3, 7);
+    ctx.fillRect(x + 48, y - 4, 3, 3);
+    ctx.fillStyle = '#ca8a04';
+    ctx.fillRect(x + 66, y - 4, 3, 3);
+    // Vòi xả cà phê
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + 52, y + 2, 4, 4);
+    ctx.fillRect(x + 62, y + 2, 4, 4);
+
+    // Khói cà phê nóng bốc lên từ máy pha
+    this.drawCoffeeSteam(ctx, x + 54, y - 10);
+    this.drawCoffeeSteam(ctx, x + 64, y - 10);
+
+    ctx.restore();
   }
 
   /**
-   * Tủ lạnh 2 cánh
+   * Tủ lạnh 2 cánh Inox thương mại hiển thị nhiệt độ số (Pinterest Pin 1)
    */
   private static drawRefrigerator(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fillRect(x, y, 28, 52);
-    ctx.strokeStyle = '#94a3b8';
-    ctx.strokeRect(x, y, 28, 52);
+    const w = 32;
+    const h = 54;
+
+    ctx.save();
+    // Thân tủ thép xước không gỉ
+    const fridgeGrad = ctx.createLinearGradient(x, y, x + w, y);
+    fridgeGrad.addColorStop(0, '#94a3b8');
+    fridgeGrad.addColorStop(0.5, '#e2e8f0');
+    fridgeGrad.addColorStop(1, '#64748b');
+
+    ctx.fillStyle = fridgeGrad;
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 2);
+    ctx.fill();
+
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Khe ngăn cách 2 cánh tủ (Ngăn đá trên, ngăn mát dưới)
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
     ctx.moveTo(x, y + 20);
-    ctx.lineTo(x + 28, y + 20);
+    ctx.lineTo(x + w, y + 20);
     ctx.stroke();
+
+    // 2 Tay nắm thanh dài bằng hợp kim
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x + 4, y + 6, 2, 10);
+    ctx.fillRect(x + 4, y + 24, 2, 22);
+
+    // Màn hình LED báo nhiệt độ điện tử (-18°C / 4°C)
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + 12, y + 6, 14, 6);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 14, y + 8, 10, 2);
+
+    // Giấy ghi chú nam châm dán trên cửa
+    ctx.fillStyle = '#fde047';
+    ctx.fillRect(x + 16, y + 26, 6, 6);
+    ctx.fillStyle = '#f472b6';
+    ctx.fillRect(x + 18, y + 36, 5, 5);
+
+    ctx.restore();
+  }
+
+  /**
+   * Máy bán nước tự động có đèn LED phát sáng (Pinterest Pin 2)
+   */
+  private static drawVendingMachine(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    const w = 34;
+    const h = 54;
+
+    ctx.save();
+    // Thùng máy kim loại sơn xám đậm
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, 3);
+    ctx.fill();
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Biển hiệu "COLD DRINKS" phát sáng
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(x + 3, y + 3, w - 6, 7);
+    ctx.fillStyle = '#e0f2fe';
+    ctx.fillRect(x + 6, y + 5, 12, 2);
+
+    // Cửa kính trưng bày 3 tầng lon nước giải khát
+    ctx.fillStyle = '#020617';
+    ctx.fillRect(x + 4, y + 12, w - 8, 24);
+
+    // 3 Hàng lon nước nhiều màu
+    const cans = ['#ef4444', '#10b981', '#3b82f6'];
+    for (let r = 0; r < 2; r++) {
+      for (let c = 0; c < 3; c++) {
+        ctx.fillStyle = cans[c];
+        ctx.fillRect(x + 6 + c * 8, y + 15 + r * 10, 5, 7);
+      }
+    }
+
+    // Khe nhả tiền & nút bấm
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(x + 4, y + 38, w - 8, 12);
+    ctx.fillStyle = '#ef4444'; // Khe xu đỏ
+    ctx.fillRect(x + 8, y + 40, 4, 2);
+    ctx.fillStyle = '#22c55e'; // Khe nhả lon
+    ctx.fillRect(x + 8, y + 44, 18, 4);
+
+    ctx.restore();
+  }
+
+  /**
+   * Cây nước nóng lạnh hiện đại
+   */
+  private static drawWaterDispenser(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.save();
+    // Bình nước úp ngược tròn trong suốt
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.7)';
+    ctx.beginPath();
+    ctx.arc(x + 9, y + 7, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Bọt khí trong bình
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x + 8, y + 5, 2, 2);
+
+    // Thân máy
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(x + 2, y + 14, 14, 32);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x + 2, y + 14, 14, 32);
+
+    // 2 Vòi gạt: Nóng (Đỏ), Lạnh (Xanh)
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(x + 4, y + 24, 3, 4);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(x + 11, y + 24, 3, 4);
+
+    ctx.restore();
   }
 
   /**
@@ -1266,33 +1923,33 @@ export class SpriteRenderer {
     let text = '';
     let icon = '';
     let borderColor = '#38bdf8';
-    let bgColor = 'rgba(15, 23, 42, 0.95)';
+    let bgColor = 'rgba(15, 23, 42, 0.92)';
     let textColor = '#f8fafc';
 
     if (agent.status === 'debating') {
       if (agent.code === 'dung_1') {
-        text = 'THỊ TRƯỜNG & VẬN HÀNH';
+        text = 'Thị trường & Vận hành';
         icon = '🔍';
         borderColor = '#f59e0b';
         textColor = '#fef08a';
       } else {
-        text = 'RỦI RO HỆ THỐNG & PM';
+        text = 'Rủi ro & Kiến trúc';
         icon = '⚙️';
         borderColor = '#c084fc';
         textColor = '#f3e8ff';
       }
     } else if (agent.status === 'coding') {
-      text = 'CLEAN CODE & REST API';
+      text = 'Clean Code API';
       icon = '⚡';
       borderColor = '#10b981';
       textColor = '#6ee7b7';
     } else if (agent.status === 'testing') {
-      text = 'STRESS TEST 5,000 TPS';
+      text = 'Stress Test 5K TPS';
       icon = '🎯';
       borderColor = '#ef4444';
       textColor = '#fca5a5';
     } else if (agent.status === 'moving') {
-      text = 'ĐANG BƯỚC ĐI...';
+      text = 'Di chuyển...';
       icon = '🚶';
       borderColor = '#64748b';
       textColor = '#cbd5e1';
@@ -1302,37 +1959,36 @@ export class SpriteRenderer {
     }
 
     const displayText = `${icon} ${text}`;
-    const w = Math.min(220, displayText.length * 6.8 + 20);
-    const h = 20;
-
-    // 2 vòng tròn nối từ đầu nhân vật lên bong bóng (Fallout Shelter thought connectors)
-    ctx.fillStyle = borderColor;
-    ctx.beginPath();
-    ctx.arc(x, bubbleY + 12, 2.5, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(x + 2, bubbleY + 7, 3.5, 0, Math.PI * 2);
-    ctx.fill();
+    const w = Math.min(145, displayText.length * 5.6 + 16);
+    const h = 15;
 
     // Hộp bong bóng thoại bo góc mềm mại
     ctx.save();
     ctx.fillStyle = bgColor;
     ctx.beginPath();
-    ctx.roundRect(x - w / 2, bubbleY - h, w, h, 6);
+    ctx.roundRect(x - w / 2, bubbleY - h - 14, w, h, 4);
     ctx.fill();
 
     ctx.strokeStyle = borderColor;
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(x - w / 2, bubbleY - h, w, h, 6);
+    ctx.roundRect(x - w / 2, bubbleY - h - 14, w, h, 4);
     ctx.stroke();
+
+    // Mũi tên chỉ xuống nhẹ
+    ctx.fillStyle = bgColor;
+    ctx.beginPath();
+    ctx.moveTo(x - 3, bubbleY - 14);
+    ctx.lineTo(x + 3, bubbleY - 14);
+    ctx.lineTo(x, bubbleY - 11);
+    ctx.closePath();
+    ctx.fill();
 
     // Icon & Text sắc nét
     ctx.fillStyle = textColor;
-    ctx.font = 'bold 8.5px "JetBrains Mono", monospace';
+    ctx.font = 'bold 7.5px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(displayText, x, bubbleY - 6);
+    ctx.fillText(displayText, x, bubbleY - 18);
     ctx.restore();
   }
 
