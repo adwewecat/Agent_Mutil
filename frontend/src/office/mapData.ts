@@ -18,23 +18,23 @@ export const ROOMS: OfficeRoom[] = [
     width: 280,
     height: 195,
     color: '#0f172a',
-    floorColor: '#4a3319',
-    description: 'Sàn gỗ sồi, bàn làm việc 2 màn hình, kệ sách kỹ thuật 40 năm kinh nghiệm và server rack.',
+    floorColor: '#c8d4ec',
+    description: 'Sàn gạch công sở nhạt, bàn cubicle 2 màn hình CAD, kệ tài liệu, Bonsai Nhật Bản trên đôn gỗ.',
     targetX: 125,
     targetY: 195, // Ngồi ghế xoay trước bàn thiết kế
   },
   {
     id: 'director_office',
-    name: 'Phòng Giám Đốc & Tiếp Khách (Dũng 1)',
+    name: 'Phòng Giám Đốc & Executive Lounge (Dũng 1)',
     x: 330,
     y: 80,
     width: 320,
     height: 195,
     color: '#0f172a',
-    floorColor: '#1e3a5f',
-    description: 'Thảm sapphire hoàng gia, sofa da đỏ cao cấp, bàn trà gỗ tiếp khách và tranh nghệ thuật viền vàng.',
+    floorColor: '#15803d',
+    description: 'Thảm sọc xanh ngọc bích, bộ sofa nỉ Royal Blue kèm gối cam rực rỡ, bàn trà hoa quả và tủ kính sách chuẩn Pinterest Pin B.',
     targetX: 470,
-    targetY: 130, // Ngồi trên sofa da đỏ tiếp khách
+    targetY: 130, // Ngồi trên sofa nỉ xanh tiếp khách
   },
   {
     id: 'kitchen_pantry',
@@ -44,8 +44,8 @@ export const ROOMS: OfficeRoom[] = [
     width: 260,
     height: 195,
     color: '#0f172a',
-    floorColor: '#e2e8f0',
-    description: 'Quầy bar inox, tủ lạnh 2 cánh, máy bán nước tự động và bình nước khoáng nóng lạnh.',
+    floorColor: '#f1f5f9',
+    description: 'Gạch men trắng ceramic, quầy bar inox, tủ lạnh có lò vi sóng trên nóc, máy bán nước tự động và bình nước khoáng.',
     targetX: 740,
     targetY: 165, // Đứng trước quầy bar cà phê
   },
@@ -57,8 +57,8 @@ export const ROOMS: OfficeRoom[] = [
     width: 290,
     height: 195,
     color: '#0f172a',
-    floorColor: '#5c3d1e',
-    description: 'Trạm lập trình Fullstack màn hình kép nhấp nháy Clean Code, ghế công thái học và kệ tài liệu.',
+    floorColor: '#c8d4ec',
+    description: 'Trạm lập trình Fullstack cubicle, máy photocopy đa khay có thùng rác tái chế, khay tài liệu và ghế xoay công thái học.',
     targetX: 135,
     targetY: 410, // Ngồi ghế xoay trước máy tính gõ code
   },
@@ -70,8 +70,8 @@ export const ROOMS: OfficeRoom[] = [
     width: 310,
     height: 195,
     color: '#0f172a',
-    floorColor: '#16384c',
-    description: 'Bàn họp hội đồng dài bằng gỗ óc chó, 6 ghế xoay nỉ xanh, laptop điều hành và bảng trắng kiến trúc.',
+    floorColor: '#1e3a5f',
+    description: 'Thảm hội nghị Navy cao cấp, bàn họp gỗ óc chó, 4 ghế xoay nỉ xanh, laptop điều hành và bảng kính kiến trúc.',
     targetX: 450,
     targetY: 355, // Ngồi ghế họp hội nghị dãy trên
   },
@@ -83,8 +83,8 @@ export const ROOMS: OfficeRoom[] = [
     width: 260,
     height: 195,
     color: '#0f172a',
-    floorColor: '#4c2859',
-    description: 'Bàn bida nỉ xanh chuẩn thi đấu, máy chơi game Arcade màu tím neon và khu giải trí kiểm thử QA.',
+    floorColor: '#4a2559',
+    description: 'Bàn bida nỉ xanh chuẩn thi đấu, máy chơi game Arcade màu tím neon và cây cảnh cầu tròn Topiary.',
     targetX: 710,
     targetY: 405, // Đứng bên cạnh bàn bida cầm gậy cơ
   },
