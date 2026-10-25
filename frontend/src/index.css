@@ -261,6 +261,12 @@ body {
 }
 
 /* Canvas Area */
+.canvas-outer-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .canvas-wrapper {
   position: relative;
   width: 100%;
@@ -271,6 +277,34 @@ body {
   border: 2px solid #1e293b;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
+
+.interactive-canvas {
+  cursor: crosshair;
+}
+
+.canvas-help-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  flex-wrap: wrap;
+}
+
+.agent-card-wrapper {
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.selected-card-glow {
+  box-shadow: 0 0 0 2px #38bdf8, 0 8px 24px rgba(56, 189, 248, 0.25);
+  transform: translateY(-2px);
+}
+
 
 .office-canvas {
   width: 100%;
