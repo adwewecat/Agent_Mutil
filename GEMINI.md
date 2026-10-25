@@ -305,10 +305,21 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   4. **Khu Hậu Cần & Bốt Tardis**: Bốt điện thoại Tardis, đồng hồ tròn xanh lá, tủ lạnh có lò vi sóng trên nóc, quầy pantry inox, bình nước nóng lạnh và máy bán nước tự động.
   5. **Dev Lab & Workstations (Dũng 3)**: Trạm lập trình Fullstack 2 màn hình code matrix & microservice DAG, phím cơ RGB, cốc cà phê Dev Fuel, bàn Peer Dev và cây Monstera lá xẻ.
   6. **Khu Thảo Luận Chiến Lược & Máy In**: Bàn họp thảo luận gỗ óc chó, bảng kính kiến trúc whiteboard, máy in đa khay laser có thùng rác tái chế, đôn cây Bonsai Nhật Bản và tủ kính hồ sơ.
-- [x] **Kiểm tra Clean Code & Đóng gói Production**:
-  - Dọn sạch 100% dead code, no unused variables/imports (`TS6133` = 0).
-  - Bản build đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
-- [x] Sẵn sàng đẩy toàn bộ mã nguồn lên GitHub.
+- [x] Bản build đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Đã đẩy toàn bộ mã nguồn lên GitHub.
+
+### [2026-10-26] Khởi tạo Bộ công cụ 1-Click Run (`run.bat`, `run.ps1`, `stop.bat`)
+- [x] **File `run.bat` (Khởi chạy 1 Click trên Windows)**:
+  - Tự động kiểm tra môi trường Python 3.10+ và Node.js / npm.
+  - Tự động kích hoạt virtual environment `venv` nếu có.
+  - Khởi động Backend FastAPI tại cổng 8000 trong cửa sổ riêng.
+  - Khởi động Frontend Vite tại cổng 5173 trong cửa sổ riêng.
+  - Tự động mở trình duyệt web mặc định truy cập `http://localhost:5173`.
+- [x] **File `stop.bat` (Dừng hệ thống 1 Click)**:
+  - Tự động tìm PID và tắt sạch toàn bộ tiến trình đang lắng nghe tại cổng 8000 và 5173, giải phóng tài nguyên CPU/RAM.
+- [x] **File `run.ps1` (PowerShell Runner)**:
+  - Dành cho lập trình viên thích sử dụng PowerShell terminal.
+- [x] Cập nhật hướng dẫn trong `README.md` và `GEMINI.md`.
 
 ---
 

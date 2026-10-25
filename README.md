@@ -41,7 +41,22 @@ Hệ thống mô phỏng văn phòng ảo Pixel Art (lấy cảm hứng từ [gc
 
 ---
 
-## 🚀 HƯỚNG DẪN CÀI ĐẶT & CHẠY DỰ ÁN
+## 🚀 HƯỚNG DẪN CHẠY DỰ ÁN NHANH NHẤT (1-CLICK RUN)
+
+Bạn chỉ cần chạy 1 file duy nhất ở thư mục gốc:
+- **Cách 1 (Chuột - Khuyến nghị)**: Nhấp đúp chuột vào file `run.bat`.
+- **Cách 2 (PowerShell)**: Chạy `.\run.ps1`.
+- **Để dừng toàn bộ hệ thống**: Nhấp đúp vào file `stop.bat`.
+
+> Script sẽ tự động:
+> 1. Kiểm tra môi trường Python và Node.js.
+> 2. Khởi động Backend FastAPI tại `http://localhost:8000`.
+> 3. Khởi động Frontend Vite tại `http://localhost:5173`.
+> 4. Tự động mở trình duyệt web đưa bạn vào văn phòng ảo 4 Dũng!
+
+---
+
+## 🛠️ HƯỚNG DẪN CHẠY THỦ CÔNG TỪNG THÀNH PHẦN
 
 ### 1. Khởi động Backend
 ```bash
