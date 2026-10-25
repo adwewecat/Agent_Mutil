@@ -1,0 +1,101 @@
+# GEMINI.md - HỆ THỐNG GHI NHẬP VÀ QUẢN TRỊ DỰ ÁN AGENT MULTI (AGENT PIXELS 4 DŨNG)
+
+> **MỤC ĐÍCH FILE NÀY**:
+> File này đóng vai trò là "Nhật ký dự án & Bản đồ chỉ dẫn tối cao" (Single Source of Truth).
+> Bất kỳ khi nào thực hiện, cập nhật hoặc sửa chữa một vấn đề gì, BẮT BUỘC phải ghi chép lại tại đây.
+> Khi máy tính cài lại Windows hoặc bất kỳ AI (Gemini, Claude, GPT,...) hay lập trình viên (DEV) nào khác tiếp nhận dự án, chỉ cần đọc file này là nắm bắt 100% hiện trạng, kiến trúc, quy tắc và việc cần làm tiếp theo.
+
+---
+
+## 1. QUY TẮC BẤT DI BẤT DỊCH CỦA DỰ ÁN
+1. **Kiểm tra và cập nhật tài liệu trước & sau khi làm**: Luôn đối chiếu `README.md` và `GEMINI.md`. Bổ sung log thay đổi trước khi hoàn thành phiên làm việc.
+2. **Quy tắc Git & GitHub**:
+   - Repository chính thức: `https://github.com/adwewecat/Agent_Mutil.git` (nhánh `main`).
+   - Bất kỳ khi nào thêm tính năng hoặc chỉnh sửa xong: **BẮT BUỘC ĐẨY CODE NGAY LÊN GITHUB**.
+3. **Chất lượng mã nguồn (Clean Code)**:
+   - Tuyệt đối không để code rác, code thừa không sử dụng (no dead code / no unused imports).
+   - Mọi hàm, component, API endpoint và module logic đều phải có chú thích (comments/docstrings) rõ ràng bằng tiếng Việt, giúp DEV đọc vào là hiểu ngay logic.
+4. **Quy trình Build & Đóng gói**:
+   - Sau khi xử lý xong tính năng, phải build app ra thư mục `dist` sạch sẽ, sẵn sàng triển khai lên Production Web Server.
+
+---
+
+## 2. KIẾN TRÚC & CÔNG NGHỆ DỰ ÁN
+
+Hệ thống được thiết kế theo mô hình **Độc lập tách biệt (Decoupled Architecture)** giữa Backend và Frontend:
+
+### 2.1. Backend
+- **Ngôn ngữ**: Python 3.10+
+- **Framework**: FastAPI (hỗ trợ REST API theo chuẩn OpenAPI tự động tại `/docs`, `/redoc` và WebSocket `/ws/office`).
+- **Database**: SQL Server (hỗ trợ `SQLAlchemy 2.0` + `pyodbc` + `ODBC Driver 18 for SQL Server`), đồng thời có cơ chế fallback linh hoạt sang SQLite (`sqlite:///./agent_multi.db`) khi chạy local dev chưa kết nối SQL Server thật.
+- **Thư mục**: `backend/`
+
+### 2.2. Frontend
+- **Framework**: React 19 + TypeScript + Vite.
+- **Phong cách giao diện**: Mô phỏng văn phòng Pixel Art tương tác sống động, lấy cảm hứng từ `gcampton/Agent-Pixels`.
+- **Đồ họa**: HTML5 Canvas Game Engine xử lý render bản đồ phòng họp, phòng giám đốc, phòng kiến trúc sư, phòng lập trình, phòng kiểm thử, khu vực cà phê/lounge, animation nhân vật pixel đi lại, gõ phím, suy nghĩ, hội thoại, hệ thống camera an ninh giám sát chuyển đổi góc nhìn.
+- **Hiệu ứng & Âm thanh**: Retro CRT scanline toggle, Web Audio API 8-bit sound effects, Dark Mode hiện đại.
+- **Thư mục**: `frontend/` (Build output: `frontend/dist/`).
+
+---
+
+## 3. THIẾT KẾ ĐỘI NGŨ 4 AGENT (BỘ TỨ "DŨNG")
+
+Hệ thống gồm đúng 4 nhân vật AI chuyên gia cốt lõi:
+
+| Nhân vật | Chức danh / Vai trò | Kinh nghiệm | Nhiệm vụ chính trong Workflow |
+| :--- | :--- | :--- | :--- |
+| **Dũng 1** | **Software Director** | Giám đốc phần mềm | Tiếp nhận đề bài từ người dùng, phân tích mục tiêu kinh doanh, đề xuất giải pháp chiến lược và trao đổi trực tiếp với Dũng 2 để chốt phương án tối ưu. |
+| **Dũng 2** | **Software Architect & Project Manager** | 40 năm kinh nghiệm | Thẩm định tính khả thi, tài nguyên, chi phí, rủi ro hệ thống; chủ động phản biện giải pháp của Dũng 1, đề xuất rẽ nhánh hoặc thậm chí tư vấn quy trình không cần phần mềm nếu không cần thiết; phân tích kỹ thuật sâu sắc, cấu trúc hệ thống, kiến trúc microservices/monolith, độ trễ và tài nguyên. |
+| **Dũng 3** | **Senior Fullstack Developer** | 40 năm kinh nghiệm | Hiện thực hóa giải pháp sau khi Dũng 1 và Dũng 2 đã chốt phương án; viết mã nguồn chuẩn xác, tối ưu thuật toán, xây dựng API RESTful và cấu trúc dữ liệu sạch. |
+| **Dũng 4** | **Test Engineer / QA Specialist** | 40 năm kinh nghiệm | Kiểm tra toàn bộ mã nguồn của Dũng 3; thiết lập ma trận Test Cases, phân tích giá trị biên (boundary values), stress test, phát hiện mọi lỗi tiềm ẩn và lỗ hổng bảo mật. |
+
+---
+
+## 4. HƯỚNG DẪN KHÔI PHỤC DỰ ÁN KHI CÀI LẠI WINDOWS
+
+Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bước sau:
+1. **Cài đặt công cụ nền tảng**:
+   - Python 3.10+ (tích hợp PATH).
+   - Node.js LTS (v18+ hoặc v20+).
+   - Git.
+   - Microsoft ODBC Driver 18 for SQL Server (nếu kết nối SQL Server thật).
+2. **Clone mã nguồn**:
+   ```bash
+   git clone https://github.com/adwewecat/Agent_Mutil.git
+   cd Agent_Mutil
+   ```
+3. **Cài đặt & Chạy Backend**:
+   ```bash
+   cd backend
+   python -m venv venv
+   .\venv\Scripts\activate
+   pip install -r requirements.txt
+   uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+   ```
+4. **Cài đặt & Chạy Frontend**:
+   ```bash
+   cd ../frontend
+   npm.cmd install
+   npm.cmd run dev
+   ```
+5. **Build đóng gói lên Server**:
+   ```bash
+   cd frontend
+   npm.cmd run build
+   ```
+   (Thư mục `frontend/dist` chứa toàn bộ code static sẵn sàng đưa lên Nginx/IIS/Caddy).
+
+---
+
+## 5. NHẬT KÝ THỰC HIỆN DỰ ÁN (CHANGE LOG)
+
+### [2026-10-25] Khởi tạo nền tảng & cấu trúc dự án
+- [x] Kiểm tra kho lưu trữ GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
+- [x] Tạo file `GEMINI.md` thiết lập quy tắc dự án và hướng dẫn khôi phục.
+- [x] Cập nhật `README.md` chi tiết về dự án Agent-Pixels 4 Dũng.
+- [ ] Khởi tạo thư mục Backend (FastAPI, SQLAlchemy 2.0, pyodbc, Pydantic, WebSockets, Agent Workflow Service).
+- [ ] Khởi tạo thư mục Frontend (React 19 + TypeScript + Vite + Canvas Pixel Office Engine + 4 Dũng sprites + Multi-camera + Sound effects).
+- [ ] Tích hợp API giao tiếp giữa Backend và Frontend.
+- [ ] Build ứng dụng frontend ra thư mục `dist` sạch sẽ.
+- [ ] Commit và Push toàn bộ code lên GitHub.
