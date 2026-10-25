@@ -114,6 +114,17 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Build bản đóng gói sạch sẽ ra `frontend/dist/`.
 - [x] Commit và sẵn sàng push mã nguồn lên GitHub.
 
+### [2026-10-25] Khắc phục tương tác nhân vật & quy trình tranh luận thời gian thực
+- [x] **Tương tác chuột trực tiếp (Click-to-Move)**: Người dùng có thể click chuột vào bất kỳ Dũng nào trên Canvas để chọn (hiện vòng phát sáng cyan, bảng tên và âm thanh thông báo), sau đó click vào bất kỳ vị trí sàn nào để ra lệnh Dũng đó đi bộ tới đó ngay lập tức.
+- [x] **Điều động không delay (0-latency Dispatching)**: Khi click "Họp", "Bàn làm việc", "Bida", "Pantry", nhân vật bắt đầu bước đi tức thì trên Canvas với tiếng bước chân 8-bit, đồng thời đồng bộ ngầm về DB.
+- [x] **Diễn biến tranh luận tuần tự sống động (Live Staged Workflow)**: Khi bấm "KÍCH HOẠT TOÀN BỘ QUY TRÌNH (4 DŨNG)":
+  - Dũng 1 rời phòng bước vào Boardroom, camera zoom theo, phát biểu mở màn.
+  - Dũng 2 rời phòng kiến trúc đi qua hành lang gạch caro vào Boardroom ngồi cạnh Dũng 1 tranh luận, phản biện rủi ro và chốt kiến trúc.
+  - Dũng 3 bước vào Dev Lab, ngồi vào bàn máy tính gõ bàn phím liên tục sinh mã nguồn Clean Code.
+  - Dũng 4 bước vào trạm kiểm thử chạy ma trận Stress Test 5,000 req/s, quét an ninh và phát âm thanh chiến thắng.
+- [x] Build bản đóng gói sạch sẽ và đẩy mã nguồn lên GitHub.
+
+
 
 ---
 
