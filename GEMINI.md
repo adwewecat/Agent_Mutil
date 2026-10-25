@@ -187,7 +187,25 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - **Màn hình máy tính động (Animated CRT Terminals)**: 2 màn hình tại Dev Lab cuộn code matrix xanh lá liên tục kèm con trỏ nhấp nháy, màn hình phụ hiển thị biểu đồ mạng.
   - **Bong bóng hành động Fallout Shelter (Vault Action Bubbles)**: Bong bóng nổi bồng bềnh (`floating bob`) có icon chuyên biệt: `🔍 THỊ TRƯỜNG & VẬN HÀNH` (Dũng 1), `⚙️ RỦI RO HỆ THỐNG & PM` (Dũng 2), `⚡ CLEAN CODE & REST API` (Dũng 3), `🎯 STRESS TEST 5,000 TPS` (Dũng 4).
 - [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
-- [x] Sẵn sàng commit và đẩy mã nguồn lên GitHub.
+- [x] Đã đẩy mã nguồn lên GitHub.
+
+### [2026-10-25] Mở rộng Full Màn Hình Responsive, Tích hợp Nhân vật Pinterest và Chiều Sâu 4D cho Phòng & Cây Cảnh
+- [x] **Giao diện Full Màn Hình thích ứng (100% Full-Width Responsive & Fullscreen API)**:
+  - Loại bỏ hoàn toàn giới hạn cố định `max-width: 1200px` / `1440px`, chuyển toàn bộ layout sang `width: 100%; max-width: 100%` co giãn tự động theo mọi độ phân giải màn hình (Full HD, 2K, 4K, Ultrawide).
+  - Tích hợp nút **"Toàn màn hình" (Fullscreen Toggle)** trên thanh Header, hỗ trợ `document.documentElement.requestFullscreen()` và `exitFullscreen()`, chuyển đổi icon phóng to/thu nhỏ trực quan.
+  - Tối ưu tỉ lệ Canvas và bảng điều khiển `grid-template-columns: 1fr 340px`, tự động co giãn kích thước Canvas mượt mà, bộ chuyển đổi tọa độ chuột `screenToWorld` tính toán chính xác tuyệt đối tỷ lệ thu phóng `scaleX/scaleY`.
+- [x] **Thiết kế & Tích hợp nhân vật chuẩn Pinterest (`https://www.pinterest.com/pin/820077413439603422/`)**:
+  - Trích xuất và tối ưu hóa 4 bộ Sprite PNG trong suốt (Transparent 32-bit PNG) mang đúng phong cách của link tham khảo, phân chia chuẩn xác theo diện mạo và cá tính từng Dũng:
+    - **Dũng 1 (Software Director)**: Tóc đen vuốt bóng bẩy, kính râm đen phản quang, vest xanh navy lịch lãm và cà vạt đỏ quyền lực.
+    - **Dũng 2 (Software Architect & PM - 40 năm KN)**: Mũ fedora xám tro, kính râm, bộ com-lê xám sang trọng và cà vạt đồng điệu.
+    - **Dũng 3 (Senior Fullstack Dev)**: Mũ nồi flat cap cá tính, râu quai nón, áo gi-lê xanh rêu trên sơ mi trắng chuẩn chất lập trình viên kỳ cựu.
+    - **Dũng 4 (Test Lead & QA)**: Mũ fedora đỏ nổi bật, kính râm đen ngầu, áo khoác đỏ và quần tây đen sắc sảo.
+  - Nhân vật được đồng bộ hiển thị xuyên suốt trên **Canvas Pixel Office** (kích thước tỉ lệ vàng 34x58px, bước đi nghiêng người nhịp nhàng, bóng đổ chân mềm mại), **Thẻ Agent Card** ở thanh Sidebar và **Bong bóng hội thoại Deliberation Chat**.
+- [x] **Nâng cấp Chiều Sâu 4D & Cây cảnh chân thực (Monstera & 4D Depth)**:
+  - Nâng cấp toàn diện hàm `drawPottedPlant`: Thay thế chậu cây tròn đơn điệu bằng cây trầu bà lá xẻ **Monstera Deliciosa** nhiệt đới chân thực với chậu gốm nung men sứ 3D có bóng đổ, thân cây nâu gỗ và các phiến lá Monstera to bản xếp tầng, có gân lá trắng chi tiết và hiệu ứng đung đưa theo gió nhịp nhàng (`subtle wind sway`).
+  - Tăng cường chiều sâu 4D cho các phòng: Phào chân tường 3D (Baseboard Skirting), bóng đổ chân tường tiếp giáp sàn (Ambient Occlusion Shadow), skyline thành phố về đêm ngoài cửa sổ kính với các tòa cao ốc nhấp nháy đèn vàng ấm áp.
+- [x] Kiểm tra bản build `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Commit và sẵn sàng push toàn bộ mã nguồn lên GitHub.
 
 ---
 

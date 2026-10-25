@@ -31,13 +31,37 @@ export class SpriteRenderer {
     ctx.fillStyle = '#334155';
     ctx.fillRect(20, 26, width - 40, 2);
 
-    // Các cửa sổ kính lớn Isometric (Windows) chiếu ánh sáng thành phố hoặc ánh sao đêm
+    // Phào chỉ chân tường 3D (Baseboard Skirting) chạy ngang phòng
+    ctx.fillStyle = '#090d16';
+    ctx.fillRect(20, 76, width - 40, 4);
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(20, 76, width - 40, 1.5);
+
+    // Các cửa sổ kính lớn Isometric (Windows) chiếu ánh sáng thành phố hoặc ánh sao đêm 4D
     const windows = [120, 280, 480, 680, 840];
     windows.forEach(wx => {
-      ctx.fillStyle = '#0284c7';
+      // Bầu trời đêm sâu thẳm
+      ctx.fillStyle = '#03142e';
       ctx.fillRect(wx, 34, 48, 36);
-      ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(wx + 2, 36, 44, 32);
+
+      // Tòa nhà chọc trời pixel ngoài xa (City Skyline)
+      ctx.fillStyle = '#062044';
+      ctx.fillRect(wx + 4, 44, 12, 26);
+      ctx.fillRect(wx + 20, 38, 14, 32);
+      ctx.fillRect(wx + 36, 48, 10, 22);
+
+      // Đèn vàng của các tòa nhà thành phố
+      ctx.fillStyle = '#fde047';
+      ctx.fillRect(wx + 8, 48, 2, 2);
+      ctx.fillRect(wx + 12, 54, 2, 2);
+      ctx.fillRect(wx + 24, 42, 2, 2);
+      ctx.fillRect(wx + 28, 50, 2, 2);
+      ctx.fillRect(wx + 24, 58, 2, 2);
+
+      // Khung kính viền ngoài phát sáng
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(wx, 34, 48, 36);
 
       // Nan cửa sổ
       ctx.fillStyle = '#0f172a';
@@ -45,15 +69,22 @@ export class SpriteRenderer {
       ctx.fillRect(wx, 50, 48, 4);
 
       // Ánh sáng chiếu nghiêng xuống sàn
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.05)';
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.06)';
       ctx.beginPath();
       ctx.moveTo(wx, 70);
       ctx.lineTo(wx + 48, 70);
-      ctx.lineTo(wx + 70, 140);
-      ctx.lineTo(wx - 20, 140);
+      ctx.lineTo(wx + 75, 145);
+      ctx.lineTo(wx - 25, 145);
       ctx.closePath();
       ctx.fill();
     });
+
+    // Đổ bóng chiều sâu 4D chân tường hậu (Ambient Occlusion Shadow)
+    const wallShadow = ctx.createLinearGradient(0, 80, 0, 115);
+    wallShadow.addColorStop(0, 'rgba(0, 0, 0, 0.45)');
+    wallShadow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = wallShadow;
+    ctx.fillRect(20, 80, width - 40, 35);
 
     // Hành lang trung tâm lát gạch caro đen trắng (Checkerboard Hallway) nối giữa 2 dãy phòng
     this.drawCheckerboardHallway(ctx, 20, 275, width - 40, 40);
@@ -876,24 +907,85 @@ export class SpriteRenderer {
   }
 
   /**
-   * Chậu cây xanh Monstera / Ficus
+   * Chậu cây xanh nhiệt đới Monstera / Ficus 4D chân thực
    */
   private static drawPottedPlant(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    // Chậu đất nung
-    ctx.fillStyle = '#9a3412';
-    ctx.fillRect(x - 6, y + 8, 12, 12);
-    ctx.fillStyle = '#ea580c';
-    ctx.fillRect(x - 7, y + 7, 14, 3);
+    const time = Date.now() / 700;
+    const sway = Math.sin(time + x * 0.1) * 1.5;
 
-    // Tán lá xanh bóng
-    ctx.fillStyle = '#15803d';
+    ctx.save();
+    // 1. Bóng đổ mềm dưới sàn
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
     ctx.beginPath();
-    ctx.arc(x, y + 2, 11, 0, Math.PI * 2);
+    ctx.ellipse(x, y + 20, 14, 5, 0, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = '#22c55e';
+
+    // 2. Chậu gốm nung vát cạnh 3D (Ceramic Flared Pot)
+    ctx.fillStyle = '#9a3412';
     ctx.beginPath();
-    ctx.arc(x - 2, y, 8, 0, Math.PI * 2);
+    ctx.moveTo(x - 9, y + 8);
+    ctx.lineTo(x + 9, y + 8);
+    ctx.lineTo(x + 6, y + 20);
+    ctx.lineTo(x - 6, y + 20);
+    ctx.closePath();
     ctx.fill();
+
+    // Vành chậu và điểm sáng
+    ctx.fillStyle = '#ea580c';
+    ctx.fillRect(x - 10, y + 6, 20, 3);
+    ctx.fillStyle = '#fed7aa';
+    ctx.fillRect(x - 8, y + 7, 5, 1);
+
+    // Đất trồng màu đen xốp
+    ctx.fillStyle = '#29160a';
+    ctx.fillRect(x - 8, y + 6, 16, 2);
+
+    // 3. Thân cây gỗ uốn lượn tự nhiên
+    ctx.strokeStyle = '#543519';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x, y + 7);
+    ctx.quadraticCurveTo(x + sway, y - 2, x + sway * 1.2, y - 10);
+    ctx.stroke();
+
+    // 4. Các cuống lá và phiến lá Monstera 4D đa tầng
+    const leaves = [
+      { dx: -12 + sway, dy: -6, rx: 11, ry: 7, rot: -0.5, c1: '#14532d', c2: '#16a34a' },
+      { dx: 14 + sway, dy: -8, rx: 12, ry: 8, rot: 0.45, c1: '#14532d', c2: '#15803d' },
+      { dx: -6 + sway * 1.3, dy: -16, rx: 13, ry: 9, rot: -0.2, c1: '#15803d', c2: '#22c55e' },
+      { dx: 8 + sway * 1.4, dy: -18, rx: 12, ry: 8, rot: 0.25, c1: '#16a34a', c2: '#4ade80' },
+      { dx: 0 + sway * 1.5, dy: -24, rx: 10, ry: 7, rot: 0.05, c1: '#22c55e', c2: '#86efac' },
+    ];
+
+    leaves.forEach(leaf => {
+      ctx.save();
+      ctx.translate(x + leaf.dx, y + leaf.dy);
+      ctx.rotate(leaf.rot);
+
+      // Thân lá
+      ctx.fillStyle = leaf.c1;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, leaf.rx, leaf.ry, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Mảng sáng trên phiến lá
+      ctx.fillStyle = leaf.c2;
+      ctx.beginPath();
+      ctx.ellipse(-1, -1, leaf.rx * 0.7, leaf.ry * 0.55, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Gân lá Monstera
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(-leaf.rx * 0.7, 0);
+      ctx.lineTo(leaf.rx * 0.7, 0);
+      ctx.stroke();
+
+      ctx.restore();
+    });
+
+    ctx.restore();
   }
 
   /**
@@ -934,20 +1026,75 @@ export class SpriteRenderer {
   // ═════════════════════════════════════════════════════════════════════════
 
   /**
-   * Vẽ Nhân vật Pixel Art cho 4 Dũng kèm animation chân, gõ phím, cầm gậy cơ, biểu cảm phong phú
+   * Vẽ Nhân vật cho 4 Dũng: Ưu tiên Sprite độ phân giải cao chuẩn Pinterest, kèm fallback Animation Pixel Art
    */
-  public static drawAgent(ctx: CanvasRenderingContext2D, agent: Agent, frame: number) {
+  public static drawAgent(ctx: CanvasRenderingContext2D, agent: Agent, frame: number, spriteImg?: HTMLImageElement) {
     const x = agent.pos_x;
     const y = agent.pos_y;
     const isMoving = agent.status === 'moving';
 
-    // Animation bước chân 4 frame
-    const walkCycle = Math.floor((frame / 8) % 4);
-    const legOffset = isMoving ? (walkCycle === 0 ? -4 : walkCycle === 2 ? 4 : 0) : 0;
-    const bodyBob = isMoving ? Math.abs(Math.sin(frame * 0.25)) * 2 : 0;
-    const charY = y - bodyBob;
+    const walkBob = isMoving ? Math.abs(Math.sin(frame * 0.25)) * 3 : 0;
+    const charY = y - walkBob;
 
     ctx.save();
+
+    // ─────────────────────────────────────────────────────────────────────
+    // 1. VẼ SPRITE NHÂN VẬT CHÂN THỰC THEO PHONG CÁCH PINTEREST
+    // ─────────────────────────────────────────────────────────────────────
+    if (spriteImg && spriteImg.complete && spriteImg.naturalWidth > 0) {
+      // Tựa ghế xoay văn phòng nếu Dũng 3 hoặc Dũng 2 đang ngồi làm việc
+      if (!isMoving && agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(x - 12, charY - 14, 24, 18);
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(x - 10, charY - 12, 20, 14);
+      } else if (!isMoving && agent.code === 'dung_2' && agent.current_room === 'architect_office') {
+        ctx.fillStyle = '#1e1b4b';
+        ctx.fillRect(x - 12, charY - 14, 24, 18);
+      }
+
+      // Bóng đổ mềm mại dưới chân
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+      ctx.beginPath();
+      ctx.ellipse(x, y + 16, 15, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Vẽ nhân vật Pinterest với tỉ lệ vàng (34px x 58px) sắc nét pixel
+      const tilt = isMoving ? Math.sin(frame * 0.25) * 0.05 : 0;
+      if (tilt !== 0) {
+        ctx.translate(x, y);
+        ctx.rotate(tilt);
+        ctx.drawImage(spriteImg, -17, -44 - walkBob, 34, 58);
+        ctx.rotate(-tilt);
+        ctx.translate(-x, -y);
+      } else {
+        ctx.drawImage(spriteImg, x - 17, y - 44 - walkBob, 34, 58);
+      }
+
+      // Bảng tên Pixel nổi trên đầu
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      ctx.fillRect(x - 28, charY - 50, 56, 16);
+      ctx.strokeStyle = agent.avatar_color;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x - 28, charY - 50, 56, 16);
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 9px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(agent.name, x, charY - 38);
+
+      // Bong bóng trạng thái động phong cách Fallout Shelter Vault Action Bubbles
+      this.drawFalloutThoughtBubble(ctx, x, charY - 54, agent, frame);
+
+      ctx.restore();
+      return;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // 2. FALLBACK VẼ PIXEL ART NẾU CHƯA CÓ ẢNH SPRITE
+    // ─────────────────────────────────────────────────────────────────────
+    const walkCycle = Math.floor((frame / 8) % 4);
+    const legOffset = isMoving ? (walkCycle === 0 ? -4 : walkCycle === 2 ? 4 : 0) : 0;
 
     // 1. Tựa ghế xoay văn phòng nếu Dũng 3 hoặc Dũng 2 đang ngồi làm việc
     if (!isMoving && agent.code === 'dung_3' && agent.current_room === 'dev_lab') {

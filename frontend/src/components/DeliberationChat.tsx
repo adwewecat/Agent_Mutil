@@ -89,8 +89,15 @@ export const DeliberationChat: React.FC<DeliberationChatProps> = ({
           return (
             <div key={msg.id || index} className="message-item" style={{ borderLeftColor: color }}>
               <div className="message-meta-row">
-                <div className="message-author-badge" style={{ backgroundColor: `${color}20`, color: color }}>
-                  <span className="font-bold">{msg.agent_name}</span>
+                <div className="flex items-center gap-2">
+                  <img
+                    src={`/assets/characters/${msg.agent_code}.png`}
+                    alt={msg.agent_name}
+                    className="chat-author-avatar-img"
+                  />
+                  <div className="message-author-badge" style={{ backgroundColor: `${color}20`, color: color }}>
+                    <span className="font-bold">{msg.agent_name}</span>
+                  </div>
                 </div>
                 <div className="message-timestamp">
                   <Clock size={12} />

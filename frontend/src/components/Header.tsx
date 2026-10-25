@@ -1,5 +1,5 @@
-import React from 'react';
-import { Volume2, VolumeX, Tv, Database, Terminal } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Volume2, VolumeX, Tv, Database, Terminal, Maximize2, Minimize2 } from 'lucide-react';
 
 import { SystemHealth } from '../types';
 import { soundFx } from '../office/soundEffects';
@@ -21,6 +21,24 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleScanlines,
   onOpenStatusModal,
 }) => {
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    const onFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', onFsChange);
+    return () => document.removeEventListener('fullscreenchange', onFsChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => console.warn(err));
+    } else {
+      document.exitFullscreen().catch(err => console.warn(err));
+    }
+  };
+
   return (
     <header className="header-container">
       <div className="header-brand">
@@ -34,6 +52,16 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       <div className="header-actions">
+        {/* Nút Toàn Màn Hình (Full Screen) */}
+        <button
+          onClick={toggleFullscreen}
+          className={`control-btn ${isFullscreen ? 'active' : ''}`}
+          title={isFullscreen ? 'Thu nhỏ cửa sổ' : 'Phóng to Toàn màn hình'}
+        >
+          {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+          <span>{isFullscreen ? 'Thu nhỏ' : 'Toàn màn hình'}</span>
+        </button>
+
         {/* Trạng thái Database */}
         <button
           onClick={onOpenStatusModal}

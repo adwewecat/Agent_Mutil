@@ -30,12 +30,22 @@ export class OfficeEngine {
   private zoom: number = 1;
   private targetZoom: number = 1;
 
+  // Sprites nhân vật độ phân giải cao chuẩn Pinterest
+  private characterSprites: Record<string, HTMLImageElement> = {};
+
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     const context = canvas.getContext('2d');
     if (!context) throw new Error('Không thể khởi tạo Canvas 2D Context');
     this.ctx = context;
     this.updateCameraTarget();
+
+    // Nạp sẵn 4 sprites nhân vật chân thực phong cách Pinterest
+    ['dung_1', 'dung_2', 'dung_3', 'dung_4'].forEach(code => {
+      const img = new Image();
+      img.src = `/assets/characters/${code}.png`;
+      this.characterSprites[code] = img;
+    });
   }
 
   /**
@@ -347,8 +357,8 @@ export class OfficeEngine {
       ctx.restore();
     }
 
-    // Dựng nhân vật Pixel với animation phù hợp
-    SpriteRenderer.drawAgent(ctx, agent, this.frameCount);
+    // Dựng nhân vật với sprite chất lượng cao chuẩn Pinterest và animation
+    SpriteRenderer.drawAgent(ctx, agent, this.frameCount, this.characterSprites[agent.code]);
 
     // Nếu có bong bóng thoại đặc biệt thì vẽ đè lên
     if (customBubble) {

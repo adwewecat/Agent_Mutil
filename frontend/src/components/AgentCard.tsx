@@ -24,8 +24,12 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, onDispatch }) => {
   return (
     <div className="agent-card" style={{ borderTop: `4px solid ${agent.avatar_color}` }}>
       <div className="agent-card-header">
-        <div className="agent-avatar" style={{ backgroundColor: agent.avatar_color }}>
-          {agent.name.substring(5, 6) ? `D${agent.name.substring(5, 6)}` : 'D'}
+        <div className="agent-avatar" style={{ border: `2px solid ${agent.avatar_color}` }}>
+          <img
+            src={`/assets/characters/${agent.code}.png`}
+            alt={agent.name}
+            className="agent-avatar-img"
+          />
         </div>
         <div className="agent-info">
           <h3 className="agent-name">{agent.name}</h3>
