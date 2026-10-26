@@ -2551,238 +2551,229 @@ export class SpriteRenderer {
 
   /**
    * Vẽ Nhân vật cho 4 Dũng: Ưu tiên Sprite độ phân giải cao chuẩn Pinterest, kèm fallback Animation Pixel Art
+   * Tỉ lệ thu nhỏ vừa vặn (26x46px), cân đối hoàn hảo với bàn ghế nội thất chuẩn 2.5D
    */
   public static drawAgent(ctx: CanvasRenderingContext2D, agent: Agent, frame: number, spriteImg?: HTMLImageElement) {
     const x = agent.pos_x;
     const y = agent.pos_y;
     const isMoving = agent.status === 'moving';
 
-    const walkBob = isMoving ? Math.abs(Math.sin(frame * 0.25)) * 3 : 0;
+    const walkBob = isMoving ? Math.abs(Math.sin(frame * 0.25)) * 2 : 0;
     const charY = y - walkBob;
 
     ctx.save();
 
     // ─────────────────────────────────────────────────────────────────────
-    // 1. VẼ SPRITE NHÂN VẬT CHÂN THỰC THEO PHONG CÁCH PINTEREST
+    // 1. VẼ SPRITE NHÂN VẬT CHÂN THỰC THEO PHONG CÁCH PINTEREST (TỈ LỆ 26x46 PX)
     // ─────────────────────────────────────────────────────────────────────
     if (spriteImg && spriteImg.complete && spriteImg.naturalWidth > 0) {
-      // Tựa ghế xoay văn phòng nếu Dũng 3 hoặc Dũng 2 đang ngồi làm việc (Lưng ghế nỉ xanh Royal Blue)
+      // Tựa ghế xoay văn phòng nếu Dũng 3 hoặc Dũng 2 đang ngồi làm việc
       if (!isMoving && agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
         ctx.fillStyle = '#1e3a8a';
-        ctx.fillRect(x - 12, charY - 14, 24, 18);
+        ctx.fillRect(x - 9, charY - 8, 18, 14);
         ctx.fillStyle = '#2563eb';
-        ctx.fillRect(x - 10, charY - 12, 20, 14);
+        ctx.fillRect(x - 7, charY - 6, 14, 10);
       } else if (!isMoving && agent.code === 'dung_2' && agent.current_room === 'architect_office') {
         ctx.fillStyle = '#1e3a8a';
-        ctx.fillRect(x - 12, charY - 14, 24, 18);
+        ctx.fillRect(x - 9, charY - 8, 18, 14);
         ctx.fillStyle = '#2563eb';
-        ctx.fillRect(x - 10, charY - 12, 20, 14);
+        ctx.fillRect(x - 7, charY - 6, 14, 10);
       }
 
       // Bóng đổ mềm mại dưới chân
       ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
       ctx.beginPath();
-      ctx.ellipse(x, y + 16, 15, 5, 0, 0, Math.PI * 2);
+      ctx.ellipse(x, y + 10, 11, 4, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Vẽ nhân vật Pinterest Pin B với tỉ lệ chuẩn sắc nét pixel (36px x 64px)
+      // Vẽ nhân vật Pinterest Pin B với tỉ lệ chuẩn vừa vặn nội thất (26px x 46px)
       const tilt = isMoving ? Math.sin(frame * 0.25) * 0.05 : 0;
       if (tilt !== 0) {
         ctx.translate(x, y);
         ctx.rotate(tilt);
-        ctx.drawImage(spriteImg, -18, -48 - walkBob, 36, 64);
+        ctx.drawImage(spriteImg, -13, -36 - walkBob, 26, 46);
         ctx.rotate(-tilt);
         ctx.translate(-x, -y);
       } else {
-        ctx.drawImage(spriteImg, x - 18, y - 48 - walkBob, 36, 64);
+        ctx.drawImage(spriteImg, x - 13, y - 36 - walkBob, 26, 46);
       }
 
-      // Bảng tên Pixel nổi trên đầu
+      // Bảng tên Pixel nổi trên đầu (gọn gàng, tinh tế)
       ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-      ctx.fillRect(x - 28, charY - 50, 56, 16);
+      ctx.fillRect(x - 22, charY - 42, 44, 13);
       ctx.strokeStyle = agent.avatar_color;
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(x - 28, charY - 50, 56, 16);
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(x - 22, charY - 42, 44, 13);
 
       ctx.fillStyle = '#f8fafc';
-      ctx.font = 'bold 9px "JetBrains Mono", monospace';
+      ctx.font = 'bold 7.5px "JetBrains Mono", monospace';
       ctx.textAlign = 'center';
-      ctx.fillText(agent.name, x, charY - 38);
+      ctx.fillText(agent.name, x, charY - 33);
 
       // Bong bóng trạng thái động phong cách Fallout Shelter Vault Action Bubbles
-      this.drawFalloutThoughtBubble(ctx, x, charY - 54, agent, frame);
+      this.drawFalloutThoughtBubble(ctx, x, charY - 46, agent, frame);
 
       ctx.restore();
       return;
     }
 
     // ─────────────────────────────────────────────────────────────────────
-    // 2. FALLBACK VẼ PIXEL ART CHUẨN CÔNG SỞ PINTEREST PIN B
+    // 2. FALLBACK VẼ PIXEL ART CHUẨN CÔNG SỞ PINTEREST PIN B (TỈ LỆ NHỎ GỌN)
     // ─────────────────────────────────────────────────────────────────────
     const walkCycle = Math.floor((frame / 8) % 4);
-    const legOffset = isMoving ? (walkCycle === 0 ? -4 : walkCycle === 2 ? 4 : 0) : 0;
+    const legOffset = isMoving ? (walkCycle === 0 ? -3 : walkCycle === 2 ? 3 : 0) : 0;
 
     // 1. Tựa ghế xoay văn phòng nếu Dũng 3 hoặc Dũng 2 đang ngồi làm việc
     if (!isMoving && agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
       ctx.fillStyle = '#1e3a8a';
-      ctx.fillRect(x - 11, charY - 12, 22, 16);
+      ctx.fillRect(x - 9, charY - 8, 18, 14);
       ctx.fillStyle = '#2563eb';
-      ctx.fillRect(x - 9, charY - 10, 18, 12);
+      ctx.fillRect(x - 7, charY - 6, 14, 10);
     } else if (!isMoving && agent.code === 'dung_2' && agent.current_room === 'architect_office') {
       ctx.fillStyle = '#1e3a8a';
-      ctx.fillRect(x - 11, charY - 12, 22, 16);
+      ctx.fillRect(x - 9, charY - 8, 18, 14);
       ctx.fillStyle = '#2563eb';
-      ctx.fillRect(x - 9, charY - 10, 18, 12);
+      ctx.fillRect(x - 7, charY - 6, 14, 10);
     }
 
     // 2. Bóng đổ mềm mại dưới chân
     ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
     ctx.beginPath();
-    ctx.ellipse(x, y + 16, 13, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(x, y + 10, 10, 4, 0, 0, Math.PI * 2);
     ctx.fill();
 
     // 3. Chân & Giày da
-    ctx.fillStyle = agent.code === 'dung_3' ? '#1e293b' : '#451a03'; // Giày da nâu hoặc sneaker đen
+    ctx.fillStyle = agent.code === 'dung_3' ? '#1e293b' : '#451a03';
     if (!isMoving && (agent.current_room === 'director_office' || agent.current_room === 'dev_lab')) {
       // Dáng ngồi: Chân gập ngắn
-      ctx.fillRect(x - 6, charY + 8, 5, 6);
-      ctx.fillRect(x + 1, charY + 8, 5, 6);
+      ctx.fillRect(x - 5, charY + 5, 4, 5);
+      ctx.fillRect(x + 1, charY + 5, 4, 5);
     } else {
       // Dáng đứng hoặc đi
-      ctx.fillRect(x - 7, charY + 8 - legOffset, 5, 9 + legOffset);
-      ctx.fillRect(x + 2, charY + 8 + legOffset, 5, 9 - legOffset);
+      ctx.fillRect(x - 5, charY + 5 - legOffset, 4, 6 + legOffset);
+      ctx.fillRect(x + 1, charY + 5 + legOffset, 4, 6 - legOffset);
     }
 
     // 4. Quần dài chuẩn công sở Pin B
-    // Dũng 1: Quần tây xám | Dũng 2: Quần navy | Dũng 3: Jeans xanh | Dũng 4: Quần âu xám
     ctx.fillStyle = agent.code === 'dung_1' ? '#475569' : agent.code === 'dung_2' ? '#1e3a8a' : agent.code === 'dung_3' ? '#2563eb' : '#334155';
-    ctx.fillRect(x - 8, charY + 3, 16, 7);
+    ctx.fillRect(x - 6, charY + 1, 12, 5);
 
     // 5. Trang phục đặc trưng cho từng Dũng (Chuẩn Pinterest Pin B 80 Elements)
     if (agent.code === 'dung_1') {
       // DŨNG 1: Vest xám công sở + Sơ mi trắng + Cà vạt xanh biển
       ctx.fillStyle = '#64748b'; // Áo vest xám
-      ctx.fillRect(x - 10, charY - 11, 20, 16);
+      ctx.fillRect(x - 7, charY - 8, 14, 11);
       ctx.fillStyle = '#f8fafc'; // Sơ mi trắng chữ V
-      ctx.fillRect(x - 4, charY - 11, 8, 5);
+      ctx.fillRect(x - 3, charY - 8, 6, 4);
       ctx.fillStyle = '#0284c7'; // Cà vạt xanh
-      ctx.fillRect(x - 1.5, charY - 9, 3, 11);
+      ctx.fillRect(x - 1, charY - 6, 2, 7);
     } else if (agent.code === 'dung_2') {
       // DŨNG 2: Sơ mi trắng công sở + Cà vạt xanh navy
       ctx.fillStyle = '#f8fafc'; // Sơ mi trắng
-      ctx.fillRect(x - 10, charY - 11, 20, 16);
+      ctx.fillRect(x - 7, charY - 8, 14, 11);
       ctx.fillStyle = '#1e40af'; // Cà vạt navy
-      ctx.fillRect(x - 1.5, charY - 9, 3, 11);
+      ctx.fillRect(x - 1, charY - 6, 2, 7);
       ctx.fillStyle = '#cbd5e1'; // Hàng cúc
-      ctx.fillRect(x - 0.5, charY + 2, 1, 3);
+      ctx.fillRect(x - 0.5, charY, 1, 2);
     } else if (agent.code === 'dung_3') {
       // DŨNG 3: Áo thun tech đen + Tai nghe quanh cổ
       ctx.fillStyle = '#1e293b'; // Áo thun đen
-      ctx.fillRect(x - 10, charY - 11, 20, 16);
+      ctx.fillRect(x - 7, charY - 8, 14, 11);
       ctx.fillStyle = '#38bdf8'; // Logo cyan
-      ctx.fillRect(x - 3, charY - 5, 6, 2);
-      // Tai nghe bạc đeo quanh cổ (Silver Headphones)
+      ctx.fillRect(x - 2, charY - 3, 4, 2);
+      // Tai nghe bạc đeo quanh cổ
       ctx.strokeStyle = '#cbd5e1';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.arc(x, charY - 11, 6, 0, Math.PI);
+      ctx.arc(x, charY - 8, 5, 0, Math.PI);
       ctx.stroke();
       ctx.fillStyle = '#0284c7';
-      ctx.fillRect(x - 8, charY - 10, 3, 4);
-      ctx.fillRect(x + 5, charY - 10, 3, 4);
+      ctx.fillRect(x - 6, charY - 7, 2, 3);
+      ctx.fillRect(x + 4, charY - 7, 2, 3);
     } else {
       // DŨNG 4: Áo len xanh lá tươi cổ tim + Sơ mi trắng + Thẻ QA vàng
       ctx.fillStyle = '#16a34a'; // Áo len xanh lá
-      ctx.fillRect(x - 10, charY - 11, 20, 16);
+      ctx.fillRect(x - 7, charY - 8, 14, 11);
       ctx.fillStyle = '#f8fafc'; // Cổ sơ mi trắng
-      ctx.fillRect(x - 3, charY - 11, 6, 3);
+      ctx.fillRect(x - 2, charY - 8, 4, 2);
       ctx.fillStyle = '#eab308'; // Thẻ vàng QA
-      ctx.fillRect(x - 2, charY - 5, 4, 4);
+      ctx.fillRect(x - 1.5, charY - 4, 3, 3);
     }
 
-    // 6. Cánh tay & Hành động (Gõ bàn phím, vung tay khi đi, hoặc cầm gậy bida)
+    // 6. Cánh tay & Hành động
     ctx.fillStyle = '#fbcfe8';
     if (!isMoving && agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
       // Gõ phím cơ liên tục
-      const keyType = Math.sin(frame * 0.6) * 2;
-      ctx.fillRect(x - 8, charY - 4 + keyType, 5, 7);
-      ctx.fillRect(x + 3, charY - 4 - keyType, 5, 7);
+      const keyType = Math.sin(frame * 0.6) * 1.5;
+      ctx.fillRect(x - 6, charY - 3 + keyType, 4, 5);
+      ctx.fillRect(x + 2, charY - 3 - keyType, 4, 5);
     } else if (!isMoving && agent.code === 'dung_4' && agent.current_room === 'games_room') {
-      // Cầm gậy cơ bida chĩa vào bàn bida
-      ctx.fillRect(x - 8, charY - 2, 5, 6);
-      ctx.fillRect(x + 4, charY - 4, 5, 6);
-      ctx.strokeStyle = '#d97706';
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.moveTo(x - 10, charY + 6);
-      ctx.lineTo(x + 26, charY - 6);
-      ctx.stroke();
+      // Đứng làm việc trạm kiểm thử QA
+      ctx.fillRect(x - 6, charY - 3, 4, 5);
+      ctx.fillRect(x + 2, charY - 3, 4, 5);
     } else if (isMoving) {
-      ctx.fillRect(x - 13, charY - 7 - legOffset, 4, 10);
-      ctx.fillRect(x + 9, charY - 7 + legOffset, 4, 10);
+      ctx.fillRect(x - 10, charY - 5 - legOffset, 3, 7);
+      ctx.fillRect(x + 7, charY - 5 + legOffset, 3, 7);
     } else {
-      ctx.fillRect(x - 13, charY - 7, 4, 11);
-      ctx.fillRect(x + 9, charY - 7, 4, 11);
+      ctx.fillRect(x - 10, charY - 5, 3, 8);
+      ctx.fillRect(x + 7, charY - 5, 3, 8);
     }
 
     // 7. Khuôn mặt Pixel
     ctx.fillStyle = '#fed7aa';
-    ctx.fillRect(x - 8, charY - 26, 16, 15);
+    ctx.fillRect(x - 6, charY - 19, 12, 11);
 
-    // 8. Mắt và Điểm sáng
+    // 8. Mắt
     ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x - 5, charY - 20, 3, 3);
-    ctx.fillRect(x + 2, charY - 20, 3, 3);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x - 5, charY - 20, 1, 1);
-    ctx.fillRect(x + 2, charY - 20, 1, 1);
+    ctx.fillRect(x - 4, charY - 15, 2, 2);
+    ctx.fillRect(x + 2, charY - 15, 2, 2);
 
     // 9. Tóc & Đặc điểm riêng biệt của 4 Dũng
     if (agent.code === 'dung_1') {
       ctx.fillStyle = '#090d16'; // Tóc đen phong độ
-      ctx.fillRect(x - 9, charY - 30, 18, 7);
-      ctx.fillRect(x - 10, charY - 26, 3, 8);
-      ctx.fillRect(x + 7, charY - 26, 3, 6);
+      ctx.fillRect(x - 7, charY - 22, 14, 5);
+      ctx.fillRect(x - 7, charY - 19, 2, 6);
+      ctx.fillRect(x + 5, charY - 19, 2, 5);
     } else if (agent.code === 'dung_2') {
       ctx.fillStyle = '#94a3b8'; // Tóc muối tiêu 40 năm KN
-      ctx.fillRect(x - 9, charY - 30, 18, 7);
-      ctx.fillRect(x - 10, charY - 26, 3, 8);
-      ctx.fillRect(x + 7, charY - 26, 3, 8);
+      ctx.fillRect(x - 7, charY - 22, 14, 5);
+      ctx.fillRect(x - 7, charY - 19, 2, 6);
+      ctx.fillRect(x + 5, charY - 19, 2, 6);
       // Kính gọng vàng
       ctx.strokeStyle = '#eab308';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(x - 6, charY - 21, 5, 4);
-      ctx.strokeRect(x + 1, charY - 21, 5, 4);
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x - 5, charY - 16, 4, 3);
+      ctx.strokeRect(x + 1, charY - 16, 4, 3);
     } else if (agent.code === 'dung_3') {
       ctx.fillStyle = '#0f172a'; // Tóc nâu
-      ctx.fillRect(x - 9, charY - 30, 18, 6);
-      // Tai nghe Gaming / Coding cyan
+      ctx.fillRect(x - 7, charY - 22, 14, 5);
+      // Tai nghe Coding cyan
       ctx.fillStyle = '#38bdf8';
-      ctx.fillRect(x - 9, charY - 31, 18, 3);
-      ctx.fillRect(x - 11, charY - 25, 4, 8);
-      ctx.fillRect(x + 7, charY - 25, 4, 8);
+      ctx.fillRect(x - 7, charY - 23, 14, 2);
+      ctx.fillRect(x - 8, charY - 19, 3, 6);
+      ctx.fillRect(x + 5, charY - 19, 3, 6);
     } else {
       // Mũ an ninh đỏ
       ctx.fillStyle = '#b91c1c';
-      ctx.fillRect(x - 9, charY - 31, 18, 7);
+      ctx.fillRect(x - 7, charY - 23, 14, 5);
       ctx.fillStyle = '#ef4444';
-      ctx.fillRect(x - 12, charY - 26, 8, 3);
+      ctx.fillRect(x - 9, charY - 19, 6, 2);
     }
 
     // 10. Bảng tên Pixel nổi trên đầu
     ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-    ctx.fillRect(x - 28, charY - 50, 56, 16);
+    ctx.fillRect(x - 22, charY - 42, 44, 13);
     ctx.strokeStyle = agent.avatar_color;
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(x - 28, charY - 50, 56, 16);
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(x - 22, charY - 42, 44, 13);
 
     ctx.fillStyle = '#f8fafc';
-    ctx.font = 'bold 9px "JetBrains Mono", monospace';
+    ctx.font = 'bold 7.5px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(agent.name, x, charY - 38);
+    ctx.fillText(agent.name, x, charY - 33);
 
     // 11. Bong bóng trạng thái động phong cách Fallout Shelter Vault Action Bubbles
-    this.drawFalloutThoughtBubble(ctx, x, charY - 54, agent, frame);
+    this.drawFalloutThoughtBubble(ctx, x, charY - 46, agent, frame);
 
     ctx.restore();
   }
@@ -2798,7 +2789,7 @@ export class SpriteRenderer {
     frame: number
   ) {
     // Độ nhấp nhô nhẹ nhàng (Floating Bob)
-    const bob = Math.sin(frame * 0.09) * 3;
+    const bob = Math.sin(frame * 0.09) * 2;
     const bubbleY = y + bob;
 
     let text = '';
@@ -2829,14 +2820,31 @@ export class SpriteRenderer {
       icon = '🎯';
       borderColor = '#ef4444';
       textColor = '#fca5a5';
+    } else if (agent.status === 'resting') {
+      text = 'Cà phê giải lao';
+      icon = '☕';
+      borderColor = '#f59e0b';
+      textColor = '#fef08a';
     } else if (agent.status === 'moving') {
       text = 'Di chuyển...';
       icon = '🚶';
       borderColor = '#64748b';
       textColor = '#cbd5e1';
     } else {
-      // Idle
-      return;
+      // Khi đang ngồi làm việc tại bàn làm việc của mình
+      if (agent.code === 'dung_1' && agent.current_room === 'director_office') {
+        text = 'Chỉ đạo & Chiến lược';
+        icon = '👔';
+        borderColor = '#38bdf8';
+        textColor = '#bae6fd';
+      } else if (agent.code === 'dung_2' && agent.current_room === 'architect_office') {
+        text = 'Thiết kế CAD & PM';
+        icon = '📐';
+        borderColor = '#c084fc';
+        textColor = '#f3e8ff';
+      } else {
+        return;
+      }
     }
 
     const displayText = `${icon} ${text}`;

@@ -7,6 +7,17 @@ import { OFFICE_WIDTH, OFFICE_HEIGHT, ROOMS } from './mapData';
 import { SpriteRenderer } from './spriteRenderer';
 import { soundFx } from './soundEffects';
 
+// Tọa độ bàn làm việc chính của 4 Dũng (Ngồi làm việc nghiêm túc 95% thời gian)
+const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
+  dung_1: { x: 142, y: 142, room: 'director_office', status: 'idle' },
+  dung_2: { x: 415, y: 195, room: 'architect_office', status: 'idle' },
+  dung_3: { x: 415, y: 400, room: 'dev_lab', status: 'coding' },
+  dung_4: { x: 740, y: 195, room: 'games_room', status: 'testing' },
+};
+
+// Khu vực Pantry lấy nước / cà phê
+const PANTRY_COFFEE = { x: 160, y: 375, room: 'kitchen_pantry' };
+
 export class OfficeEngine {
   public canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -21,6 +32,14 @@ export class OfficeEngine {
   public selectedAgentCode: string | null = null;
   // Bong bóng thoại tùy biến
   public customBubbles: Record<string, { text: string; expires: number }> = {};
+
+  // Trạng thái nghỉ giải lao ngắn ngẫu nhiên (Lâu lâu mới đi giải lao 1 xíu, sau đó quay lại bàn làm việc)
+  private nextBreakTime: number = Date.now() + 60000;
+  private activeBreak: {
+    agentCode: string;
+    state: 'going_to_pantry' | 'resting_at_pantry' | 'returning_to_desk';
+    finishRestTime: number;
+  } | null = null;
 
   // Camera viewport
   private viewX: number = 0;
@@ -160,8 +179,8 @@ export class OfficeEngine {
     // 1. Kiểm tra xem người dùng có click vào một trong 4 Dũng hay không
     const clickedAgent = this.agents.find(a => {
       const dx = a.pos_x - wx;
-      const dy = a.pos_y - 10 - wy;
-      return Math.sqrt(dx * dx + dy * dy) < 32;
+      const dy = a.pos_y - wy;
+      return Math.sqrt(dx * dx + dy * dy) < 22;
     });
 
     if (clickedAgent) {
@@ -257,24 +276,103 @@ export class OfficeEngine {
         agent.pos_x = agent.target_x;
         agent.pos_y = agent.target_y;
         if (agent.status === 'moving') {
-          // Khi đến nơi, trả về trạng thái theo phòng
+          // Khi đến nơi, nếu không nằm trong quy trình break, chuyển trạng thái phù hợp theo phòng
           if (agent.current_room === 'boardroom') {
             agent.status = 'debating';
           } else if (agent.current_room === 'dev_lab') {
             agent.status = 'coding';
           } else if (agent.current_room === 'games_room') {
             agent.status = 'testing';
+          } else if (agent.current_room === 'kitchen_pantry') {
+            agent.status = 'resting';
           } else {
             agent.status = 'idle';
           }
         }
       }
 
-      // Âm thanh gõ phím khi Dũng 3 đang code
+      // Âm thanh gõ phím khi Dũng 3 đang code tại bàn
       if (agent.code === 'dung_3' && agent.status === 'coding' && this.frameCount % 14 === 0) {
         soundFx.playType();
       }
     });
+
+    // ─────────────────────────────────────────────────────────────────────
+    // QUY TRÌNH NGHỈ GIẢI LAO TỰ ĐỘNG THỈNH THOẢNG (95% LÀM VIỆC TẠI BÀN, LÂU LÂU 1 NGƯỜI ĐI UỐNG CÀ PHÊ 8 GIÂY RỒI VỀ)
+    // ─────────────────────────────────────────────────────────────────────
+    if (this.activeBreak) {
+      const breakAgent = this.agents.find(a => a.code === this.activeBreak?.agentCode);
+      if (breakAgent) {
+        if (this.activeBreak.state === 'going_to_pantry') {
+          const dx = breakAgent.pos_x - PANTRY_COFFEE.x;
+          const dy = breakAgent.pos_y - PANTRY_COFFEE.y;
+          if (Math.sqrt(dx * dx + dy * dy) <= 4) {
+            breakAgent.current_room = 'kitchen_pantry';
+            breakAgent.status = 'resting';
+            this.activeBreak.state = 'resting_at_pantry';
+            this.activeBreak.finishRestTime = Date.now() + 8500;
+            this.setCustomBubble(breakAgent.code, 'Thưởng thức tách cà phê nạp năng lượng... ☕', 8000);
+          }
+        } else if (this.activeBreak.state === 'resting_at_pantry') {
+          if (Date.now() >= this.activeBreak.finishRestTime) {
+            const home = WORKSTATIONS[breakAgent.code];
+            if (home) {
+              this.activeBreak.state = 'returning_to_desk';
+              this.moveAgentTo(breakAgent.code, home.x, home.y, 'moving');
+              this.setCustomBubble(breakAgent.code, 'Nạp đủ năng lượng rồi, về bàn làm việc thôi! 💼', 3500);
+            } else {
+              this.activeBreak = null;
+              this.nextBreakTime = Date.now() + 90000 + Math.random() * 30000;
+            }
+          }
+        } else if (this.activeBreak.state === 'returning_to_desk') {
+          const home = WORKSTATIONS[breakAgent.code];
+          if (home) {
+            const dx = breakAgent.pos_x - home.x;
+            const dy = breakAgent.pos_y - home.y;
+            if (Math.sqrt(dx * dx + dy * dy) <= 4) {
+              breakAgent.current_room = home.room;
+              breakAgent.status = home.status;
+              this.activeBreak = null;
+              // Lượt giải lao tiếp theo sau 90 đến 120 giây (ngồi làm việc đàng hoàng phần lớn thời gian)
+              this.nextBreakTime = Date.now() + 90000 + Math.random() * 30000;
+            }
+          } else {
+            this.activeBreak = null;
+            this.nextBreakTime = Date.now() + 90000 + Math.random() * 30000;
+          }
+        }
+      } else {
+        this.activeBreak = null;
+      }
+    } else if (Date.now() > this.nextBreakTime) {
+      // Chỉ cho phép giải lao nếu KHÔNG có cuộc họp nào đang diễn ra và nhân vật đang ở bàn làm việc
+      const isMeetingActive = this.agents.some(a => a.current_room === 'boardroom' || a.status === 'debating');
+      if (isMeetingActive) {
+        this.nextBreakTime = Date.now() + 30000;
+      } else {
+        const atDeskAgents = this.agents.filter(a => {
+          const home = WORKSTATIONS[a.code];
+          if (!home) return false;
+          const dx = a.pos_x - home.x;
+          const dy = a.pos_y - home.y;
+          return Math.sqrt(dx * dx + dy * dy) < 15 && a.status !== 'moving';
+        });
+
+        if (atDeskAgents.length > 0) {
+          const chosen = atDeskAgents[Math.floor(Math.random() * atDeskAgents.length)];
+          this.activeBreak = {
+            agentCode: chosen.code,
+            state: 'going_to_pantry',
+            finishRestTime: 0,
+          };
+          this.moveAgentTo(chosen.code, PANTRY_COFFEE.x, PANTRY_COFFEE.y, 'moving');
+          this.setCustomBubble(chosen.code, 'Đi pha tách cà phê giải lao 1 xíu... ☕', 4000);
+        } else {
+          this.nextBreakTime = Date.now() + 30000;
+        }
+      }
+    }
 
     // Dọn dẹp bong bóng thoại hết hạn
     const now = Date.now();
@@ -302,7 +400,7 @@ export class OfficeEngine {
     const allDrawables: { zY: number; draw: (c: CanvasRenderingContext2D) => void }[] = [
       ...furnitureDrawables,
       ...this.agents.map(agent => ({
-        zY: agent.pos_y + 16,
+        zY: agent.pos_y + 10,
         draw: (c: CanvasRenderingContext2D) => this.renderAgentWithEffects(c, agent),
       })),
     ];
@@ -348,15 +446,15 @@ export class OfficeEngine {
     const isSelected = agent.code === this.selectedAgentCode;
     const customBubble = this.customBubbles[agent.code]?.text;
 
-    // Vẽ vòng phát sáng dưới chân nếu đang được chọn
+    // Vẽ vòng phát sáng dưới chân nếu đang được chọn (vừa vặn với nhân vật thu nhỏ)
     if (isSelected) {
       ctx.save();
       ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2;
       ctx.setLineDash([4, 2]);
       ctx.beginPath();
-      const pulse = Math.sin(this.frameCount * 0.1) * 3;
-      ctx.ellipse(agent.pos_x, agent.pos_y + 16, 20 + pulse, 9 + pulse * 0.5, 0, 0, Math.PI * 2);
+      const pulse = Math.sin(this.frameCount * 0.1) * 2;
+      ctx.ellipse(agent.pos_x, agent.pos_y + 10, 15 + pulse, 6 + pulse * 0.4, 0, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
     }
@@ -366,7 +464,7 @@ export class OfficeEngine {
 
     // Nếu có bong bóng thoại đặc biệt thì vẽ đè lên
     if (customBubble) {
-      this.drawSpecialBubble(ctx, agent.pos_x, agent.pos_y - 58, customBubble);
+      this.drawSpecialBubble(ctx, agent.pos_x, agent.pos_y - 48, customBubble);
     }
   }
 

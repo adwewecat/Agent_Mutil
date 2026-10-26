@@ -20,8 +20,8 @@ export const ROOMS: OfficeRoom[] = [
     color: '#0f172a',
     floorColor: '#15803d',
     description: 'Thảm sọc xanh ngọc bích, sofa góc Royal Blue, bàn trà hoa quả tươi, tủ kính hồ sơ và cây Topiary (Chỗ 1/7).',
-    targetX: 180,
-    targetY: 180, // Ngồi trên sofa nỉ Royal Blue
+    targetX: 142,
+    targetY: 142, // Ngồi trên sofa nỉ Royal Blue làm việc
   },
   {
     id: 'architect_office',
@@ -34,7 +34,7 @@ export const ROOMS: OfficeRoom[] = [
     floorColor: '#c8d4ec',
     description: 'Bàn cubicle CAD kiến trúc, 2 màn hình thiết kế, thước chữ T, bản vẽ và ghế xoay nỉ xanh (Chỗ 2/7).',
     targetX: 415,
-    targetY: 205, // Ngồi ghế xoay trước màn hình CAD
+    targetY: 195, // Ngồi ghế xoay trước màn hình CAD
   },
   {
     id: 'games_room',
@@ -47,7 +47,7 @@ export const ROOMS: OfficeRoom[] = [
     floorColor: '#c8d4ec',
     description: 'Trạm kiểm thử cubicle hiện đại, Dashboard Stress Test, tablet chẩn đoán an ninh và ghế xoay nỉ xanh (Chỗ 4/7).',
     targetX: 740,
-    targetY: 205, // Ngồi ghế xoay trước màn hình QA
+    targetY: 195, // Ngồi ghế xoay trước màn hình QA
   },
   {
     id: 'kitchen_pantry',
@@ -60,7 +60,7 @@ export const ROOMS: OfficeRoom[] = [
     floorColor: '#f1f5f9',
     description: 'Máy photocopy đa khay có thùng rác tái chế, bình nước nóng lạnh úp bình xanh và quầy cà phê espresso.',
     targetX: 160,
-    targetY: 410, // Đứng trước máy in / quầy cà phê
+    targetY: 375, // Đi giải lao lấy nước / cà phê
   },
   {
     id: 'dev_lab',
@@ -73,7 +73,7 @@ export const ROOMS: OfficeRoom[] = [
     floorColor: '#c8d4ec',
     description: 'Trạm lập trình Fullstack Dev với 2 màn hình code ma trận, phím cơ, cốc cà phê Dev Fuel và bàn Peer Dev (Chỗ 3/7 & 5/7).',
     targetX: 415,
-    targetY: 410, // Ngồi ghế xoay trước máy tính code
+    targetY: 400, // Ngồi ghế xoay trước máy tính code
   },
   {
     id: 'boardroom',

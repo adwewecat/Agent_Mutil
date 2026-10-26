@@ -324,6 +324,28 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - Giải pháp: Chuyển đổi toàn bộ `run.bat` và `stop.bat` sang định dạng chuẩn Windows CRLF (`\r\n`), đồng thời bổ sung file `.gitattributes` để ép buộc Git luôn giữ CRLF cho các file `.bat`, `.cmd` trên mọi máy tính.
 - [x] Cập nhật hướng dẫn trong `README.md` và `GEMINI.md`.
 
+### [2026-10-26] Thu nhỏ tỉ lệ nhân vật, căn chuẩn vị trí làm việc tại bàn & cơ chế nghỉ giải lao tự động
+- [x] **Khắc phục hiện tượng nhân vật tụ tập ở quầy cafe pantry liên tục**:
+  - **Nguyên nhân**: Dữ liệu phiên chạy trước lưu Dũng 1 và Dũng 2 ở phòng `kitchen_pantry` vào SQLite database `backend/agent_multi.db`, hàm `init_default_agents` ban đầu chỉ chèn nếu thiếu chứ không reset lại vị trí bàn làm việc khi chạy.
+  - **Khắc phục**:
+    + Chạy script cập nhật database SQLite và SQL Server: Dũng 1 tại Sofa Giám đốc `(142, 142)`, Dũng 2 tại Bàn CAD Kiến trúc `(415, 195)`, Dũng 3 tại Dev Lab `(415, 400)`, Dũng 4 tại Trạm QA `(740, 195)`.
+    + Cập nhật `init_default_agents` trong `backend/app/services/office_manager.py` tự động chuyển các nhân vật đang ở `kitchen_pantry` trở về đúng bàn làm việc chuyên môn.
+    + Cập nhật `frontend/src/office/mapData.ts` và `frontend/src/App.tsx` đồng bộ tọa độ mục tiêu khi điều động.
+- [x] **Thu nhỏ tỉ lệ nhân vật vừa vặn nội thất (Scaled Down Sprites & Fallback Pixel Art)**:
+  - Giảm kích thước nhân vật từ `36x64 px` xuống `26x46 px` (giảm ~28%), tỷ lệ cân đối hoàn hảo với chiều cao của bàn làm việc, ghế xoay và màn hình máy tính 2.5D Isometric.
+  - Tinh chỉnh bóng đổ chân `ellipse(x, y + 10, 11, 4)` chạm đúng mép chân nhân vật.
+  - Tinh chỉnh tựa ghế xoay bọc nỉ Royal Blue phía sau lưng Dũng 2 và Dũng 3 khi ngồi làm việc.
+  - Thu gọn bảng tên Pixel: `44x13 px`, font `bold 7.5px "JetBrains Mono"`, đặt tại `charY - 33`.
+  - Cập nhật bong bóng trạng thái Fallout Shelter: Bổ sung trạng thái `resting` ("☕ Cà phê giải lao") và hiển thị trạng thái suy nghĩ chiến lược ("👔 Chỉ đạo & Chiến lược" cho Dũng 1, "📐 Thiết kế CAD & PM" cho Dũng 2) khi ngồi tập trung tại bàn làm việc.
+- [x] **Cơ chế nghỉ giải lao thỉnh thoảng (Occasional Autonomous Coffee Break - 95% làm việc tại bàn)**:
+  - Nhân vật tập trung làm việc nghiêm túc tại bàn của mình trong hầu hết thời gian.
+  - Cứ sau mỗi ~90 - 120 giây (chu kỳ ngẫu nhiên), hệ thống sẽ chọn ngẫu nhiên 1 nhân viên đang ở bàn làm việc để đi bộ tới quầy Pantry pha cà phê.
+  - Nhân vật dừng tại Pantry trong 8.5 giây, hiển thị bong bóng *"Thưởng thức tách cà phê nạp năng lượng... ☕"*, sau đó tự giác đi bộ quay lại đúng bàn làm việc của mình tiếp tục chuyên môn.
+  - Tuyệt đối không ngắt quãng hay tự ý đi giải lao khi đang có cuộc họp chiến lược tại Boardroom (`debating`).
+- [x] **Tương tác chuột (Click-to-Move)**: Cập nhật bán kính nhận diện click chuột thành `< 22 px` chính xác theo vóc dáng mới của nhân vật.
+- [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Đã đẩy toàn bộ mã nguồn lên GitHub.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

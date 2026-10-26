@@ -77,11 +77,11 @@ export const App: React.FC = () => {
         dung_3: { x: 700, y: 440 },
         dung_4: { x: 770, y: 440 },
       }[code] || { x: 740, y: 410 },
-      director_office: { x: 180, y: 180 },   // Ngồi ghế sofa nỉ Royal Blue tiếp khách
-      architect_office: { x: 415, y: 205 }, // Ngồi ghế xoay trước bàn CAD thiết kế
-      dev_lab: { x: 415, y: 410 },          // Ngồi ghế xoay trước máy tính Dev Lab
-      games_room: { x: 740, y: 205 },       // Ngồi ghế xoay trước màn hình QA & Security
-      kitchen_pantry: { x: 160, y: 410 },   // Đứng trước quầy pantry / máy in
+      director_office: { x: 142, y: 142 }, // Ngồi sofa nỉ Royal Blue làm việc
+      architect_office: { x: 415, y: 195 }, // Ngồi ghế xoay trước bàn CAD thiết kế
+      dev_lab: { x: 415, y: 400 }, // Ngồi ghế xoay trước máy tính Dev Lab
+      games_room: { x: 740, y: 195 }, // Ngồi ghế xoay trước màn hình QA & Security
+      kitchen_pantry: { x: 160, y: 375 }, // Đi giải lao lấy nước / cà phê
     };
 
     const target = targetCoords[room] || { x: 500, y: 250 };
