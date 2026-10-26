@@ -6,6 +6,7 @@ import { Agent, CameraView } from '../types';
 import { OFFICE_WIDTH, OFFICE_HEIGHT, ROOMS } from './mapData';
 import { SpriteRenderer } from './spriteRenderer';
 import { soundFx } from './soundEffects';
+import { ImageLoader } from './imageLoader';
 
 // Tọa độ bàn làm việc chính của 4 Dũng (Ngồi làm việc nghiêm túc 95% thời gian)
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
@@ -59,12 +60,8 @@ export class OfficeEngine {
     this.ctx = context;
     this.updateCameraTarget();
 
-    // Nạp sẵn 4 sprites nhân vật chân thực phong cách Pinterest
-    ['dung_1', 'dung_2', 'dung_3', 'dung_4'].forEach(code => {
-      const img = new Image();
-      img.src = `/assets/characters/${code}.png`;
-      this.characterSprites[code] = img;
-    });
+    // Nạp sẵn toàn bộ sprites Chibi Anime và nội thất chuẩn Pinterest
+    ImageLoader.init();
   }
 
   /**

@@ -5,6 +5,7 @@
 
 import { Agent } from '../types';
 import { ROOMS } from './mapData';
+import { ImageLoader } from './imageLoader';
 
 // Interface cho các thực thể có thể vẽ và sắp xếp theo trục Z (chiều sâu Y)
 export interface ZDrawable {
@@ -464,10 +465,17 @@ export class SpriteRenderer {
       zY: 65,
       draw: ctx => this.drawWallArt(ctx, 150, 42, 45, 18, '#0284c7'),
     });
-    // Tủ kính trưng bày tài liệu hồ sơ có file kẹp màu sắc
+    // Tủ sách tài liệu chuẩn pin_office.jpg
     drawables.push({
-      zY: 110,
-      draw: ctx => this.drawGlassFilingCabinet(ctx, 40, 85),
+      zY: 105,
+      draw: ctx => {
+        const bookcaseImg = ImageLoader.getOffice('tall_bookcase');
+        if (bookcaseImg) {
+          ctx.drawImage(bookcaseImg, 38, 70, 56, 102);
+        } else {
+          this.drawGlassFilingCabinet(ctx, 40, 85);
+        }
+      },
     });
     // Hộp hồ sơ tài liệu carton vàng/xanh
     drawables.push({
@@ -479,15 +487,18 @@ export class SpriteRenderer {
       zY: 120,
       draw: ctx => this.drawTopiaryPlant(ctx, 260, 92),
     });
-    // Sofa nỉ góc Royal Blue kèm gối tựa cam trên thảm sọc xanh
+    // Bộ Lounge hiện đại: Ghế bành đơn + Sofa 2 chỗ + Bàn trà kính (Chuẩn 100% pin_office.jpg)
     drawables.push({
-      zY: 155,
-      draw: ctx => this.drawModularBlueSofa(ctx, 75, 115, 135, 45),
-    });
-    // Bàn trà mặt kính tiếp khách với đĩa hoa quả tươi và tách cà phê
-    drawables.push({
-      zY: 190,
-      draw: ctx => this.drawCoffeeTable(ctx, 110, 175),
+      zY: 175,
+      draw: ctx => {
+        const loungeImg = ImageLoader.getOffice('lounge_suite');
+        if (loungeImg) {
+          ctx.drawImage(loungeImg, 65, 105, 205, 136);
+        } else {
+          this.drawModularBlueSofa(ctx, 75, 115, 135, 45);
+          this.drawCoffeeTable(ctx, 110, 175);
+        }
+      },
     });
 
     // ───────────────────────────────────────────────────────────────────────
@@ -563,37 +574,51 @@ export class SpriteRenderer {
     });
 
     // ───────────────────────────────────────────────────────────────────────
-    // 4. KHU HẬU CẦN, BREAKOUT LOUNGE & BỐT TARDIS (x: 30, y: 310, w: 280, h: 200)
+    // 4. KHU PANTRY & GIẢI LAO VĂN PHÒNG (Chuẩn pin_office.jpg)
     // ───────────────────────────────────────────────────────────────────────
-    // Bốt điện thoại Retro Tardis màu xanh dương ở góc
+    // Tủ tài liệu có chậu cây trên nóc (Chuẩn pin_office.jpg)
     drawables.push({
-      zY: 365,
-      draw: ctx => this.drawPoliceBoxTardis(ctx, 36, 325),
+      zY: 345,
+      draw: ctx => {
+        const plantFiling = ImageLoader.getOffice('filing_cabinet_plant');
+        if (plantFiling) {
+          ctx.drawImage(plantFiling, 40, 318, 48, 88);
+        }
+      },
     });
-    // Đồng hồ tròn treo tường màu xanh lá
+    // Đồng hồ tròn treo tường thanh lịch
     drawables.push({
       zY: 330,
       draw: ctx => this.drawRoundGreenClock(ctx, 140, 318),
     });
-    // Tủ lạnh Inox có lò vi sóng trên nóc
-    drawables.push({
-      zY: 355,
-      draw: ctx => this.drawRefrigeratorWithMicrowave(ctx, 75, 320),
-    });
     // Quầy bếp & bồn rửa inox, máy pha espresso bốc khói
     drawables.push({
       zY: 365,
-      draw: ctx => this.drawKitchenCounter(ctx, 125, 325),
+      draw: ctx => this.drawKitchenCounter(ctx, 100, 325),
     });
-    // Bình nước nóng lạnh úp bình xanh
+    // Cây nước nóng lạnh úp bình xanh (Chuẩn 100% pin_office.jpg)
     drawables.push({
-      zY: 365,
-      draw: ctx => this.drawWaterDispenser(ctx, 205, 325),
+      zY: 375,
+      draw: ctx => {
+        const coolerImg = ImageLoader.getOffice('water_cooler');
+        if (coolerImg) {
+          ctx.drawImage(coolerImg, 195, 315, 38, 86);
+        } else {
+          this.drawWaterDispenser(ctx, 205, 325);
+        }
+      },
     });
-    // Máy bán nước tự động phát sáng LED
+    // Máy photocopy / máy in đa năng văn phòng (Chuẩn 100% pin_office.jpg)
     drawables.push({
-      zY: 365,
-      draw: ctx => this.drawVendingMachine(ctx, 245, 320),
+      zY: 375,
+      draw: ctx => {
+        const copierImg = ImageLoader.getOffice('photocopier');
+        if (copierImg) {
+          ctx.drawImage(copierImg, 240, 315, 58, 76);
+        } else {
+          this.drawOfficeCopier(ctx, 240, 315);
+        }
+      },
     });
     // Ghế băng sofa thư giãn & bàn uống nước
     drawables.push({
@@ -678,15 +703,17 @@ export class SpriteRenderer {
         draw: ctx => this.drawConferenceChair(ctx, 695, 380),
       });
     }
-    // Bàn làm việc thảo luận đa năng / Conference Discussion Suite
+    // Bàn họp Oval và phòng họp chiến lược chuẩn 100% pin_meeting.jpg (591730838527550441)
     drawables.push({
       zY: 405,
-      draw: ctx => this.drawConferenceTableSurface(ctx, 680, 350),
-    });
-    // Máy photocopy / in laser đa năng văn phòng có thùng rác tái chế
-    drawables.push({
-      zY: 385,
-      draw: ctx => this.drawOfficeCopier(ctx, 830, 345),
+      draw: ctx => {
+        const meetingSuite = ImageLoader.getOffice('boardroom_meeting_suite');
+        if (meetingSuite) {
+          ctx.drawImage(meetingSuite, 665, 275, 260, 230);
+        } else {
+          this.drawConferenceTableSurface(ctx, 680, 350);
+        }
+      },
     });
     // Cây Bonsai Nhật Bản trên đôn gỗ trắc
     drawables.push({
@@ -1617,78 +1644,6 @@ export class SpriteRenderer {
   }
 
   /**
-   * Bốt điện thoại retro / Tardis màu xanh dương ở góc phòng (Iconic signature từ hình ảnh tham khảo)
-   */
-  private static drawPoliceBoxTardis(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const w = 28;
-    const h = 58;
-    ctx.save();
-    // Đổ bóng bốt điện thoại
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.fillRect(x + 2, y + 4, w, h);
-
-    // Thân bốt điện thoại màu xanh navy hoàng gia
-    ctx.fillStyle = '#1e3a8a';
-    ctx.fillRect(x, y, w, h);
-    ctx.strokeStyle = '#0f172a';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x, y, w, h);
-
-    // Nóc mái dốc bốt điện thoại
-    ctx.fillStyle = '#172554';
-    ctx.beginPath();
-    ctx.moveTo(x - 2, y);
-    ctx.lineTo(x + w + 2, y);
-    ctx.lineTo(x + w - 4, y - 6);
-    ctx.lineTo(x + 4, y - 6);
-    ctx.closePath();
-    ctx.fill();
-
-    // Đèn nhỏ trên đỉnh
-    ctx.fillStyle = '#fef08a';
-    ctx.fillRect(x + w / 2 - 2, y - 9, 4, 3);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x + w / 2 - 1, y - 8, 2, 2);
-
-    // Biển hiệu chữ trắng trên đỉnh "POLICE BOX"
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 2, y + 2, w - 4, 6);
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 4.5px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('BOX', x + w / 2, y + 6.5);
-
-    // 4 Ô kính cửa sổ màu trắng xanh
-    const winW = 9;
-    const winH = 11;
-    ctx.fillStyle = '#bae6fd';
-    ctx.fillRect(x + 3, y + 11, winW, winH);
-    ctx.fillRect(x + 16, y + 11, winW, winH);
-    ctx.fillRect(x + 3, y + 25, winW, winH);
-    ctx.fillRect(x + 16, y + 25, winW, winH);
-
-    ctx.strokeStyle = '#1e3a8a';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(x + 3, y + 11, winW, winH);
-    ctx.strokeRect(x + 16, y + 11, winW, winH);
-    ctx.strokeRect(x + 3, y + 25, winW, winH);
-    ctx.strokeRect(x + 16, y + 25, winW, winH);
-
-    // Các pano cửa dưới
-    ctx.fillStyle = '#1d4ed8';
-    ctx.fillRect(x + 3, y + 39, winW, 14);
-    ctx.fillRect(x + 16, y + 39, winW, 14);
-    ctx.strokeStyle = '#172554';
-    ctx.strokeRect(x + 3, y + 39, winW, 14);
-    ctx.strokeRect(x + 16, y + 39, winW, 14);
-
-    // Tay nắm cửa bạc
-    ctx.fillStyle = '#e2e8f0';
-    ctx.fillRect(x + 13, y + 32, 2, 4);
-    ctx.restore();
-  }
-
-  /**
    * Chú mèo trắng đốm cam đang cuộn tròn ngủ trên bàn làm việc (Chi tiết đáng yêu từ hình ảnh tham khảo)
    */
   private static drawSleepingCat(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -1976,110 +1931,6 @@ export class SpriteRenderer {
     // Khói cà phê nóng bốc lên từ máy pha
     this.drawCoffeeSteam(ctx, x + 54, y - 10);
     this.drawCoffeeSteam(ctx, x + 64, y - 10);
-
-    ctx.restore();
-  }
-
-  /**
-   * Tủ lạnh Inox 2 cánh có Lò vi sóng điện tử trên nóc (Pinterest Pin A - Cozy Tech Kitchen Suite)
-   */
-  private static drawRefrigeratorWithMicrowave(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const w = 32;
-    const h = 54;
-
-    ctx.save();
-
-    // ───────────────────────────────────────────────────────────────────────
-    // 1. LÒ VI SÓNG ĐẶT TRÊN NÓC TỦ LẠNH (Pinterest Pin A - Microwave on Fridge)
-    // ───────────────────────────────────────────────────────────────────────
-    const mwW = 28;
-    const mwH = 15;
-    const mwX = x + 2;
-    const mwY = y - 16;
-
-    // Bóng đổ lò vi sóng xuống nóc tủ lạnh
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.fillRect(mwX + 2, y - 2, mwW - 4, 3);
-
-    // Vỏ máy lò vi sóng kim loại màu xám than
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.roundRect(mwX, mwY, mwW, mwH, 2);
-    ctx.fill();
-    ctx.strokeStyle = '#475569';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    // Cửa kính tối màu quan sát khoang lò
-    ctx.fillStyle = '#090d16';
-    ctx.fillRect(mwX + 2, mwY + 2, 17, mwH - 4);
-    // Vệt phản chiếu ánh sáng trên cửa kính lò
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(mwX + 4, mwY + 3);
-    ctx.lineTo(mwX + 11, mwY + 3);
-    ctx.stroke();
-
-    // Tay nắm cửa lò vi sóng
-    ctx.fillStyle = '#cbd5e1';
-    ctx.fillRect(mwX + 17, mwY + 3, 1.5, mwH - 6);
-
-    // Bảng điều khiển điện tử
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(mwX + 20, mwY + 2, 6, mwH - 4);
-
-    // Màn hình số LED xanh Cyan phát sáng "0:45"
-    ctx.fillStyle = '#06b6d4';
-    ctx.fillRect(mwX + 21, mwY + 3, 4, 2);
-
-    // Núm vặn hẹn giờ & các phím bấm
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(mwX + 22, mwY + 7, 2, 2);
-    ctx.fillStyle = '#ef4444'; // Nút Start/Stop đỏ
-    ctx.fillRect(mwX + 22, mwY + 10, 2, 1.5);
-
-    // ───────────────────────────────────────────────────────────────────────
-    // 2. THÂN TỦ LẠNH THÉP XƯỚC KHÔNG GỈ (Stainless Steel Refrigerator)
-    // ───────────────────────────────────────────────────────────────────────
-    const fridgeGrad = ctx.createLinearGradient(x, y, x + w, y);
-    fridgeGrad.addColorStop(0, '#94a3b8');
-    fridgeGrad.addColorStop(0.5, '#e2e8f0');
-    fridgeGrad.addColorStop(1, '#64748b');
-
-    ctx.fillStyle = fridgeGrad;
-    ctx.beginPath();
-    ctx.roundRect(x, y, w, h, 2);
-    ctx.fill();
-
-    ctx.strokeStyle = '#475569';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    // Khe phân cách ngăn đá trên và ngăn mát dưới
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(x, y + 18);
-    ctx.lineTo(x + w, y + 18);
-    ctx.stroke();
-
-    // 2 Tay nắm thanh dài bằng hợp kim
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x + 4, y + 5, 2, 9);
-    ctx.fillRect(x + 4, y + 22, 2, 24);
-
-    // Màn hình LED nhiệt độ điện tử (-18°C / 4°C)
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 12, y + 5, 14, 6);
-    ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(x + 14, y + 7, 10, 2);
-
-    // Giấy ghi chú nam châm dán trên cửa
-    ctx.fillStyle = '#fde047';
-    ctx.fillRect(x + 16, y + 25, 6, 6);
-    ctx.fillStyle = '#f472b6';
-    ctx.fillRect(x + 18, y + 35, 5, 5);
 
     ctx.restore();
   }
@@ -2484,53 +2335,6 @@ export class SpriteRenderer {
   }
 
   /**
-   * Máy bán nước tự động có đèn LED phát sáng (Pinterest Pin 2)
-   */
-  private static drawVendingMachine(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const w = 34;
-    const h = 54;
-
-    ctx.save();
-    // Thùng máy kim loại sơn xám đậm
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.roundRect(x, y, w, h, 3);
-    ctx.fill();
-    ctx.strokeStyle = '#38bdf8';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-
-    // Biển hiệu "COLD DRINKS" phát sáng
-    ctx.fillStyle = '#0284c7';
-    ctx.fillRect(x + 3, y + 3, w - 6, 7);
-    ctx.fillStyle = '#e0f2fe';
-    ctx.fillRect(x + 6, y + 5, 12, 2);
-
-    // Cửa kính trưng bày 3 tầng lon nước giải khát
-    ctx.fillStyle = '#020617';
-    ctx.fillRect(x + 4, y + 12, w - 8, 24);
-
-    // 3 Hàng lon nước nhiều màu
-    const cans = ['#ef4444', '#10b981', '#3b82f6'];
-    for (let r = 0; r < 2; r++) {
-      for (let c = 0; c < 3; c++) {
-        ctx.fillStyle = cans[c];
-        ctx.fillRect(x + 6 + c * 8, y + 15 + r * 10, 5, 7);
-      }
-    }
-
-    // Khe nhả tiền & nút bấm
-    ctx.fillStyle = '#0f172a';
-    ctx.fillRect(x + 4, y + 38, w - 8, 12);
-    ctx.fillStyle = '#ef4444'; // Khe xu đỏ
-    ctx.fillRect(x + 8, y + 40, 4, 2);
-    ctx.fillStyle = '#22c55e'; // Khe nhả lon
-    ctx.fillRect(x + 8, y + 44, 18, 4);
-
-    ctx.restore();
-  }
-
-  /**
    * Cây nước nóng lạnh hiện đại
    */
   private static drawWaterDispenser(ctx: CanvasRenderingContext2D, x: number, y: number) {
@@ -2683,8 +2487,7 @@ export class SpriteRenderer {
   // ═════════════════════════════════════════════════════════════════════════
 
   /**
-   * Vẽ Nhân vật cho 4 Dũng: Mô phỏng cử chỉ 2.5D Isometric chân thật nhất (Chuẩn tranh Habbo / Pinterest)
-   * Tự động xoay người, gập chân ngồi ghế, vươn tay gõ phím cơ, ngồi họp đối thoại tranh luận sống động
+   * Vẽ Nhân vật 4 Dũng: Sử dụng trực tiếp ảnh Sprite Chibi Anime chuẩn Pinterest pin_1013309984899659354
    */
   public static drawAgent(ctx: CanvasRenderingContext2D, agent: Agent, frame: number, _spriteImg?: HTMLImageElement) {
     const x = agent.pos_x;
@@ -2693,67 +2496,87 @@ export class SpriteRenderer {
 
     ctx.save();
 
-    // ─────────────────────────────────────────────────────────────────────
-    // 1. NHÂN VẬT ĐANG DI CHUYỂN: DÁNG ĐI BỘ 4 KHUNG HÌNH TỰ NHIÊN
-    // ─────────────────────────────────────────────────────────────────────
+    // Xác định tư thế phù hợp với ngữ cảnh
+    let pose = 'front_happy';
     if (isMoving) {
-      const facingLeft = agent.target_x < agent.pos_x;
-      this.drawWalkingAgent(ctx, x, y, frame, agent, facingLeft);
-    }
-    // ─────────────────────────────────────────────────────────────────────
-    // 2. PHÒNG HỌP BOARDROOM: KHI CÓ YÊU CẦU MỚI (pin_meeting 591730838527550441)
-    // ─────────────────────────────────────────────────────────────────────
-    else if (agent.current_room === 'boardroom' || agent.status === 'debating') {
+      pose = 'profile_walk';
+    } else if (agent.current_room === 'boardroom' || agent.status === 'debating') {
       if (agent.code === 'dung_1') {
-        this.drawChibiPresenterBoardroom(ctx, x, y, frame, agent);
+        pose = 'presenting_forward'; // Dũng 1 đứng thuyết trình mở 2 tay
       } else if (agent.code === 'dung_2') {
-        this.drawChibiDebaterBoardroom(ctx, x, y, frame, agent);
+        pose = 'thinking_seated'; // Dũng 2 ngồi chống cằm trầm ngâm phản biện
       } else {
-        this.drawSittingBoardroomAgent(ctx, x, y, frame, agent, false);
+        pose = 'three_quarter_idle';
       }
+    } else if (agent.code === 'dung_2' && agent.current_room === 'architect_office') {
+      pose = 'thinking_stand'; // Dũng 2 đứng chống cằm suy nghĩ tại bàn kiến trúc
+    } else if (agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
+      pose = 'three_quarter_idle'; // Dũng 3 tập trung code
+    } else if (agent.code === 'dung_4' && agent.current_room === 'games_room') {
+      pose = 'front_happy';
+    } else if (agent.current_room === 'kitchen_pantry' || agent.status === 'resting') {
+      pose = 'front_happy';
     }
-    // ─────────────────────────────────────────────────────────────────────
-    // 3. SOFA GIÁM ĐỐC: DŨNG 1 NGỒI LÚN SÂU VÀO ĐỆM SOFA, CẦM TÁCH CÀ PHÊ BỐC KHÓI
-    // ─────────────────────────────────────────────────────────────────────
-    else if (agent.code === 'dung_1' && agent.current_room === 'director_office') {
-      this.drawSittingSofaDirector(ctx, x, y, frame, agent);
-    }
-    // ─────────────────────────────────────────────────────────────────────
-    // 4. DEV LAB: DŨNG 3 NGỒI GHẾ XOAY CÔNG THÁI HỌC, GÕ BÀN PHÍM CƠ 2 MÀN HÌNH
-    // ─────────────────────────────────────────────────────────────────────
-    else if (agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
-      this.drawSittingDevAgent(ctx, x, y, frame, agent);
-    }
-    // ─────────────────────────────────────────────────────────────────────
-    // 5. CUBICLE KIẾN TRÚC SƯ: DŨNG 2 NGỒI TRƯỚC BÀN VẼ CAD & BLUEPRINT
-    // ─────────────────────────────────────────────────────────────────────
-    else if (agent.code === 'dung_2' && agent.current_room === 'architect_office') {
-      this.drawSittingArchitectAgent(ctx, x, y, frame, agent);
-    }
-    // ─────────────────────────────────────────────────────────────────────
-    // 6. CUBICLE QA: DŨNG 4 NGỒI TRẠM KIỂM THỬ CHẠY STRESS TEST 5,000 TPS
-    // ─────────────────────────────────────────────────────────────────────
-    else if (agent.code === 'dung_4' && agent.current_room === 'games_room') {
-      this.drawSittingQAAgent(ctx, x, y, frame, agent);
-    }
-    // ─────────────────────────────────────────────────────────────────────
-    // 7. KHU PANTRY: ĐỨNG THƯỞNG THỨC CÀ PHÊ NÓNG GIẢI LAO
-    // ─────────────────────────────────────────────────────────────────────
-    else if (agent.current_room === 'kitchen_pantry' || agent.status === 'resting') {
-      this.drawStandingPantryAgent(ctx, x, y, frame, agent);
-    }
-    // ─────────────────────────────────────────────────────────────────────
-    // 8. ĐỨNG NGHỈ THÔNG THƯỜNG KHÁC (IDLE STANDING)
-    // ─────────────────────────────────────────────────────────────────────
-    else {
-      this.drawIdleStandingAgent(ctx, x, y, frame, agent);
+
+    const sprite = ImageLoader.getChibi(agent.code, pose);
+    const facingLeft = isMoving && (agent.target_x < agent.pos_x);
+    let headTopY = y - 48;
+
+    if (sprite) {
+      // 1. Tỉ lệ nhân vật Chibi chuẩn đẹp trên Canvas (w: 48px, h: tỷ lệ gốc)
+      const charW = 48;
+      const charH = Math.round(charW * (sprite.naturalHeight / sprite.naturalWidth));
+      const bob = isMoving ? Math.abs(Math.sin(frame * 0.25)) * 3 : Math.sin(frame * 0.08) * 1.2;
+      const drawX = x - charW / 2;
+      const drawY = y - charH + 10 - bob;
+      headTopY = drawY - 4;
+
+      // Đổ bóng chân mềm mại trên sàn
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      ctx.beginPath();
+      ctx.ellipse(x, y + 8, charW * 0.35, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Vẽ sprite (hỗ trợ lật ngang khi đi sang trái)
+      ctx.save();
+      if (facingLeft) {
+        ctx.translate(x, 0);
+        ctx.scale(-1, 1);
+        ctx.translate(-x, 0);
+      }
+      ctx.drawImage(sprite, drawX, drawY, charW, charH);
+      ctx.restore();
+    } else {
+      // Fallback nếu chưa tải xong ảnh hoặc lỗi
+      if (isMoving) {
+        this.drawWalkingAgent(ctx, x, y, frame, agent, facingLeft);
+      } else if (agent.current_room === 'boardroom' || agent.status === 'debating') {
+        if (agent.code === 'dung_1') {
+          this.drawChibiPresenterBoardroom(ctx, x, y, frame, agent);
+        } else if (agent.code === 'dung_2') {
+          this.drawChibiDebaterBoardroom(ctx, x, y, frame, agent);
+        } else {
+          this.drawSittingBoardroomAgent(ctx, x, y, frame, agent, false);
+        }
+      } else if (agent.code === 'dung_1' && agent.current_room === 'director_office') {
+        this.drawSittingSofaDirector(ctx, x, y, frame, agent);
+      } else if (agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
+        this.drawSittingDevAgent(ctx, x, y, frame, agent);
+      } else if (agent.code === 'dung_2' && agent.current_room === 'architect_office') {
+        this.drawSittingArchitectAgent(ctx, x, y, frame, agent);
+      } else if (agent.code === 'dung_4' && agent.current_room === 'games_room') {
+        this.drawSittingQAAgent(ctx, x, y, frame, agent);
+      } else if (agent.current_room === 'kitchen_pantry' || agent.status === 'resting') {
+        this.drawStandingPantryAgent(ctx, x, y, frame, agent);
+      } else {
+        this.drawIdleStandingAgent(ctx, x, y, frame, agent);
+      }
+      headTopY = isMoving ? y - 35 - Math.abs(Math.sin(frame * 0.25)) * 2 : y - 32;
     }
 
     // ─────────────────────────────────────────────────────────────────────
     // BẢNG TÊN & BONG BÓNG SUY NGHĨ FALLOUT SHELTER
     // ─────────────────────────────────────────────────────────────────────
-    const headTopY = isMoving ? y - 35 - Math.abs(Math.sin(frame * 0.25)) * 2 : y - 32;
-
     // Bảng tên Pixel nổi trên đầu
     ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
     ctx.fillRect(x - 22, headTopY - 14, 44, 13);

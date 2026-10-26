@@ -394,6 +394,38 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning (Vite v6 + TypeScript 0 error).
 - [x] Commit và đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-26] Hiện Thực Hóa 100% Nhân Vật Anime Chibi & Nội Thất Vector Chuẩn 4 Link Pinterest
+- [x] **Trích xuất & Tối ưu Trọn bộ Nhân vật Chibi từ Link Pinterest (`https://www.pinterest.com/pin/1013309984899659354/`)**:
+  - Dùng thuật toán Flood-fill BFS và Alpha Masking trích xuất toàn bộ 9 tư thế chibi nguyên bản ra file PNG trong suốt 32-bit (Transparent PNG) chuẩn pixel:
+    + `presenting_forward.png`: Đứng thuyết trình mở rộng 2 tay (Dũng 1 khi chủ trì phòng họp).
+    + `thinking_seated.png`: Ngồi chống cằm trầm ngâm phản biện (Dũng 2 khi tranh luận chiến lược).
+    + `thinking_stand.png`: Đứng chống cằm phân tích (Dũng 2 tại bàn kiến trúc).
+    + `three_quarter_idle.png`: Xoay người 3/4 tập trung gõ phím (Dũng 3 tại Dev Lab).
+    + `profile_walk.png`: Nghiêng người bước đi tự nhiên kèm hiệu ứng nhún chân (walking bob).
+    + `front_happy.png`: Đứng thẳng tươi vui (nghỉ ngơi, pantry).
+  - Tự động sinh 4 bộ phục trang đổi màu chuẩn nhận diện thương hiệu cho 4 Dũng:
+    + **Dũng 1**: Classic Navy Director (Áo vest xanh navy, cà vạt đỏ).
+    + **Dũng 2**: Slate Grey Architect & PM (Áo xám tro sang trọng).
+    + **Dũng 3**: Tech Cyan Fullstack Dev (Áo xanh cyan công nghệ).
+    + **Dũng 4**: Crimson Red QA Lead (Áo đỏ quyền lực, rà soát an ninh).
+  - Cập nhật đồng bộ Avatar nhận diện tại `frontend/public/assets/characters/` để thẻ Agent Card bên Sidebar và bong bóng Deliberation Chat ăn khớp 100% với Canvas.
+- [x] **Trích xuất & Tích hợp Nội thất Vector Chuẩn Pinterest (`pin/591730838527550441`, `pin/817544138597868043`, `pin/753156737725706874`)**:
+  - `boardroom_meeting_suite.png`: Bàn họp Racetrack Oval bo tròn viền gỗ sồi ấm áp, chân kim loại chịu lực, ghế Cantilever chân quỳ mạ crom bọc nỉ xanh navy, laptop mỏng mở slide biểu đồ.
+  - `lounge_suite.png`: Bộ tiếp khách giám đốc gồm Sofa 2 chỗ xanh navy đệm êm, ghế bành đơn 1 chỗ, bàn trà kính pastel có sách và chậu cây succulent xanh mát.
+  - `water_cooler.png`: Cây nước nóng lạnh úp bình xanh tươi mát tại Pantry.
+  - `photocopier.png`: Máy photocopy / in laser đa chức năng hiện đại.
+  - `tall_bookcase.png`: Kệ sách đứng cao tầng chứa nhiều file còng tài liệu màu sắc.
+  - `filing_cabinet_plant.png`: Tủ tài liệu có chậu cây xanh trên nóc.
+- [x] **Kiến trúc Nạp Tài nguyên ImageLoader Độc lập & Tối ưu Canvas**:
+  - Xây dựng module `ImageLoader` nạp trước toàn bộ tài nguyên vào bộ nhớ đệm, truy xuất `O(1)` tức thì, chống giật hình (zero flicker).
+  - Tự động lật hướng ngang (flip horizontal) khi nhân vật di chuyển sang trái/phải.
+  - Tự động căn chỉnh bóng đổ chân mềm mại trên sàn gạch và sàn gỗ.
+  - Hệ thống fallback an toàn sang đồ họa vector nếu hình ảnh đang tải.
+- [x] **Dọn dẹp Mã nguồn & Đóng gói Sạch sẽ (Clean Code)**:
+  - Loại bỏ hoàn toàn mã nguồn không sử dụng, biến trùng lặp.
+  - `npm.cmd run build` hoàn tất 100% với **0 lỗi, 0 cảnh báo**.
+- [x] Đã đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER
