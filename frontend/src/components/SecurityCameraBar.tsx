@@ -14,13 +14,13 @@ interface CamConfig {
 }
 
 const CAMERAS: CamConfig[] = [
-  { id: 'overview', code: 'CAM-TOWER', name: '🏢 Toàn Tháp AI' },
-  { id: 'director_office' as CameraView, code: 'FLOOR-04', name: '👑 Tầng 4: Penthouse Giám Đốc (Dũng 1)' },
-  { id: 'architect_office' as CameraView, code: 'FLOOR-03', name: '📐 Tầng 3: Bàn Tròn Kiến Trúc (Dũng 2)' },
-  { id: 'boardroom', code: 'HOLO-NET', name: '🌐 Cầu Truyền Hình Hologram' },
-  { id: 'dev_lab', code: 'FLOOR-02', name: '💻 Tầng 2: Cyber Dev Workshop (Dũng 3)' },
-  { id: 'games_room' as CameraView, code: 'FLOOR-01', name: '🛡️ Tầng 1: QA Cyber Defense (Dũng 4)' },
-  { id: 'kitchen_pantry' as CameraView, code: 'LOBBY-01', name: '☕ Sảnh Kính & Lounge Tầng 1' },
+  { id: 'overview', code: 'CAM-CYBER', name: '🌐 Toàn Cảnh Cyber Office (16:9)' },
+  { id: 'director_office' as CameraView, code: 'DIR-EXEC', name: '👑 Giám Đốc (Dũng 1)' },
+  { id: 'architect_office' as CameraView, code: 'ARCH-HUD', name: '📐 Trạm Kiến Trúc (Dũng 2)' },
+  { id: 'boardroom', code: 'HOLO-3D', name: '🔮 Bàn Tròn Họp Hologram 3D' },
+  { id: 'dev_lab', code: 'DEV-LAB', name: '💻 Trạm Cyber Dev (Dũng 3)' },
+  { id: 'games_room' as CameraView, code: 'QA-STRESS', name: '🛡️ Trạm QA & Test (Dũng 4)' },
+  { id: 'kitchen_pantry' as CameraView, code: 'LOUNGE-SKY', name: '☕ Sảnh Cafe & Xe Bay' },
 ];
 
 

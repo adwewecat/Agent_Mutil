@@ -1,91 +1,93 @@
 /**
- * Bản đồ văn phòng ảo Pixel Office 4D Isometric chuẩn phong cách Pinterest Pin 412290540892514371
- * Kích thước chuẩn: 960x540 (Tỉ lệ 16:9 Pixel-Perfect)
- * Bố cục văn phòng mở (Open-Plan) với các cụm vách ngăn Cubicle, phân bổ đúng 7 chỗ ngồi công sở
+ * Bản đồ văn phòng ảo Cyberpunk High-Tech AI Virtual Office 16:9 (1376x768)
+ * - Cửa sổ kính toàn cảnh nhìn ra đại lộ xe bay (Flying Cars & Highway Traffic)
+ * - 3 trạm làm việc riêng biệt có màn hình Transparent Holographic HUD
+ * - Bàn tròn họp dự án trung tâm với Hologram 3D xoay vòng
+ * - Sảnh thư giãn cà phê & ngắm thành phố tương lai
  */
 
 import { OfficeRoom } from '../types';
 
-export const OFFICE_WIDTH = 800;
-export const OFFICE_HEIGHT = 1200;
+export const OFFICE_WIDTH = 1376;
+export const OFFICE_HEIGHT = 768;
 
 export const ROOMS: OfficeRoom[] = [
   {
     id: 'director_office',
-    name: 'Tầng 4: Penthouse Giám Đốc (Dũng 1)',
-    x: 240,
-    y: 320,
-    width: 320,
+    name: 'Executive Lounge & Chỉ Đạo (Dũng 1)',
+    x: 480,
+    y: 550,
+    width: 140,
     height: 140,
     color: '#3b82f6',
-    floorColor: '#0f172a',
-    description: 'Skydeck điều hành tối cao nhìn toàn cảnh thành phố tương lai, Hologram AI toàn cầu và phòng chỉ đạo chiến lược.',
-    targetX: 395,
-    targetY: 385, // Vị trí Dũng 1 tại Tầng 4
+    floorColor: '#0a0e17',
+    description: 'Khu vực điều hành tối cao, chỉ đạo chiến lược sản phẩm và đàm phán giải pháp tối ưu.',
+    targetX: 525,
+    targetY: 615,
   },
   {
     id: 'architect_office',
-    name: 'Tầng 3: Bàn Tròn Kiến Trúc & PM (Dũng 2)',
-    x: 240,
-    y: 490,
-    width: 320,
-    height: 150,
+    name: 'Trạm Kiến Trúc & PM (Dũng 2)',
+    x: 290,
+    y: 420,
+    width: 140,
+    height: 130,
     color: '#8b5cf6',
-    floorColor: '#0f172a',
-    description: 'Bàn họp tròn trung tâm chiếu Hologram 3D Microservices DAG, thẩm định tải hệ thống và phản biện rủi ro.',
-    targetX: 395,
-    targetY: 555, // Vị trí Dũng 2 tại Tầng 3
+    floorColor: '#0a0e17',
+    description: 'Trạm thẩm định kiến trúc Microservices DAG, phân tích rủi ro hệ thống và quản trị dự án.',
+    targetX: 355,
+    targetY: 490,
   },
   {
     id: 'dev_lab',
-    name: 'Tầng 2: Cyber Dev Workshop (Dũng 3)',
-    x: 240,
-    y: 670,
-    width: 320,
-    height: 150,
+    name: 'Cyber Dev Lab (Dũng 3)',
+    x: 170,
+    y: 520,
+    width: 150,
+    height: 140,
     color: '#10b981',
-    floorColor: '#0f172a',
-    description: 'Trạm lập trình Fullstack với màn hình Matrix Code Rain neon, phím cơ RGB, stream dữ liệu và clean code.',
-    targetX: 380,
-    targetY: 750, // Vị trí Dũng 3 tại Tầng 2
+    floorColor: '#0a0e17',
+    description: 'Trạm lập trình Fullstack với màn hình Holographic HUD Matrix Code, phím cơ phát sáng và stream Clean Code.',
+    targetX: 245,
+    targetY: 590,
   },
   {
     id: 'games_room',
-    name: 'Tầng 1: QA Cyber Defense (Dũng 4)',
-    x: 240,
-    y: 860,
-    width: 320,
-    height: 160,
+    name: 'Trạm Kiểm Định An Ninh & QA (Dũng 4)',
+    x: 390,
+    y: 350,
+    width: 140,
+    height: 120,
     color: '#ef4444',
-    floorColor: '#0f172a',
-    description: 'Trạm kiểm định an ninh 360 độ, ma trận stress test 5,000 TPS và khiên phòng thủ cyber shield.',
-    targetX: 395,
-    targetY: 940, // Vị trí Dũng 4 tại Tầng 1
+    floorColor: '#0a0e17',
+    description: 'Trạm kiểm định an ninh 360 độ, ma trận Stress Test 5,000 TPS và radar phát hiện lỗ hổng.',
+    targetX: 455,
+    targetY: 410,
   },
   {
     id: 'boardroom',
-    name: 'Hội Đồng Chiến Lược Tranh Luận (Tầng 3 & 4)',
-    x: 240,
-    y: 490,
-    width: 320,
-    height: 150,
+    name: 'Bàn Tròn Họp Dự Án Hologram 3D',
+    x: 520,
+    y: 560,
+    width: 340,
+    height: 200,
     color: '#38bdf8',
-    floorColor: '#0f172a',
-    description: 'Hội đồng tranh luận đa tầng giữa Giám đốc Dũng 1 và Kiến trúc sư Dũng 2 qua cầu truyền hình Hologram.',
-    targetX: 395,
-    targetY: 555, // Bàn tròn tranh luận Tầng 3
+    floorColor: '#0a0e17',
+    description: 'Bàn họp tròn trung tâm chiếu Hologram 3D xoay vòng, nơi 4 Dũng ngồi tranh luận phương án tối ưu.',
+    targetX: 690,
+    targetY: 665,
   },
   {
     id: 'kitchen_pantry',
-    name: 'Sảnh Cafe & Tiếp Đón Tầng 1',
-    x: 350,
-    y: 920,
-    width: 180,
+    name: 'Sảnh Cafe & Ngắm Xe Bay',
+    x: 400,
+    y: 640,
+    width: 160,
     height: 100,
     color: '#f59e0b',
-    floorColor: '#0f172a',
-    description: 'Khu vực giải lao và sảnh kính đón khách tại tầng trệt của Tháp Công Nghệ AI.',
-    targetX: 440,
-    targetY: 940, // Sảnh tầng trệt
+    floorColor: '#0a0e17',
+    description: 'Khu vực thư giãn ngắm thành phố Cyberpunk ngoài cửa sổ kính và nạp năng lượng cà phê.',
+    targetX: 470,
+    targetY: 700,
   },
 ];

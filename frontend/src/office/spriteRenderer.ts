@@ -18,6 +18,31 @@ export class SpriteRenderer {
    * 1. Dựng nền tổng thể và kiến trúc văn phòng (Sàn nhà, Tường 3D, Cửa sổ kính, Vách ngăn phòng)
    */
   public static drawOfficeStructure(ctx: CanvasRenderingContext2D, width: number, height: number, frame: number = 0) {
+    // 0. CYBERPUNK HIGH-TECH AI VIRTUAL OFFICE 16:9 (1376x768)
+    const cyberImg = ImageLoader.getOffice('cyberpunk_office') || ImageLoader.getOffice('cyberpunk_office_clean');
+    if (cyberImg) {
+      // Nền đen vũ trụ & thành phố đêm
+      ctx.fillStyle = '#050811';
+      ctx.fillRect(0, 0, width, height);
+      // Dựng bối cảnh 3D văn phòng Cyberpunk
+      ctx.drawImage(cyberImg, 0, 0, width, height);
+
+      // 1. Đại lộ xe bay & xe cao tốc chạy ngoài cửa sổ kính (Outside Window Traffic)
+      this.drawCyberWindowHighwayTraffic(ctx, frame);
+      this.drawAutonomousFlyingCars(ctx, frame);
+      this.drawWindowPedestrians(ctx, frame);
+
+      // 2. Bàn tròn họp trung tâm: Chiếu Hologram 3D xoay vòng đỉnh cao
+      this.drawCenterRoundTableHologram(ctx, frame);
+
+      // 3. Màn hình Holographic HUD tại 3 trạm làm việc riêng biệt
+      this.drawWorkstationHolographicHUDs(ctx, frame);
+
+      // 4. Bụi Cyber & Neon Glow Ambient
+      this.drawCyberParticles(ctx, frame);
+      return;
+    }
+
     // 1. THÁP CÔNG NGHỆ TƯƠNG LAI 4 TẦNG (Pin 1083256516649506882)
     const towerImg = ImageLoader.getOffice('ai_cyber_tower');
     if (towerImg) {
@@ -475,6 +500,15 @@ export class SpriteRenderer {
    */
   public static getFurnitureDrawables(agents: Agent[] = [], _frame: number = 0): ZDrawable[] {
     const drawables: ZDrawable[] = [];
+
+    // ───────────────────────────────────────────────────────────────────────
+    // VĂN PHÒNG CYBERPUNK HIGH-TECH 16:9 (1376x768)
+    // ───────────────────────────────────────────────────────────────────────
+    const cyberImg = ImageLoader.getOffice('cyberpunk_office') || ImageLoader.getOffice('cyberpunk_office_clean');
+    if (cyberImg) {
+      // Trong chế độ Cyberpunk Office 16:9, toàn bộ nội thất 3D đã tích hợp hoàn hảo trong background
+      return drawables;
+    }
 
     // ───────────────────────────────────────────────────────────────────────
     // THÁP CÔNG NGHỆ TƯƠNG LAI 4 TẦNG (Pin 1083256516649506882)
@@ -4118,8 +4152,8 @@ export class SpriteRenderer {
     const count = 30;
     for (let i = 0; i < count; i++) {
       const seed = i * 137.5;
-      const x = 180 + ((seed * 7.3 + frame * 0.3) % 440);
-      const y = 80 + ((seed * 11.7 + frame * 0.2) % 1060);
+      const x = 180 + ((seed * 7.3 + frame * 0.3) % 1100);
+      const y = 80 + ((seed * 11.7 + frame * 0.2) % 650);
       const alpha = 0.2 + 0.45 * Math.sin(frame * 0.03 + i);
       const size = 1 + (i % 3) * 0.7;
 
@@ -4130,4 +4164,499 @@ export class SpriteRenderer {
     }
     ctx.restore();
   }
+
+  /**
+   * 6. Đại lộ xe cao tốc Cyberpunk ngoài cửa sổ kính (Outside Window Highway Traffic)
+   */
+  public static drawCyberWindowHighwayTraffic(ctx: CanvasRenderingContext2D, frame: number) {
+    ctx.save();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CAO TỐC VIADUCT TRÊN CAO (x: 500..1376, y: 242..258)
+    // ─────────────────────────────────────────────────────────────────────────
+    const highwayStartX = 500;
+    const highwayWidth = 876;
+    const highwayY = 248;
+
+    // Làn 1: Xe chạy sang phải (vận tốc dương)
+    const carsRight = [
+      { speed: 2.8, offset: 0, color: '#38bdf8', len: 18, h: 5 },
+      { speed: 3.4, offset: 240, color: '#facc15', len: 22, h: 6 },
+      { speed: 2.2, offset: 480, color: '#ec4899', len: 16, h: 5 },
+      { speed: 3.0, offset: 690, color: '#38bdf8', len: 20, h: 6 },
+    ];
+
+    carsRight.forEach(car => {
+      const cx = highwayStartX + ((frame * car.speed + car.offset) % highwayWidth);
+      const cy = highwayY - 3;
+
+      // Tia đèn pha chiếu rọi về phía trước (Front Headlight Beam)
+      const beamGrad = ctx.createLinearGradient(cx + car.len, cy, cx + car.len + 35, cy);
+      beamGrad.addColorStop(0, 'rgba(224, 242, 254, 0.45)');
+      beamGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = beamGrad;
+      ctx.beginPath();
+      ctx.moveTo(cx + car.len, cy + 1);
+      ctx.lineTo(cx + car.len + 35, cy - 2);
+      ctx.lineTo(cx + car.len + 35, cy + car.h + 2);
+      ctx.lineTo(cx + car.len, cy + car.h - 1);
+      ctx.closePath();
+      ctx.fill();
+
+      // Thân xe Cyber pod khí động học
+      ctx.fillStyle = car.color;
+      ctx.fillRect(cx, cy, car.len, car.h);
+
+      // Đèn hậu đỏ phát sáng kéo vệt (Red Taillight Trail)
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.9)';
+      ctx.fillRect(cx - 3, cy + 1, 3, car.h - 2);
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+      ctx.fillRect(cx - 15, cy + 1, 12, car.h - 2);
+    });
+
+    // Làn 2: Xe chạy sang trái (vận tốc âm)
+    const carsLeft = [
+      { speed: 3.2, offset: 120, color: '#a855f7', len: 19, h: 5 },
+      { speed: 2.5, offset: 360, color: '#10b981', len: 21, h: 6 },
+      { speed: 3.6, offset: 620, color: '#38bdf8', len: 17, h: 5 },
+    ];
+
+    carsLeft.forEach(car => {
+      const progress = (frame * car.speed + car.offset) % highwayWidth;
+      const cx = highwayStartX + highwayWidth - progress;
+      const cy = highwayY + 5;
+
+      // Tia đèn pha chiếu rọi về phía trước (hướng trái)
+      const beamGrad = ctx.createLinearGradient(cx, cy, cx - 35, cy);
+      beamGrad.addColorStop(0, 'rgba(224, 242, 254, 0.45)');
+      beamGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = beamGrad;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + 1);
+      ctx.lineTo(cx - 35, cy - 2);
+      ctx.lineTo(cx - 35, cy + car.h + 2);
+      ctx.lineTo(cx, cy + car.h - 1);
+      ctx.closePath();
+      ctx.fill();
+
+      // Thân xe
+      ctx.fillStyle = car.color;
+      ctx.fillRect(cx, cy, car.len, car.h);
+
+      // Đèn hậu đỏ hướng phải
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.9)';
+      ctx.fillRect(cx + car.len, cy + 1, 3, car.h - 2);
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+      ctx.fillRect(cx + car.len + 3, cy + 1, 12, car.h - 2);
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // NÚT GIAO VÒNG XUYẾN CẦU VƯỢT (x: 880..1360, y: 395..440)
+    // ─────────────────────────────────────────────────────────────────────────
+    const loopCars = [
+      { tOffset: 0, color: '#38bdf8' },
+      { tOffset: 0.28, color: '#facc15' },
+      { tOffset: 0.58, color: '#ec4899' },
+      { tOffset: 0.85, color: '#a855f7' },
+    ];
+
+    loopCars.forEach(lc => {
+      const t = ((frame * 0.007 + lc.tOffset) % 1);
+      const lx = 880 + t * 470;
+      const ly = 398 + Math.sin(t * Math.PI) * 36;
+
+      ctx.fillStyle = lc.color;
+      ctx.fillRect(lx, ly, 14, 5);
+
+      // Vệt đỏ phía sau
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
+      ctx.fillRect(lx - 4, ly + 1, 4, 3);
+    });
+
+    ctx.restore();
+  }
+
+  /**
+   * 7. Xe bay tự hành tuần tra trên bầu trời Cyberpunk (Autonomous Flying Cars / Spinners)
+   */
+  public static drawAutonomousFlyingCars(ctx: CanvasRenderingContext2D, frame: number) {
+    ctx.save();
+    const skyStartX = 520;
+    const skySpan = 820;
+
+    const spinners = [
+      { yBase: 118, speed: 1.6, offset: 50, dir: 1, scale: 0.85, color: '#38bdf8' },
+      { yBase: 152, speed: 2.2, offset: 280, dir: -1, scale: 1.0, color: '#818cf8' },
+      { yBase: 188, speed: 1.9, offset: 540, dir: 1, scale: 1.15, color: '#38bdf8' },
+      { yBase: 136, speed: 1.4, offset: 720, dir: -1, scale: 0.9, color: '#c084fc' },
+    ];
+
+    spinners.forEach((sp, idx) => {
+      const progress = (frame * sp.speed + sp.offset) % skySpan;
+      const sx = sp.dir === 1 ? (skyStartX + progress) : (skyStartX + skySpan - progress);
+      // Hiệu ứng nhấp nhô lơ lửng chống trọng lực (Anti-Gravity Hover Bob)
+      const sy = sp.yBase + Math.sin(frame * 0.06 + idx * 1.5) * 2.5;
+
+      const w = 26 * sp.scale;
+      const h = 8 * sp.scale;
+
+      ctx.save();
+      ctx.translate(sx, sy);
+      if (sp.dir === -1) ctx.scale(-1, 1);
+
+      // Luồng phản lực chống trọng lực xanh cyan rực rỡ bên dưới đáy xe
+      const thrustGrad = ctx.createRadialGradient(w * 0.5, h, 1, w * 0.5, h + 8 * sp.scale, 8 * sp.scale);
+      thrustGrad.addColorStop(0, 'rgba(56, 189, 248, 0.7)');
+      thrustGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+      ctx.fillStyle = thrustGrad;
+      ctx.beginPath();
+      ctx.ellipse(w * 0.5, h + 4, w * 0.45, 5 * sp.scale, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Thân tàu bay Spinner tương lai
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.roundRect(0, 0, w, h, 3);
+      ctx.fill();
+      ctx.strokeStyle = sp.color;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Kính buồng lái phát sáng neon
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.7)';
+      ctx.fillRect(w * 0.35, 1, w * 0.4, h * 0.5);
+
+      // Đèn hoa tiêu chớp nháy hàng không (FAA Strobe Beacons)
+      const isStrobeOn = (frame + idx * 12) % 35 < 8;
+      if (isStrobeOn) {
+        // Đèn đỏ cánh trái
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(2, 0, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Đèn xanh lá cánh phải
+        ctx.fillStyle = '#22c55e';
+        ctx.beginPath();
+        ctx.arc(w - 2, 0, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore();
+    });
+
+    ctx.restore();
+  }
+
+  /**
+   * 8. Người đi bộ lướt qua trên hành lang kính ngoài trời (Pedestrians Outside)
+   */
+  public static drawWindowPedestrians(ctx: CanvasRenderingContext2D, frame: number) {
+    ctx.save();
+    const walkStartX = 620;
+    const walkSpan = 560;
+    const walkY = 292;
+
+    const peds = [
+      { speed: 0.55, offset: 0, dir: 1, color: 'rgba(255, 255, 255, 0.45)' },
+      { speed: 0.45, offset: 160, dir: -1, color: 'rgba(56, 189, 248, 0.45)' },
+      { speed: 0.62, offset: 340, dir: 1, color: 'rgba(250, 204, 21, 0.45)' },
+      { speed: 0.50, offset: 480, dir: -1, color: 'rgba(168, 85, 247, 0.45)' },
+    ];
+
+    peds.forEach((p, idx) => {
+      const progress = (frame * p.speed + p.offset) % walkSpan;
+      const px = p.dir === 1 ? (walkStartX + progress) : (walkStartX + walkSpan - progress);
+      const bob = Math.abs(Math.sin(frame * 0.15 + idx)) * 1.5;
+
+      ctx.fillStyle = p.color;
+      // Đầu người đi bộ
+      ctx.beginPath();
+      ctx.arc(px, walkY - 8 - bob, 2, 0, Math.PI * 2);
+      ctx.fill();
+      // Thân người đi bộ
+      ctx.fillRect(px - 1.5, walkY - 6 - bob, 3, 6);
+    });
+
+    ctx.restore();
+  }
+
+  /**
+   * 9. Bàn tròn trung tâm: Chiếu Hologram 3D xoay vòng đỉnh cao (Center Round Table Hologram)
+   */
+  public static drawCenterRoundTableHologram(ctx: CanvasRenderingContext2D, frame: number) {
+    const cx = 690;
+    const cy = 665;
+
+    ctx.save();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // VÒNG TRÒN PHÁT SÓNG EMITTER MỞ RỘNG TRÊN MẶT BÀN (Pulsing Emitter Rings)
+    // ─────────────────────────────────────────────────────────────────────────
+    for (let r = 0; r < 3; r++) {
+      const pulseProgress = ((frame * 0.6 + r * 22) % 65) / 65;
+      const radius = 6 + pulseProgress * 55;
+      const alpha = (1 - pulseProgress) * 0.6;
+
+      ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, radius, radius * 0.38, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // HÌNH NÓN ÁNH SÁNG MÁY CHIẾU HOLOGRAM CHIẾU LÊN KHÔNG GIAN (Projector Cone)
+    // ─────────────────────────────────────────────────────────────────────────
+    const coneGrad = ctx.createLinearGradient(cx, cy, cx, cy - 85);
+    coneGrad.addColorStop(0, 'rgba(56, 189, 248, 0.28)');
+    coneGrad.addColorStop(0.6, 'rgba(56, 189, 248, 0.12)');
+    coneGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+
+    ctx.fillStyle = coneGrad;
+    ctx.beginPath();
+    ctx.moveTo(cx - 30, cy);
+    ctx.lineTo(cx - 50, cy - 80);
+    ctx.lineTo(cx + 50, cy - 80);
+    ctx.lineTo(cx + 30, cy);
+    ctx.closePath();
+    ctx.fill();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CẤU TRÚC 3D HOLOGRAM XOAY VÒNG (Rotating 3D Wireframe Project Core)
+    // ─────────────────────────────────────────────────────────────────────────
+    const coreY = cy - 50;
+    const rot = frame * 0.025;
+
+    // Vòng quỹ đạo dữ liệu xoay nghiêng (Orbit Data Rings)
+    for (let o = 0; o < 2; o++) {
+      const angle = rot + o * (Math.PI / 2);
+      ctx.save();
+      ctx.translate(cx, coreY);
+      ctx.rotate(0.3); // Nghiêng góc 3D
+      ctx.strokeStyle = o === 0 ? 'rgba(56, 189, 248, 0.65)' : 'rgba(168, 85, 247, 0.65)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 36, 14, angle, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Nốt dữ liệu phát sáng chạy trên quỹ đạo
+      const nodeX = Math.cos(angle) * 36;
+      const nodeY = Math.sin(angle) * 14;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(nodeX, nodeY, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Khối đa diện 3D Wireframe Project Core ở trung tâm
+    const numPoints = 6;
+    const radiusCore = 18;
+    const pts: { x: number; y: number }[] = [];
+
+    for (let i = 0; i < numPoints; i++) {
+      const theta = rot + (i * 2 * Math.PI) / numPoints;
+      pts.push({
+        x: cx + Math.cos(theta) * radiusCore,
+        y: coreY + Math.sin(theta) * (radiusCore * 0.45),
+      });
+    }
+
+    // Vẽ đa giác đáy
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    pts.forEach((p, i) => {
+      if (i === 0) ctx.moveTo(p.x, p.y);
+      else ctx.lineTo(p.x, p.y);
+    });
+    ctx.closePath();
+    ctx.stroke();
+
+    // Đỉnh chóp trên và dưới tạo hình Kim Cương Quantum (Quantum Diamond)
+    const topY = coreY - 22;
+    const botY = coreY + 16;
+
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
+    ctx.lineWidth = 1;
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.moveTo(cx, topY);
+      ctx.lineTo(p.x, p.y);
+      ctx.lineTo(cx, botY);
+      ctx.stroke();
+    });
+
+    // Quét tia Laser Hologram quét dọc (Sweeping Scanline)
+    const scanLineY = coreY - 20 + Math.sin(frame * 0.08) * 18;
+    const scanGrad = ctx.createLinearGradient(cx - 45, scanLineY, cx + 45, scanLineY);
+    scanGrad.addColorStop(0, 'rgba(56, 189, 248, 0)');
+    scanGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.9)');
+    scanGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+    ctx.strokeStyle = scanGrad;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx - 45, scanLineY);
+    ctx.lineTo(cx + 45, scanLineY);
+    ctx.stroke();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // BẢNG TEXT TRẠNG THÁI HOLOGRAM NỔI LƠ LỬNG (Floating Holographic Status)
+    // ─────────────────────────────────────────────────────────────────────────
+    ctx.save();
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.roundRect(cx - 65, coreY - 50, 130, 18, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 8px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('◈ AI PROJECT CORE v4.0 ◈', cx, coreY - 38);
+    ctx.restore();
+
+    ctx.restore();
+  }
+
+  /**
+   * 10. Màn hình Holographic HUD phát sáng tại 3 trạm làm việc riêng biệt
+   */
+  public static drawWorkstationHolographicHUDs(ctx: CanvasRenderingContext2D, frame: number) {
+    ctx.save();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // TRẠM 1: CYBER DEV LAB (Dũng 3) - x: 205, y: 535
+    // ─────────────────────────────────────────────────────────────────────────
+    const devX = 205;
+    const devY = 535;
+
+    // Bảng HUD trong suốt phát sáng xanh lá matrix
+    ctx.fillStyle = 'rgba(6, 78, 59, 0.35)';
+    ctx.strokeStyle = 'rgba(16, 185, 129, 0.75)';
+    ctx.lineWidth = 1;
+    ctx.roundRect(devX - 30, devY - 30, 60, 36, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // Header HUD
+    ctx.fillStyle = '#10b981';
+    ctx.font = 'bold 7px "JetBrains Mono", monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('[DEV LAB: DŨNG 3]', devX - 26, devY - 21);
+
+    // Dòng Code Matrix cuộn xanh lá
+    const codeLines = [
+      'const api = await fastApi();',
+      'renderMatrix(cleanCode);',
+      'status: 200 OK • clean',
+    ];
+    ctx.font = '6px "JetBrains Mono", monospace';
+    codeLines.forEach((cl, idx) => {
+      const alpha = 0.5 + 0.4 * Math.sin(frame * 0.1 + idx);
+      ctx.fillStyle = `rgba(52, 211, 153, ${alpha})`;
+      ctx.fillText(cl, devX - 26, devY - 12 + idx * 7);
+    });
+
+    // Điểm nháy đèn trạng thái
+    ctx.fillStyle = (frame % 20 < 10) ? '#10b981' : '#047857';
+    ctx.beginPath();
+    ctx.arc(devX + 22, devY - 22, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // TRẠM 2: TRẠM KIẾN TRÚC & PM (Dũng 2) - x: 310, y: 445
+    // ─────────────────────────────────────────────────────────────────────────
+    const archX = 310;
+    const archY = 445;
+
+    // Bảng HUD trong suốt tím neon
+    ctx.fillStyle = 'rgba(76, 29, 149, 0.35)';
+    ctx.strokeStyle = 'rgba(139, 92, 246, 0.75)';
+    ctx.lineWidth = 1;
+    ctx.roundRect(archX - 30, archY - 30, 60, 36, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#a855f7';
+    ctx.font = 'bold 7px "JetBrains Mono", monospace';
+    ctx.fillText('[ARCH DAG: DŨNG 2]', archX - 26, archY - 21);
+
+    // Đồ thị vi dịch vụ Microservices Node DAG
+    const nodes = [
+      { x: archX - 18, y: archY - 10, name: 'Gateway' },
+      { x: archX,      y: archY - 14, name: 'Auth' },
+      { x: archX,      y: archY - 4,  name: 'Core' },
+      { x: archX + 18, y: archY - 8,  name: 'DB' },
+    ];
+
+    // Vẽ đường nối giữa các nodes
+    ctx.strokeStyle = 'rgba(192, 132, 252, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(nodes[0].x, nodes[0].y);
+    ctx.lineTo(nodes[1].x, nodes[1].y);
+    ctx.lineTo(nodes[3].x, nodes[3].y);
+    ctx.moveTo(nodes[0].x, nodes[0].y);
+    ctx.lineTo(nodes[2].x, nodes[2].y);
+    ctx.lineTo(nodes[3].x, nodes[3].y);
+    ctx.stroke();
+
+    // Vẽ từng node phát sáng
+    nodes.forEach(n => {
+      ctx.fillStyle = '#c084fc';
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // TRẠM 3: KIỂM THỬ QA & AN NINH (Dũng 4) - x: 415, y: 365
+    // ─────────────────────────────────────────────────────────────────────────
+    const qaX = 415;
+    const qaY = 365;
+
+    // Bảng HUD đỏ/cyan an ninh
+    ctx.fillStyle = 'rgba(127, 29, 29, 0.35)';
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.75)';
+    ctx.lineWidth = 1;
+    ctx.roundRect(qaX - 30, qaY - 30, 60, 36, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#ef4444';
+    ctx.font = 'bold 7px "JetBrains Mono", monospace';
+    ctx.fillText('[QA RADAR: DŨNG 4]', qaX - 26, qaY - 21);
+
+    // Radar quét an ninh 360 độ
+    const radarCx = qaX;
+    const radarCy = qaY - 6;
+    const radarR = 12;
+
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(radarCx, radarCy, radarR, 0, Math.PI * 2);
+    ctx.arc(radarCx, radarCy, radarR * 0.5, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Kim radar xoay quét
+    const sweepAngle = frame * 0.08;
+    ctx.strokeStyle = '#f87171';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(radarCx, radarCy);
+    ctx.lineTo(radarCx + Math.cos(sweepAngle) * radarR, radarCy + Math.sin(sweepAngle) * radarR);
+    ctx.stroke();
+
+    // Text kết quả kiểm định
+    ctx.fillStyle = '#fca5a5';
+    ctx.font = '6px "JetBrains Mono", monospace';
+    ctx.fillText('STRESS: 5,000 TPS OK', qaX - 26, qaY + 4);
+
+    ctx.restore();
+  }
 }
+

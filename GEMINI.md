@@ -506,6 +506,38 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - Build `npm run build` hoàn tất 100%, 0 lỗi, 0 warning.
   - Đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-27] Triển khai Văn phòng Ảo Cyberpunk High-Tech 16:9 (Cửa Sổ Kính, Xe Bay, 3 Trạm HUD & Bàn Họp Hologram 3D)
+- [x] **Bối Cảnh Tổng Thể 3D Cyberpunk High-Tech 16:9 (Chuẩn Lựa Chọn 1 & Lựa Chọn 3)**:
+  - Bản đồ không gian tỉ lệ vàng 16:9 (`1376 x 768`), xóa bỏ giới hạn tháp dọc, chuyển thành văn phòng tương lai toàn cảnh.
+  - Cửa sổ kính panoramic nhìn ra đại lộ thành phố cyberpunk lung linh về đêm:
+    + **Đại lộ cao tốc ngoài cửa sổ (Window Highway Traffic)**: Các luồng xe pod tương lai chạy với vệt đèn pha rực sáng (`Headlight beams`) và vệt đèn hậu đỏ (`Red taillights trail`), nút giao vòng xuyến uốn lượn.
+    + **Xe bay tự hành (Autonomous Flying Cars / Spinners)**: 4 tàu bay di chuyển ở các độ cao khác nhau trên bầu trời với luồng phản lực chống trọng lực xanh cyan và đèn hoa tiêu nhấp nháy FAA (đỏ/xanh lá).
+    + **Người đi bộ qua lại (Passerby Pedestrians)**: Các bóng người đi bộ di chuyển nhịp nhàng trên hành lang kính ngoài trời.
+- [x] **Hệ Thống 3 Trạm Làm Việc Riêng Biệt với Màn Hình Holographic HUD**:
+  - **Trạm 1 (Cyber Dev Lab - Dũng 3)**: Màn hình HUD trong suốt góc nghiêng hiển thị dòng code Matrix cuộn liên tục, trạng thái Clean Code, phím cơ phát sáng và âm thanh gõ phím.
+  - **Trạm 2 (Kiến Trúc & PM - Dũng 2)**: Màn hình HUD trong suốt hiển thị đồ thị vi dịch vụ Microservices Node DAG phát sáng với luồng tín hiệu truyền dữ liệu và chỉ số `LATENCY: 1.2ms`.
+  - **Trạm 3 (Kiểm Định QA & An Ninh - Dũng 4)**: Màn hình HUD đỏ an ninh hiển thị Radar quét 360 độ liên tục, ma trận `STRESS TEST: 5,000 TPS OK`.
+  - **Khu vực Giám Đốc (Dũng 1)**: Vị trí điều hành tối cao tại đầu bàn họp và Executive Lounge.
+- [x] **Bàn Tròn Họp Dự Án Trung Tâm với Hologram 3D Xoay Vòng**:
+  - Tọa độ bàn tròn tại `(690, 665)`:
+    + Vòng tròn sóng phát xạ (Pulsing Emitter Rings) mở rộng liên tục trên mặt nỉ bàn tròn.
+    + Hình nón ánh sáng máy chiếu Hologram chiếu thẳng đứng lên không trung.
+    + Cấu trúc 3D kim cương lượng tử Wireframe xoay vòng với 2 vòng quỹ đạo dữ liệu (Orbit Data Rings) mang các nốt phát sáng.
+    + Tia Laser Hologram quét dọc (Sweeping Scanline) kèm bảng chữ trạng thái `◈ AI PROJECT CORE v4.0 ◈`.
+- [x] **Cơ Chế Nhân Vật 4 Dũng Tương Tác Trực Tiếp (3 Trạng Thái Chuẩn Kỹ Thuật)**:
+  - **Trạng thái 1 (Idle / Working)**: Từng Dũng ngồi làm việc đàng hoàng tại trạm chuyên môn của mình với tư thế và animation thích ứng (Dũng 3 code, Dũng 2 thẩm định kiến trúc, Dũng 4 kiểm định an ninh, Dũng 1 điều hành).
+  - **Trạng thái 2 (Meeting / Tranh Luận)**: Khi trigger sự kiện 'Họp' hoặc chu trình Deliberation, cả 4 nhân vật tự động tìm đường (Pathfind) bước về bàn tròn trung tâm, ngồi vào 4 ghế chỉ định riêng quanh bàn tròn Hologram 3D và tranh luận sôi nổi (Dũng 1 mở 2 tay thuyết trình, Dũng 2 chống cằm suy nghĩ, v.v.).
+  - **Trạng thái 3 (Roaming / Giải Lao)**: Thỉnh thoảng nhân viên đứng dậy đi bộ thư giãn ra sảnh ngắm xe bay hoặc uống cà phê 8 giây rồi tự động quay về bàn làm việc.
+  - Click-to-Move: Người dùng click vào bất kỳ Dũng nào để chọn và click sàn để điều động ngay lập tức.
+- [x] **Cập Nhật Toàn Bộ Hệ Thống Camera & CSS Co Giãn**:
+  - Camera Bar mới: `CAM-CYBER`, `DIR-EXEC`, `ARCH-HUD`, `HOLO-3D`, `DEV-LAB`, `QA-STRESS`, `LOUNGE-SKY`.
+  - CSS `.canvas-wrapper`: Đặt `aspect-ratio: 1376 / 768; max-width: 1100px;` vừa khít màn hình, không bị che khuất.
+- [x] **Đồng Bộ Backend, DB & Đóng Gói Build**:
+  - Cập nhật `ROOM_COORDINATES`, `BOARDROOM_SEATS` và `DEFAULT_AGENTS` trong `backend/app/services/office_manager.py`.
+  - Đồng bộ SQLite database `agent_multi.db`.
+  - Build `npm.cmd run build` trong `frontend/` hoàn tất sạch sẽ 100%, 0 lỗi, 0 warning.
+  - Sẵn sàng commit và đẩy lên GitHub.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

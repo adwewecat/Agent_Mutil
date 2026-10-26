@@ -8,16 +8,24 @@ import { SpriteRenderer } from './spriteRenderer';
 import { soundFx } from './soundEffects';
 import { ImageLoader } from './imageLoader';
 
-// Tọa độ các tầng của 4 Dũng trong Tháp Công Nghệ AI (800x1200)
+// Tọa độ các bàn làm việc và trạm chuyên môn của 4 Dũng trong Cyberpunk Office 16:9 (1376x768)
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
-  dung_1: { x: 395, y: 385, room: 'director_office', status: 'idle' },  // Tầng 4: Penthouse Giám Đốc
-  dung_2: { x: 395, y: 555, room: 'architect_office', status: 'idle' }, // Tầng 3: Bàn Tròn Kiến Trúc & PM
-  dung_3: { x: 380, y: 750, room: 'dev_lab', status: 'coding' },        // Tầng 2: Cyber Dev Workshop
-  dung_4: { x: 395, y: 940, room: 'games_room', status: 'testing' },    // Tầng 1: QA Cyber Defense
+  dung_1: { x: 525, y: 615, room: 'director_office', status: 'idle' },  // Ghế điều hành tối cao
+  dung_2: { x: 355, y: 490, room: 'architect_office', status: 'idle' }, // Trạm 2: Kiến Trúc & PM
+  dung_3: { x: 245, y: 590, room: 'dev_lab', status: 'coding' },        // Trạm 1: Cyber Dev Lab (Fullstack)
+  dung_4: { x: 455, y: 410, room: 'games_room', status: 'testing' },    // Trạm 3: QA & Stress Testing
 };
 
-// Khu vực sảnh kính tiếp đón & cafe tầng trệt
-const PANTRY_COFFEE = { x: 440, y: 940, room: 'kitchen_pantry' };
+// Sảnh cà phê & ngắm đại lộ xe bay ngoài cửa sổ kính
+const PANTRY_COFFEE = { x: 470, y: 700, room: 'kitchen_pantry' };
+
+// Chỗ ngồi quanh bàn tròn trung tâm khi diễn ra họp hoặc tranh luận dự án Hologram 3D
+const MEETING_SEATS: Record<string, { x: number; y: number }> = {
+  dung_1: { x: 525, y: 615 }, // Ghế trên bên trái bàn tròn
+  dung_2: { x: 555, y: 720 }, // Ghế dưới bên trái bàn tròn
+  dung_3: { x: 635, y: 750 }, // Ghế dưới trung tâm bàn tròn
+  dung_4: { x: 740, y: 750 }, // Ghế dưới bên phải bàn tròn
+};
 
 export class OfficeEngine {
   public canvas: HTMLCanvasElement;
@@ -71,17 +79,26 @@ export class OfficeEngine {
   public setAgents(newAgents: Agent[]) {
     this.agents = newAgents.map(newA => {
       const existing = this.agents.find(a => a.code === newA.code);
+      let targetX = newA.target_x;
+      let targetY = newA.target_y;
+
+      // Nếu chuyển tới bàn tròn phòng họp (boardroom), phân bổ từng ghế riêng biệt xung quanh Hologram
+      if (newA.current_room === 'boardroom' && MEETING_SEATS[newA.code]) {
+        targetX = MEETING_SEATS[newA.code].x;
+        targetY = MEETING_SEATS[newA.code].y;
+      }
+
       if (existing) {
         return {
           ...newA,
           pos_x: existing.pos_x,
           pos_y: existing.pos_y,
-          target_x: newA.target_x,
-          target_y: newA.target_y,
+          target_x: targetX,
+          target_y: targetY,
           status: existing.status === 'moving' && newA.status !== 'moving' ? existing.status : newA.status,
         };
       }
-      return { ...newA };
+      return { ...newA, target_x: targetX, target_y: targetY };
     });
   }
 
@@ -95,8 +112,14 @@ export class OfficeEngine {
   public moveAgentTo(code: string, targetX: number, targetY: number, newStatus: string = 'moving') {
     const agent = this.agents.find(a => a.code === code);
     if (agent) {
-      agent.target_x = Math.max(30, Math.min(OFFICE_WIDTH - 30, targetX));
-      agent.target_y = Math.max(30, Math.min(OFFICE_HEIGHT - 30, targetY));
+      let tx = targetX;
+      let ty = targetY;
+      if (tx === 690 && ty === 665 && MEETING_SEATS[code]) {
+        tx = MEETING_SEATS[code].x;
+        ty = MEETING_SEATS[code].y;
+      }
+      agent.target_x = Math.max(30, Math.min(OFFICE_WIDTH - 30, tx));
+      agent.target_y = Math.max(30, Math.min(OFFICE_HEIGHT - 30, ty));
       agent.status = newStatus as Agent['status'];
       soundFx.playWalk();
     }
@@ -134,7 +157,7 @@ export class OfficeEngine {
       if (room) {
         const centerX = room.x + room.width / 2;
         const centerY = room.y + room.height / 2;
-        this.targetZoom = 1.45; // Zoom vào tầng chi tiết trong Tháp AI
+        this.targetZoom = 1.35; // Zoom vào khu vực phòng trong Cyber Office 16:9
         const viewW = OFFICE_WIDTH / this.targetZoom;
         const viewH = OFFICE_HEIGHT / this.targetZoom;
         const rawX = centerX - viewW / 2;

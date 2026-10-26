@@ -24,6 +24,8 @@ export class ImageLoader {
   ];
 
   private static readonly OFFICE_ITEMS = [
+    'cyberpunk_office',
+    'cyberpunk_office_clean',
     'ai_cyber_tower',
     'pin_651403533596027077_room',
     'foreground_director_desk',
@@ -63,7 +65,11 @@ export class ImageLoader {
     // 2. Nạp nội thất văn phòng & phòng họp
     this.OFFICE_ITEMS.forEach(name => {
       const img = new Image();
-      img.src = `/sprites/office/${name}.png`;
+      if (name === 'cyberpunk_office') {
+        img.src = `/sprites/office/cyberpunk_office.jpg`;
+      } else {
+        img.src = `/sprites/office/${name}.png`;
+      }
       this.officeCache[name] = img;
     });
   }
