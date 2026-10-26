@@ -2632,9 +2632,15 @@ export class SpriteRenderer {
   // ═════════════════════════════════════════════════════════════════════════
 
   /**
-   * Vẽ Nhân vật 4 Dũng: Sử dụng trực tiếp ảnh Sprite Chibi Anime chuẩn Pinterest pin_1013309984899659354
+   * Vẽ Nhân vật 4 Dũng: Hỗ trợ cả 2 Nam 2 Nữ Anime chuyên nghiệp (Chuẩn Pinterest) và Fallback
    */
   public static drawAgent(ctx: CanvasRenderingContext2D, agent: Agent, frame: number, _spriteImg?: HTMLImageElement) {
+    const isCyberOffice = !!(ImageLoader.getOffice('cyberpunk_office') || ImageLoader.getOffice('cyberpunk_office_clean'));
+    if (isCyberOffice) {
+      this.drawRealisticCyberAgent(ctx, agent, frame);
+      return;
+    }
+
     const x = agent.pos_x;
     const y = agent.pos_y;
     const isMoving = agent.status === 'moving';
@@ -4167,108 +4173,127 @@ export class SpriteRenderer {
 
   /**
    * 6. Đại lộ xe cao tốc Cyberpunk ngoài cửa sổ kính (Outside Window Highway Traffic)
+   * KHẮC PHỤC TRIỆT ĐỂ: Cắt mặt nạ kính (Window Clip), xe chạy đúng độ dốc mặt đường, KHÔNG BAO GIỜ XUYÊN TƯỜNG!
    */
   public static drawCyberWindowHighwayTraffic(ctx: CanvasRenderingContext2D, frame: number) {
     ctx.save();
 
     // ─────────────────────────────────────────────────────────────────────────
-    // CAO TỐC VIADUCT TRÊN CAO (x: 500..1376, y: 242..258)
+    // CẮT KHUNG KÍNH CỬA SỔ NGOÀI TRỜI: x: 650..1376, y: 35..560
+    // TUYỆT ĐỐI KHÔNG BAO GIỜ XUYÊN QUA TƯỜNG HAY BÀN LÀM VIỆC BÊN TRONG!
     // ─────────────────────────────────────────────────────────────────────────
-    const highwayStartX = 500;
-    const highwayWidth = 876;
-    const highwayY = 248;
+    ctx.beginPath();
+    ctx.rect(650, 35, 726, 530);
+    ctx.clip();
 
-    // Làn 1: Xe chạy sang phải (vận tốc dương)
+    // Viaduct dốc xuống theo góc nghiêng của đường thật trong ảnh:
+    // Tại x = 655: y ≈ 310
+    // Tại x = 1370: y ≈ 570 (độ dốc roadSlope = 0.36)
+    const roadSlope = 0.36;
+    const roadAngle = Math.atan2(roadSlope, 1);
+    const highwayStartX = 655;
+    const highwayWidth = 715;
+
+    // Làn 1: Xe chạy xuôi dốc sang phải (vận tốc dương)
     const carsRight = [
-      { speed: 2.8, offset: 0, color: '#38bdf8', len: 18, h: 5 },
-      { speed: 3.4, offset: 240, color: '#facc15', len: 22, h: 6 },
-      { speed: 2.2, offset: 480, color: '#ec4899', len: 16, h: 5 },
-      { speed: 3.0, offset: 690, color: '#38bdf8', len: 20, h: 6 },
+      { speed: 2.6, offset: 0, color: '#38bdf8', len: 18, h: 5 },
+      { speed: 3.2, offset: 180, color: '#facc15', len: 20, h: 6 },
+      { speed: 2.3, offset: 360, color: '#ec4899', len: 16, h: 5 },
+      { speed: 2.9, offset: 540, color: '#38bdf8', len: 19, h: 6 },
     ];
 
     carsRight.forEach(car => {
-      const cx = highwayStartX + ((frame * car.speed + car.offset) % highwayWidth);
-      const cy = highwayY - 3;
+      const progress = (frame * car.speed + car.offset) % highwayWidth;
+      const cx = highwayStartX + progress;
+      const cy = 308 + progress * roadSlope;
 
-      // Tia đèn pha chiếu rọi về phía trước (Front Headlight Beam)
-      const beamGrad = ctx.createLinearGradient(cx + car.len, cy, cx + car.len + 35, cy);
-      beamGrad.addColorStop(0, 'rgba(224, 242, 254, 0.45)');
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(roadAngle);
+
+      // Tia đèn pha chiếu rọi về phía trước theo hướng dốc đường
+      const beamGrad = ctx.createLinearGradient(car.len, 0, car.len + 32, 0);
+      beamGrad.addColorStop(0, 'rgba(224, 242, 254, 0.5)');
       beamGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
       ctx.fillStyle = beamGrad;
       ctx.beginPath();
-      ctx.moveTo(cx + car.len, cy + 1);
-      ctx.lineTo(cx + car.len + 35, cy - 2);
-      ctx.lineTo(cx + car.len + 35, cy + car.h + 2);
-      ctx.lineTo(cx + car.len, cy + car.h - 1);
+      ctx.moveTo(car.len, 1);
+      ctx.lineTo(car.len + 32, -2);
+      ctx.lineTo(car.len + 32, car.h + 2);
+      ctx.lineTo(car.len, car.h - 1);
       ctx.closePath();
       ctx.fill();
 
-      // Thân xe Cyber pod khí động học
+      // Thân xe Cyber pod
       ctx.fillStyle = car.color;
-      ctx.fillRect(cx, cy, car.len, car.h);
+      ctx.fillRect(0, 0, car.len, car.h);
 
-      // Đèn hậu đỏ phát sáng kéo vệt (Red Taillight Trail)
+      // Đèn hậu đỏ phát sáng kéo vệt
       ctx.fillStyle = 'rgba(239, 68, 68, 0.9)';
-      ctx.fillRect(cx - 3, cy + 1, 3, car.h - 2);
+      ctx.fillRect(-3, 1, 3, car.h - 2);
       ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
-      ctx.fillRect(cx - 15, cy + 1, 12, car.h - 2);
+      ctx.fillRect(-12, 1, 9, car.h - 2);
+
+      ctx.restore();
     });
 
-    // Làn 2: Xe chạy sang trái (vận tốc âm)
+    // Làn 2: Xe chạy ngược dốc sang trái (làn dưới)
     const carsLeft = [
-      { speed: 3.2, offset: 120, color: '#a855f7', len: 19, h: 5 },
-      { speed: 2.5, offset: 360, color: '#10b981', len: 21, h: 6 },
-      { speed: 3.6, offset: 620, color: '#38bdf8', len: 17, h: 5 },
+      { speed: 3.0, offset: 90, color: '#a855f7', len: 18, h: 5 },
+      { speed: 2.4, offset: 270, color: '#10b981', len: 20, h: 6 },
+      { speed: 3.3, offset: 460, color: '#38bdf8', len: 17, h: 5 },
     ];
 
     carsLeft.forEach(car => {
       const progress = (frame * car.speed + car.offset) % highwayWidth;
       const cx = highwayStartX + highwayWidth - progress;
-      const cy = highwayY + 5;
+      const cy = 322 + (highwayWidth - progress) * roadSlope;
 
-      // Tia đèn pha chiếu rọi về phía trước (hướng trái)
-      const beamGrad = ctx.createLinearGradient(cx, cy, cx - 35, cy);
-      beamGrad.addColorStop(0, 'rgba(224, 242, 254, 0.45)');
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(roadAngle);
+
+      // Tia đèn pha chiếu về bên trái
+      const beamGrad = ctx.createLinearGradient(0, 0, -32, 0);
+      beamGrad.addColorStop(0, 'rgba(224, 242, 254, 0.5)');
       beamGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
       ctx.fillStyle = beamGrad;
       ctx.beginPath();
-      ctx.moveTo(cx, cy + 1);
-      ctx.lineTo(cx - 35, cy - 2);
-      ctx.lineTo(cx - 35, cy + car.h + 2);
-      ctx.lineTo(cx, cy + car.h - 1);
+      ctx.moveTo(0, 1);
+      ctx.lineTo(-32, -2);
+      ctx.lineTo(-32, car.h + 2);
+      ctx.lineTo(0, car.h - 1);
       ctx.closePath();
       ctx.fill();
 
       // Thân xe
       ctx.fillStyle = car.color;
-      ctx.fillRect(cx, cy, car.len, car.h);
+      ctx.fillRect(0, 0, car.len, car.h);
 
-      // Đèn hậu đỏ hướng phải
+      // Đèn hậu đỏ bên phải
       ctx.fillStyle = 'rgba(239, 68, 68, 0.9)';
-      ctx.fillRect(cx + car.len, cy + 1, 3, car.h - 2);
+      ctx.fillRect(car.len, 1, 3, car.h - 2);
       ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
-      ctx.fillRect(cx + car.len + 3, cy + 1, 12, car.h - 2);
+      ctx.fillRect(car.len + 3, 1, 9, car.h - 2);
+
+      ctx.restore();
     });
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // NÚT GIAO VÒNG XUYẾN CẦU VƯỢT (x: 880..1360, y: 395..440)
-    // ─────────────────────────────────────────────────────────────────────────
+    // Vòng cung cầu vượt bên phải (x: 930..1360, y: 415..465)
     const loopCars = [
       { tOffset: 0, color: '#38bdf8' },
-      { tOffset: 0.28, color: '#facc15' },
-      { tOffset: 0.58, color: '#ec4899' },
-      { tOffset: 0.85, color: '#a855f7' },
+      { tOffset: 0.35, color: '#facc15' },
+      { tOffset: 0.70, color: '#ec4899' },
     ];
 
     loopCars.forEach(lc => {
-      const t = ((frame * 0.007 + lc.tOffset) % 1);
-      const lx = 880 + t * 470;
-      const ly = 398 + Math.sin(t * Math.PI) * 36;
+      const t = ((frame * 0.006 + lc.tOffset) % 1);
+      const lx = 930 + t * 430;
+      const ly = 422 + Math.sin(t * Math.PI) * 26;
 
       ctx.fillStyle = lc.color;
-      ctx.fillRect(lx, ly, 14, 5);
+      ctx.fillRect(lx, ly, 13, 5);
 
-      // Vệt đỏ phía sau
       ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
       ctx.fillRect(lx - 4, ly + 1, 4, 3);
     });
@@ -4278,23 +4303,28 @@ export class SpriteRenderer {
 
   /**
    * 7. Xe bay tự hành tuần tra trên bầu trời Cyberpunk (Autonomous Flying Cars / Spinners)
+   * Cắt mặt nạ vùng trời bên ngoài cửa sổ kính
    */
   public static drawAutonomousFlyingCars(ctx: CanvasRenderingContext2D, frame: number) {
     ctx.save();
-    const skyStartX = 520;
-    const skySpan = 820;
+    // Giới hạn tuyệt đối trong khoảng trời ngoài cửa sổ kính
+    ctx.beginPath();
+    ctx.rect(650, 35, 726, 250);
+    ctx.clip();
+
+    const skyStartX = 660;
+    const skySpan = 690;
 
     const spinners = [
-      { yBase: 118, speed: 1.6, offset: 50, dir: 1, scale: 0.85, color: '#38bdf8' },
-      { yBase: 152, speed: 2.2, offset: 280, dir: -1, scale: 1.0, color: '#818cf8' },
-      { yBase: 188, speed: 1.9, offset: 540, dir: 1, scale: 1.15, color: '#38bdf8' },
-      { yBase: 136, speed: 1.4, offset: 720, dir: -1, scale: 0.9, color: '#c084fc' },
+      { yBase: 90,  speed: 1.5, offset: 40,  dir: 1,  scale: 0.85, color: '#38bdf8' },
+      { yBase: 135, speed: 2.1, offset: 260, dir: -1, scale: 0.95, color: '#818cf8' },
+      { yBase: 175, speed: 1.8, offset: 480, dir: 1,  scale: 1.10, color: '#38bdf8' },
+      { yBase: 115, speed: 1.3, offset: 640, dir: -1, scale: 0.90, color: '#c084fc' },
     ];
 
     spinners.forEach((sp, idx) => {
       const progress = (frame * sp.speed + sp.offset) % skySpan;
       const sx = sp.dir === 1 ? (skyStartX + progress) : (skyStartX + skySpan - progress);
-      // Hiệu ứng nhấp nhô lơ lửng chống trọng lực (Anti-Gravity Hover Bob)
       const sy = sp.yBase + Math.sin(frame * 0.06 + idx * 1.5) * 2.5;
 
       const w = 26 * sp.scale;
@@ -4304,7 +4334,7 @@ export class SpriteRenderer {
       ctx.translate(sx, sy);
       if (sp.dir === -1) ctx.scale(-1, 1);
 
-      // Luồng phản lực chống trọng lực xanh cyan rực rỡ bên dưới đáy xe
+      // Luồng phản lực chống trọng lực xanh cyan
       const thrustGrad = ctx.createRadialGradient(w * 0.5, h, 1, w * 0.5, h + 8 * sp.scale, 8 * sp.scale);
       thrustGrad.addColorStop(0, 'rgba(56, 189, 248, 0.7)');
       thrustGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
@@ -4313,7 +4343,7 @@ export class SpriteRenderer {
       ctx.ellipse(w * 0.5, h + 4, w * 0.45, 5 * sp.scale, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Thân tàu bay Spinner tương lai
+      // Thân tàu bay
       ctx.fillStyle = '#0f172a';
       ctx.beginPath();
       ctx.roundRect(0, 0, w, h, 3);
@@ -4322,20 +4352,18 @@ export class SpriteRenderer {
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      // Kính buồng lái phát sáng neon
+      // Kính buồng lái
       ctx.fillStyle = 'rgba(56, 189, 248, 0.7)';
       ctx.fillRect(w * 0.35, 1, w * 0.4, h * 0.5);
 
-      // Đèn hoa tiêu chớp nháy hàng không (FAA Strobe Beacons)
+      // Đèn hoa tiêu FAA
       const isStrobeOn = (frame + idx * 12) % 35 < 8;
       if (isStrobeOn) {
-        // Đèn đỏ cánh trái
         ctx.fillStyle = '#ef4444';
         ctx.beginPath();
         ctx.arc(2, 0, 2.5, 0, Math.PI * 2);
         ctx.fill();
 
-        // Đèn xanh lá cánh phải
         ctx.fillStyle = '#22c55e';
         ctx.beginPath();
         ctx.arc(w - 2, 0, 2.5, 0, Math.PI * 2);
@@ -4349,19 +4377,22 @@ export class SpriteRenderer {
   }
 
   /**
-   * 8. Người đi bộ lướt qua trên hành lang kính ngoài trời (Pedestrians Outside)
+   * 8. Người đi bộ ngoài trời trên cầu kính
    */
   public static drawWindowPedestrians(ctx: CanvasRenderingContext2D, frame: number) {
     ctx.save();
-    const walkStartX = 620;
-    const walkSpan = 560;
+    ctx.beginPath();
+    ctx.rect(650, 35, 726, 530);
+    ctx.clip();
+
+    const walkStartX = 660;
+    const walkSpan = 520;
     const walkY = 292;
 
     const peds = [
       { speed: 0.55, offset: 0, dir: 1, color: 'rgba(255, 255, 255, 0.45)' },
       { speed: 0.45, offset: 160, dir: -1, color: 'rgba(56, 189, 248, 0.45)' },
       { speed: 0.62, offset: 340, dir: 1, color: 'rgba(250, 204, 21, 0.45)' },
-      { speed: 0.50, offset: 480, dir: -1, color: 'rgba(168, 85, 247, 0.45)' },
     ];
 
     peds.forEach((p, idx) => {
@@ -4370,15 +4401,111 @@ export class SpriteRenderer {
       const bob = Math.abs(Math.sin(frame * 0.15 + idx)) * 1.5;
 
       ctx.fillStyle = p.color;
-      // Đầu người đi bộ
       ctx.beginPath();
       ctx.arc(px, walkY - 8 - bob, 2, 0, Math.PI * 2);
       ctx.fill();
-      // Thân người đi bộ
       ctx.fillRect(px - 1.5, walkY - 6 - bob, 3, 6);
     });
 
     ctx.restore();
+  }
+
+  /**
+   * 11. Vẽ nhân vật 2 Nam 2 Nữ chuẩn tỉ lệ thật theo yêu cầu Pinterest:
+   * - Nam: pin_998321442479763235 (Com-lê 3 mảnh lịch lãm, giày da, tóc đen)
+   * - Nữ: pin_1099582065812564429 (Vest đen công sở, chân váy bút chì, giày cao gót, tóc nâu sang trọng)
+   * - Tỉ lệ chuẩn xác với ghế xoay và bàn làm việc (ngồi làm việc đàng hoàng trên ghế, gõ phím, họp)
+   */
+  public static drawRealisticCyberAgent(ctx: CanvasRenderingContext2D, agent: Agent, frame: number) {
+    const x = agent.pos_x;
+    const y = agent.pos_y;
+    const isMoving = agent.status === 'moving';
+    const isFemale = agent.code === 'dung_2' || agent.code === 'dung_4';
+    const facingLeft = isMoving && (agent.target_x < agent.pos_x);
+
+    let sprite: HTMLImageElement | null = null;
+    let charH = 150;
+    let flipHoriz = false;
+
+    if (isMoving) {
+      // 1. TRẠNG THÁI ĐI BỘ: Di chuyển qua lại trong văn phòng
+      sprite = isFemale ? ImageLoader.getCharacter('female_walk') : ImageLoader.getCharacter('male_walk');
+      const depthScale = Math.min(1.0, Math.max(0.70, (y - 300) / 450));
+      charH = Math.round((isFemale ? 152 : 160) * depthScale);
+      flipHoriz = facingLeft;
+    } else {
+      // 2. TRẠNG THÁI NGỒI LÀM VIỆC & HỌP TRÊN GHẾ XOAY CÔNG THÁI HỌC
+      if (agent.code === 'dung_1') {
+        // Dũng 1: Nam Giám Đốc ngồi ghế điều hành bàn tròn
+        sprite = ImageLoader.getCharacter('male_sitting_chair');
+        charH = 145;
+      } else if (agent.code === 'dung_2') {
+        // Dũng 2: Nữ Kiến Trúc Sư ngồi ghế tại bàn kiến trúc (lật ngang để hướng vào bàn máy tính)
+        sprite = ImageLoader.getCharacter('female_sitting_chair');
+        charH = 132;
+        flipHoriz = true;
+      } else if (agent.code === 'dung_3') {
+        // Dũng 3: Nam Fullstack Dev ngồi ghế gõ phím tại bàn Cyber Dev Lab
+        if (agent.current_room === 'boardroom' || agent.status === 'debating') {
+          sprite = ImageLoader.getCharacter('male_sitting_chair');
+          charH = 145;
+        } else {
+          sprite = ImageLoader.getCharacter('male_typing_chair');
+          charH = 150;
+        }
+      } else if (agent.code === 'dung_4') {
+        // Dũng 4: Nữ QA Lead ngồi ghế tại bàn kiểm định QA Lab
+        sprite = ImageLoader.getCharacter('female_sitting_chair');
+        charH = 115;
+        flipHoriz = true;
+      }
+    }
+
+    if (sprite) {
+      const charW = Math.round(charH * (sprite.naturalWidth / sprite.naturalHeight));
+      const bob = isMoving ? Math.abs(Math.sin(frame * 0.22)) * 3 : (agent.status === 'coding' ? Math.sin(frame * 0.3) * 0.6 : 0);
+      const drawX = x - charW / 2;
+      const drawY = y - charH - bob;
+
+      // Đổ bóng chân / bánh xe trên sàn
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.beginPath();
+      ctx.ellipse(x, y + 2, charW * 0.38, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Vẽ nhân vật với flip ngang nếu cần
+      ctx.save();
+      if (flipHoriz) {
+        ctx.translate(x, 0);
+        ctx.scale(-1, 1);
+        ctx.translate(-x, 0);
+      }
+      ctx.drawImage(sprite, drawX, drawY, charW, charH);
+      ctx.restore();
+
+      // Bảng tên và trạng thái trên đầu nhân vật
+      const badgeY = drawY - 8;
+      const roleText = agent.role.split('&')[0].trim();
+      const genderTag = isFemale ? '👩 NỮ' : '👨 NAM';
+      const badgeText = `${genderTag} • ${agent.name} (${roleText})`;
+
+      ctx.save();
+      ctx.font = 'bold 8.5px "JetBrains Mono", monospace';
+      const tw = ctx.measureText(badgeText).width;
+      const bw = tw + 14;
+
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      ctx.strokeStyle = isFemale ? 'rgba(236, 72, 153, 0.6)' : 'rgba(56, 189, 248, 0.6)';
+      ctx.lineWidth = 1;
+      ctx.roundRect(x - bw / 2, badgeY - 14, bw, 15, 3);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = isFemale ? '#f472b6' : '#38bdf8';
+      ctx.textAlign = 'center';
+      ctx.fillText(badgeText, x, badgeY - 3);
+      ctx.restore();
+    }
   }
 
   /**

@@ -10,10 +10,10 @@ import { ImageLoader } from './imageLoader';
 
 // Tọa độ các bàn làm việc và trạm chuyên môn của 4 Dũng trong Cyberpunk Office 16:9 (1376x768)
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
-  dung_1: { x: 525, y: 615, room: 'director_office', status: 'idle' },  // Ghế điều hành tối cao
-  dung_2: { x: 355, y: 490, room: 'architect_office', status: 'idle' }, // Trạm 2: Kiến Trúc & PM
-  dung_3: { x: 245, y: 590, room: 'dev_lab', status: 'coding' },        // Trạm 1: Cyber Dev Lab (Fullstack)
-  dung_4: { x: 455, y: 410, room: 'games_room', status: 'testing' },    // Trạm 3: QA & Stress Testing
+  dung_1: { x: 535, y: 650, room: 'director_office', status: 'idle' },  // Ghế điều hành tối cao
+  dung_2: { x: 340, y: 550, room: 'architect_office', status: 'idle' }, // Trạm 2: Kiến Trúc & PM (Nữ)
+  dung_3: { x: 205, y: 610, room: 'dev_lab', status: 'coding' },        // Trạm 1: Cyber Dev Lab (Nam)
+  dung_4: { x: 455, y: 470, room: 'games_room', status: 'testing' },    // Trạm 3: QA & Stress Testing (Nữ)
 };
 
 // Sảnh cà phê & ngắm đại lộ xe bay ngoài cửa sổ kính
@@ -21,10 +21,10 @@ const PANTRY_COFFEE = { x: 470, y: 700, room: 'kitchen_pantry' };
 
 // Chỗ ngồi quanh bàn tròn trung tâm khi diễn ra họp hoặc tranh luận dự án Hologram 3D
 const MEETING_SEATS: Record<string, { x: number; y: number }> = {
-  dung_1: { x: 525, y: 615 }, // Ghế trên bên trái bàn tròn
-  dung_2: { x: 555, y: 720 }, // Ghế dưới bên trái bàn tròn
-  dung_3: { x: 635, y: 750 }, // Ghế dưới trung tâm bàn tròn
-  dung_4: { x: 740, y: 750 }, // Ghế dưới bên phải bàn tròn
+  dung_1: { x: 535, y: 650 }, // Ghế trên bên trái bàn tròn (Dũng 1 - Nam Giám đốc)
+  dung_2: { x: 540, y: 745 }, // Ghế dưới bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
+  dung_3: { x: 635, y: 810 }, // Ghế dưới trung tâm bàn tròn (Dũng 3 - Nam Dev)
+  dung_4: { x: 735, y: 810 }, // Ghế dưới bên phải bàn tròn (Dũng 4 - Nữ QA)
 };
 
 export class OfficeEngine {

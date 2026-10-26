@@ -538,6 +538,39 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - Build `npm.cmd run build` trong `frontend/` hoàn tất sạch sẽ 100%, 0 lỗi, 0 warning.
   - Sẵn sàng commit và đẩy lên GitHub.
 
+### [2026-10-27] Nâng Cấp Nhân Vật Anime 2 Nam 2 Nữ Tỉ Lệ Chuẩn Ghế Bàn (Chuẩn Pinterest) & Khắc Phục Xe Bay Xuyên Tường
+- [x] **Khắc phục triệt để hiện tượng xe bay chạy xuyên tường văn phòng**:
+  - **Nguyên nhân**: Hàm vẽ xe cộ ngoài cửa sổ chạy từ trục X thấp mà không có mặt nạ clipping, khiến vệt xe chạy đè qua tường bê tông và cụm bàn làm việc trong nhà.
+  - **Giải pháp**: Thiết lập mặt nạ cắt kính cửa sổ nghiêm ngặt `ctx.rect(650, 35, 726, 530); ctx.clip();` cho toàn bộ các hệ thống giao thông bên ngoài (`drawCyberWindowHighwayTraffic`, `drawAutonomousFlyingCars`, `drawWindowPedestrians`).
+  - Căn chỉnh đường cao tốc bám sát dốc thực tế của bức tranh (`x: 655, y ≈ 310` xuống `x: 1370, y ≈ 570`, góc nghiêng `Math.atan2(0.36, 1)`) với vệt đèn pha cyan và đèn hậu đỏ chạy uốn lượn đúng trên mặt đường ngoài trời, tuyệt đối không bao giờ chạm vào nội thất văn phòng.
+- [x] **Nâng cấp Đội ngũ 4 Agent thành 2 Nam 2 Nữ Anime chuyên nghiệp (Chuẩn Pinterest)**:
+  - **Nữ công sở thanh lịch (Pinterest `pin_1099582065812564429`)**:
+    + Trang phục vest đen công sở sang trọng, áo sơ mi trắng, chân váy bút chì, giày cao gót mũi nhọn, kiểu tóc nâu thanh lịch.
+    + Áp dụng cho:
+      * **Dũng 2 (Nữ)** - Software Architect & Project Manager (Tóc nâu sang trọng, ngồi ghế công thái học trước màn hình HUD kiến trúc hệ thống, phản biện rủi ro).
+      * **Dũng 4 (Nữ)** - Test Engineer & Security Lead (Áo khoác vest đen sắc sảo, ngồi kiểm thử an ninh ma trận 5,000 TPS).
+  - **Nam doanh nhân & lập trình viên lịch lãm (Pinterest `pin_998321442479763235`)**:
+    + Trang phục com-lê 3 mảnh (3-piece suit), cà vạt sẫm màu, giày da Oxford, tóc đen cắt tỉa nam tính quyến rũ.
+    + Áp dụng cho:
+      * **Dũng 1 (Nam)** - Software Director (Vị trí điều hành tối cao tại bàn họp tròn Hologram và Executive Lounge).
+      * **Dũng 3 (Nam)** - Senior Fullstack Developer (Ngồi ghế xoay công thái học trước bàn Cyber Dev Lab, hai tay vươn ra gõ phím cơ liên tục sinh Clean Code).
+- [x] **Căn chuẩn tỉ lệ vàng giữa Nhân vật, Ghế ngồi và Mặt bàn (Pixel-Perfect Seating Proportions)**:
+  - Ghế xoay lưới trong phối cảnh 3D có chiều cao thực tế `120 - 140px`.
+  - Nhân vật ngồi được thiết kế nguyên khối với ghế xoay đen lưng cao, tỉ lệ chiều cao cân đối tuyệt đối theo luật phối cảnh sâu:
+    + Trạm 1 (Dũng 3 - Nam Dev): `(205, 610)`, chiều cao `150px`, tư thế ngồi gõ phím hướng vào 2 màn hình HUD.
+    + Trạm 2 (Dũng 2 - Nữ Arch): `(340, 550)`, chiều cao `132px`, tư thế ngồi vắt chéo chân thanh lịch hướng vào bàn kiến trúc.
+    + Trạm 3 (Dũng 4 - Nữ QA): `(455, 470)`, chiều cao `115px` (chiều sâu xa nhất), ngồi đối diện màn hình radar.
+    + Bàn họp Hologram (Dũng 1 - Nam Director): `(535, 650)`, chiều cao `145px`, ngồi ghế điều hành đĩnh đạc.
+    + Vị trí họp bàn tròn (Boardroom Seats): Dũng 1 `(535, 650)`, Dũng 2 `(540, 745)`, Dũng 3 `(635, 810)`, Dũng 4 `(735, 810)`.
+- [x] **Đồng bộ Avatar và Thẻ Nhân sự (2 Nam, 2 Nữ)**:
+  - Cập nhật ảnh đại diện sắc nét chân thực tại `frontend/public/assets/characters/`: Dũng 1 (Nam), Dũng 2 (Nữ), Dũng 3 (Nam), Dũng 4 (Nữ).
+  - Cập nhật bảng tên và nhãn giới tính trên đầu nhân vật (`👨 NAM • Dũng 1`, `👩 NỮ • Dũng 2`, `👨 NAM • Dũng 3`, `👩 NỮ • Dũng 4`).
+- [x] **Đồng Bộ Dữ Liệu Backend, SQLite DB & Build Production**:
+  - Cập nhật `ROOM_COORDINATES`, `BOARDROOM_SEATS` và `DEFAULT_AGENTS` trong `office_manager.py`.
+  - Đồng bộ vào cơ sở dữ liệu `agent_multi.db`.
+  - Build `npm.cmd run build` trong `frontend/` đạt 100% thành công, 0 lỗi, 0 warning.
+  - Commit và đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

@@ -22,8 +22,8 @@ export const ROOMS: OfficeRoom[] = [
     color: '#3b82f6',
     floorColor: '#0a0e17',
     description: 'Khu vực điều hành tối cao, chỉ đạo chiến lược sản phẩm và đàm phán giải pháp tối ưu.',
-    targetX: 525,
-    targetY: 615,
+    targetX: 535,
+    targetY: 650,
   },
   {
     id: 'architect_office',
@@ -35,8 +35,8 @@ export const ROOMS: OfficeRoom[] = [
     color: '#8b5cf6',
     floorColor: '#0a0e17',
     description: 'Trạm thẩm định kiến trúc Microservices DAG, phân tích rủi ro hệ thống và quản trị dự án.',
-    targetX: 355,
-    targetY: 490,
+    targetX: 340,
+    targetY: 550,
   },
   {
     id: 'dev_lab',
@@ -48,8 +48,8 @@ export const ROOMS: OfficeRoom[] = [
     color: '#10b981',
     floorColor: '#0a0e17',
     description: 'Trạm lập trình Fullstack với màn hình Holographic HUD Matrix Code, phím cơ phát sáng và stream Clean Code.',
-    targetX: 245,
-    targetY: 590,
+    targetX: 205,
+    targetY: 610,
   },
   {
     id: 'games_room',
@@ -62,7 +62,7 @@ export const ROOMS: OfficeRoom[] = [
     floorColor: '#0a0e17',
     description: 'Trạm kiểm định an ninh 360 độ, ma trận Stress Test 5,000 TPS và radar phát hiện lỗ hổng.',
     targetX: 455,
-    targetY: 410,
+    targetY: 470,
   },
   {
     id: 'boardroom',

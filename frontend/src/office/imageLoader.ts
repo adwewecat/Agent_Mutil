@@ -72,6 +72,34 @@ export class ImageLoader {
       }
       this.officeCache[name] = img;
     });
+    // 3. Nạp Sprites nhân vật chân thực 2 Nam 2 Nữ (Anime Business Professional)
+    this.REAL_CHARS.forEach(name => {
+      const img = new Image();
+      img.src = `/sprites/characters/${name}.png`;
+      this.characterCache[name] = img;
+    });
+  }
+
+  private static characterCache: Record<string, HTMLImageElement> = {};
+  private static readonly REAL_CHARS = [
+    'male_sitting_chair',
+    'female_sitting_chair',
+    'male_typing_chair',
+    'female_typing_chair',
+    'male_walk',
+    'female_walk',
+  ];
+
+  /**
+   * Lấy Sprite nhân vật chân thực chuẩn Pinterest 2 Nam 2 Nữ
+   */
+  public static getCharacter(name: string): HTMLImageElement | null {
+    if (!this.initialized) this.init();
+    const img = this.characterCache[name];
+    if (img && img.complete && img.naturalWidth > 0) {
+      return img;
+    }
+    return null;
   }
 
   /**
