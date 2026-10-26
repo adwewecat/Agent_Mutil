@@ -72,11 +72,11 @@ export const App: React.FC = () => {
   const handleDispatchAgent = (code: string, room: string, statusOverride?: string) => {
     const targetCoords: Record<string, { x: number; y: number }> = {
       boardroom: {
-        dung_1: { x: 725, y: 342 },
-        dung_2: { x: 795, y: 342 },
-        dung_3: { x: 700, y: 440 },
-        dung_4: { x: 770, y: 440 },
-      }[code] || { x: 740, y: 342 },
+        dung_1: { x: 695, y: 380 }, // Đứng đầu bàn họp Oval thuyết trình (pin_meeting 591730838527550441)
+        dung_2: { x: 765, y: 348 }, // Ngồi ghế Cantilever sau bàn họp Oval, tay chống cằm phản biện (pin 1013309984899659354)
+        dung_3: { x: 825, y: 348 }, // Ngồi ghế Cantilever mở laptop
+        dung_4: { x: 765, y: 432 }, // Ngồi ghế Cantilever mở laptop
+      }[code] || { x: 765, y: 348 },
       director_office: { x: 135, y: 132 }, // Ngồi sâu vào đệm sofa nỉ Royal Blue
       architect_office: { x: 413, y: 168 }, // Ngồi ghế xoay trước bàn CAD thiết kế
       dev_lab: { x: 388, y: 372 }, // Ngồi ghế xoay trước máy tính Dev Lab gõ phím

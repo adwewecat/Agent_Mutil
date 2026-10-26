@@ -85,7 +85,7 @@ export const ROOMS: OfficeRoom[] = [
     color: '#0f172a',
     floorColor: '#1e3a5f',
     description: 'Bàn làm việc thảo luận đa năng, khay tài liệu in/out, ghế xoay nỉ xanh công sở (Chỗ 6/7 & 7/7).',
-    targetX: 740,
-    targetY: 342, // Ngồi ghế xoay sau bàn họp thảo luận
+    targetX: 765,
+    targetY: 348, // Ghế họp sau bàn Oval Racetrack
   },
 ];

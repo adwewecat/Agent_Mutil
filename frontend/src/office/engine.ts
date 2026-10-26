@@ -447,9 +447,12 @@ export class OfficeEngine {
     if (agent.status === 'moving') {
       return agent.pos_y + 10;
     }
-    // Khi họp tại Boardroom: Z-Depth 355 nằm sau mặt bàn hội nghị (405) nhưng trước ghế họp (338)
+    // Khi họp tại Boardroom: Dũng 1 đứng đầu bàn thuyết trình (zY: 410), Dũng 2 và các đại biểu ngồi ghế sau bàn (zY: 355)
     if (agent.current_room === 'boardroom' || agent.status === 'debating') {
-      return 355;
+      if (agent.code === 'dung_1') {
+        return 410; // Đứng đầu bàn họp Oval, tay đặt lên mặt bàn
+      }
+      return 355; // Ngồi ghế họp phía sau mặt bàn Oval
     }
     // Khi Giám đốc ngồi sofa: Z-Depth 160 nằm trên đệm sofa (155) nhưng sau bàn trà tiếp khách (190)
     if (agent.code === 'dung_1' && agent.current_room === 'director_office') {
