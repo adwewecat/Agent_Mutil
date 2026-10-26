@@ -6,16 +6,16 @@ from typing import Dict, Any, List
 from sqlalchemy.orm import Session
 from app.models import AgentModel
 
-# Tọa độ các phòng chính trong Virtual Pixel Office 4D Isometric chuẩn Pin 412290540892514371
+# Tọa độ các phòng chính trong Virtual Studio 3D Isometric chuẩn Pin 894809019751482321
 ROOM_COORDINATES: Dict[str, Dict[str, int]] = {
-    "director_office": {"x": 135, "y": 132},   # Ngồi lún sâu vào đệm sofa da, tay cầm tách cà phê
-    "architect_office": {"x": 413, "y": 168},  # Ngồi ghế xoay trước bàn CAD & bản vẽ blueprint
-    "boardroom": {"x": 740, "y": 342},         # Khu vực thảo luận chiến lược (ghế họp sau bàn)
-    "dev_lab": {"x": 388, "y": 372},           # Ngồi ghế xoay trước bàn máy tính 2 màn hình, gõ phím cơ RGB
-    "games_room": {"x": 714, "y": 168},        # Ngồi ghế xoay trạm QA kiểm thử, mèo ngủ bên cạnh
-    "kitchen_pantry": {"x": 160, "y": 375},    # Đứng quầy bar pha cà phê giải lao
-    "qa_lab": {"x": 714, "y": 168},            # Trạm kiểm thử QA cubicle
-    "lounge": {"x": 135, "y": 132},            # Sofa tiếp khách làm việc
+    "director_office": {"x": 505, "y": 265},   # Bàn điều hành L-shape góc riêng sau vách ngăn
+    "architect_office": {"x": 425, "y": 230},  # Trạm làm việc kiến trúc sư cạnh giá sách
+    "boardroom": {"x": 450, "y": 360},         # Bàn họp oval gỗ sồi chiến lược trung tâm
+    "dev_lab": {"x": 345, "y": 265},           # Bàn Fullstack Dev trước màn hình desktop
+    "games_room": {"x": 595, "y": 395},        # Trạm QA kiểm thử & máy in laser photocopier
+    "kitchen_pantry": {"x": 680, "y": 240},    # Dọc tủ kệ gỗ dài thư giãn đón nắng
+    "qa_lab": {"x": 595, "y": 395},
+    "lounge": {"x": 680, "y": 240},
 }
 
 # Dữ liệu khởi tạo cho 4 Dũng (Tọa độ ghế ngồi chuẩn xác tại bàn làm việc)
@@ -28,10 +28,10 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "specialty": "Định hướng chiến lược, phân tích bài toán nghiệp vụ, đề xuất giải pháp tối ưu và đàm phán giải pháp kỹ thuật cốt lõi.",
         "status": "idle",
         "current_room": "director_office",
-        "pos_x": 135,
-        "pos_y": 132,
-        "target_x": 135,
-        "target_y": 132,
+        "pos_x": 505,
+        "pos_y": 265,
+        "target_x": 505,
+        "target_y": 265,
         "avatar_color": "#3b82f6",  # Xanh dương Giám đốc
     },
     {
@@ -42,10 +42,10 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "specialty": "40 năm kinh nghiệm kiến trúc hệ thống & quản lý dự án: Thẩm định khả thi, tối ưu tài nguyên, chi phí, rủi ro, phản biện sâu sắc, đánh giá độ trễ và tải hệ thống.",
         "status": "idle",
         "current_room": "architect_office",
-        "pos_x": 413,
-        "pos_y": 168,
-        "target_x": 413,
-        "target_y": 168,
+        "pos_x": 425,
+        "pos_y": 230,
+        "target_x": 425,
+        "target_y": 230,
         "avatar_color": "#8b5cf6",  # Tím Kiến trúc sư
     },
     {
@@ -56,10 +56,10 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "specialty": "40 năm kinh nghiệm lập trình Fullstack: Hiện thực hóa mã nguồn chuẩn xác, tối ưu thuật toán, xây dựng API sạch, loại bỏ triệt để code dư thừa.",
         "status": "coding",
         "current_room": "dev_lab",
-        "pos_x": 388,
-        "pos_y": 372,
-        "target_x": 388,
-        "target_y": 372,
+        "pos_x": 345,
+        "pos_y": 265,
+        "target_x": 345,
+        "target_y": 265,
         "avatar_color": "#10b981",  # Xanh lá Lập trình viên
     },
     {
@@ -70,10 +70,10 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "specialty": "40 năm kinh nghiệm QA & Security: Thiết lập ma trận Test Cases, Boundary Values Analysis, Stress Test, bắt trọn mọi bug tiềm ẩn và lỗ hổng an ninh.",
         "status": "testing",
         "current_room": "games_room",
-        "pos_x": 714,
-        "pos_y": 168,
-        "target_x": 714,
-        "target_y": 168,
+        "pos_x": 595,
+        "pos_y": 395,
+        "target_x": 595,
+        "target_y": 395,
         "avatar_color": "#ef4444",  # Đỏ Kiểm thử & An ninh
     },
 ]
@@ -92,13 +92,12 @@ def init_default_agents(db: Session) -> None:
             agent = AgentModel(**agent_data)
             db.add(agent)
         else:
-            if existing.current_room == "kitchen_pantry":
-                existing.current_room = agent_data["current_room"]
-                existing.pos_x = agent_data["pos_x"]
-                existing.pos_y = agent_data["pos_y"]
-                existing.target_x = agent_data["target_x"]
-                existing.target_y = agent_data["target_y"]
-                existing.status = agent_data["status"]
+            existing.current_room = agent_data["current_room"]
+            existing.pos_x = agent_data["pos_x"]
+            existing.pos_y = agent_data["pos_y"]
+            existing.target_x = agent_data["target_x"]
+            existing.target_y = agent_data["target_y"]
+            existing.status = agent_data["status"]
     db.commit()
 
 

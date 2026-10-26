@@ -24,6 +24,10 @@ export class ImageLoader {
   ];
 
   private static readonly OFFICE_ITEMS = [
+    'pin_894809019751482321_room',
+    'foreground_meeting_table',
+    'foreground_divider_wall',
+    'foreground_front_desk',
     'boardroom_meeting_suite',
     'boardroom_table',
     'lounge_suite',

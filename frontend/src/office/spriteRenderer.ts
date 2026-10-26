@@ -18,7 +18,17 @@ export class SpriteRenderer {
    * 1. Dựng nền tổng thể và kiến trúc văn phòng (Sàn nhà, Tường 3D, Cửa sổ kính, Vách ngăn phòng)
    */
   public static drawOfficeStructure(ctx: CanvasRenderingContext2D, width: number, height: number) {
-    // 1. Nền không gian văn phòng hiện đại sáng sủa, sạch sẽ, thoáng mắt (Chuẩn Vector Office - Pin 817544138597868043)
+    const roomImg = ImageLoader.getOffice('pin_894809019751482321_room');
+    if (roomImg) {
+      // Nền tối công nghệ sang trọng bao quanh phòng cắt 3D
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, width, height);
+      // Vẽ phòng 3D Isometric chuẩn Pinterest pin_894809019751482321
+      ctx.drawImage(roomImg, 0, 0, width, height);
+      return;
+    }
+
+    // Fallback: Nền không gian văn phòng hiện đại sáng sủa
     ctx.fillStyle = '#f8fafc';
     ctx.fillRect(0, 0, width, height);
 
@@ -450,7 +460,42 @@ export class SpriteRenderer {
   public static getFurnitureDrawables(agents: Agent[] = []): ZDrawable[] {
     const drawables: ZDrawable[] = [];
 
-    // Kiểm tra nhân viên nào đang ngồi làm việc tại bàn
+    // ───────────────────────────────────────────────────────────────────────
+    // CĂN PHÒNG 3D ISOMETRIC THỰC TẾ CHUẨN PINTEREST pin_894809019751482321
+    // ───────────────────────────────────────────────────────────────────────
+    const roomImg = ImageLoader.getOffice('pin_894809019751482321_room');
+    if (roomImg) {
+      // 1. Vách ngăn Divider Wall che trước phòng giám đốc Dũng 1 (zY = 320)
+      const divImg = ImageLoader.getOffice('foreground_divider_wall');
+      if (divImg) {
+        drawables.push({
+          zY: 320,
+          draw: ctx => ctx.drawImage(divImg, 433, 235),
+        });
+      }
+
+      // 2. Bàn họp oval gỗ sồi + 2 laptop + sổ tay + ghế trước (zY = 380)
+      const meetImg = ImageLoader.getOffice('foreground_meeting_table');
+      if (meetImg) {
+        drawables.push({
+          zY: 380,
+          draw: ctx => ctx.drawImage(meetImg, 285, 275),
+        });
+      }
+
+      // 3. Dãy bàn trước + 4 màn hình máy tính + máy in laser photocopier (zY = 460)
+      const frontImg = ImageLoader.getOffice('foreground_front_desk');
+      if (frontImg) {
+        drawables.push({
+          zY: 460,
+          draw: ctx => ctx.drawImage(frontImg, 420, 240),
+        });
+      }
+
+      return drawables;
+    }
+
+    // Fallback: Kiểm tra nhân viên nào đang ngồi làm việc tại bàn
     const dung2AtDesk = agents.some(a => a.code === 'dung_2' && a.current_room === 'architect_office' && a.status !== 'moving');
     const dung3AtDesk = agents.some(a => a.code === 'dung_3' && a.current_room === 'dev_lab' && a.status !== 'moving');
     const dung4AtDesk = agents.some(a => a.code === 'dung_4' && a.current_room === 'games_room' && a.status !== 'moving');
@@ -2523,12 +2568,12 @@ export class SpriteRenderer {
     let headTopY = y - 48;
 
     if (sprite) {
-      // 1. Tỉ lệ nhân vật Chibi chuẩn đẹp trên Canvas (w: 48px, h: tỷ lệ gốc)
-      const charW = 48;
-      const charH = Math.round(charW * (sprite.naturalHeight / sprite.naturalWidth));
-      const bob = isMoving ? Math.abs(Math.sin(frame * 0.25)) * 3 : Math.sin(frame * 0.08) * 1.2;
+      // 1. Tỉ lệ nhân vật Chibi chuẩn đẹp trên Canvas 3D (h: 38px, w: tỷ lệ gốc ăn khớp ghế ngồi)
+      const charH = 38;
+      const charW = Math.round(charH * (sprite.naturalWidth / sprite.naturalHeight));
+      const bob = isMoving ? Math.abs(Math.sin(frame * 0.25)) * 2 : Math.sin(frame * 0.08) * 0.8;
       const drawX = x - charW / 2;
-      const drawY = y - charH + 10 - bob;
+      const drawY = y - charH + 12 - bob;
       headTopY = drawY - 4;
 
       // Đổ bóng chân mềm mại trên sàn

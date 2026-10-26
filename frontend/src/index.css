@@ -270,9 +270,8 @@ body {
 .canvas-wrapper {
   position: relative;
   width: 100%;
-  max-width: 980px;
-  max-height: 520px;
-  aspect-ratio: 16 / 9;
+  max-width: 900px;
+  aspect-ratio: 900 / 695;
   background: #020617;
   border-radius: 12px;
   overflow: hidden;

@@ -6,86 +6,86 @@
 
 import { OfficeRoom } from '../types';
 
-export const OFFICE_WIDTH = 960;
-export const OFFICE_HEIGHT = 540;
+export const OFFICE_WIDTH = 900;
+export const OFFICE_HEIGHT = 695;
 
 export const ROOMS: OfficeRoom[] = [
   {
     id: 'director_office',
-    name: 'Executive Lounge & Director Hub (Dũng 1)',
-    x: 30,
-    y: 80,
-    width: 280,
-    height: 215,
+    name: 'Góc Giám Đốc Điều Hành (Dũng 1)',
+    x: 430,
+    y: 200,
+    width: 200,
+    height: 180,
     color: '#0f172a',
-    floorColor: '#15803d',
-    description: 'Thảm sọc xanh ngọc bích, sofa góc Royal Blue, bàn trà hoa quả tươi, tủ kính hồ sơ và cây Topiary (Chỗ 1/7).',
-    targetX: 135,
-    targetY: 132, // Ngồi trên sofa nỉ Royal Blue làm việc
+    floorColor: '#f7e7ce',
+    description: 'Bàn điều hành L-shape góc riêng sau vách ngăn, điện thoại bàn và máy tính quản trị.',
+    targetX: 505,
+    targetY: 265, // Ghế xoay giám đốc sau vách ngăn
   },
   {
     id: 'architect_office',
-    name: 'Cubicle Kiến Trúc Sư & PM (Dũng 2)',
-    x: 325,
-    y: 80,
-    width: 300,
-    height: 215,
+    name: 'Bàn Kiến Trúc Sư & PM (Dũng 2)',
+    x: 390,
+    y: 150,
+    width: 140,
+    height: 120,
     color: '#0f172a',
-    floorColor: '#c8d4ec',
-    description: 'Bàn cubicle CAD kiến trúc, 2 màn hình thiết kế, thước chữ T, bản vẽ và ghế xoay nỉ xanh (Chỗ 2/7).',
-    targetX: 413,
-    targetY: 168, // Ngồi ghế xoay trước màn hình CAD
-  },
-  {
-    id: 'games_room',
-    name: 'Cubicle QA & Security Lead (Dũng 4)',
-    x: 640,
-    y: 80,
-    width: 290,
-    height: 215,
-    color: '#0f172a',
-    floorColor: '#c8d4ec',
-    description: 'Trạm kiểm thử cubicle hiện đại, Dashboard Stress Test, tablet chẩn đoán an ninh và ghế xoay nỉ xanh (Chỗ 4/7).',
-    targetX: 714,
-    targetY: 168, // Ngồi ghế xoay trước màn hình QA
-  },
-  {
-    id: 'kitchen_pantry',
-    name: 'Khu Hậu Cần, Máy In & Nước Uống',
-    x: 30,
-    y: 310,
-    width: 280,
-    height: 200,
-    color: '#0f172a',
-    floorColor: '#f1f5f9',
-    description: 'Máy photocopy đa khay có thùng rác tái chế, bình nước nóng lạnh úp bình xanh và quầy cà phê espresso.',
-    targetX: 160,
-    targetY: 375, // Đi giải lao lấy nước / cà phê
+    floorColor: '#f7e7ce',
+    description: 'Trạm làm việc kiến trúc sư cạnh giá sách tường, màn hình CAD và bản vẽ hệ thống.',
+    targetX: 425,
+    targetY: 230, // Ghế xoay L3 cạnh giá sách
   },
   {
     id: 'dev_lab',
-    name: 'Dev Lab & Workstations (Dũng 3)',
-    x: 325,
-    y: 310,
-    width: 300,
-    height: 200,
+    name: 'Trạm Fullstack Dev (Dũng 3)',
+    x: 200,
+    y: 200,
+    width: 200,
+    height: 160,
     color: '#0f172a',
-    floorColor: '#c8d4ec',
-    description: 'Trạm lập trình Fullstack Dev với 2 màn hình code ma trận, phím cơ, cốc cà phê Dev Fuel và bàn Peer Dev (Chỗ 3/7 & 5/7).',
-    targetX: 388,
-    targetY: 372, // Ngồi ghế xoay trước máy tính code
+    floorColor: '#f7e7ce',
+    description: 'Bàn lập trình viên chính với màn hình máy tính Windows desktop, phím cơ và chuột.',
+    targetX: 345,
+    targetY: 265, // Ghế xoay L2 trước máy tính
+  },
+  {
+    id: 'games_room',
+    name: 'Trạm QA & Máy In Laser (Dũng 4)',
+    x: 480,
+    y: 330,
+    width: 220,
+    height: 160,
+    color: '#0f172a',
+    floorColor: '#f7e7ce',
+    description: 'Trạm kiểm thử QA chuyên dụng, máy in/photocopier đa năng laser đứng đầu dãy.',
+    targetX: 595,
+    targetY: 395, // Ghế xoay F2 trước máy tính kiểm thử
   },
   {
     id: 'boardroom',
-    name: 'Khu Thảo Luận & Review Chiến Lược',
-    x: 640,
-    y: 310,
-    width: 290,
-    height: 200,
+    name: 'Bàn Họp Chiến Lược Trung Tâm',
+    x: 280,
+    y: 260,
+    width: 280,
+    height: 230,
     color: '#0f172a',
-    floorColor: '#1e3a5f',
-    description: 'Bàn làm việc thảo luận đa năng, khay tài liệu in/out, ghế xoay nỉ xanh công sở (Chỗ 6/7 & 7/7).',
-    targetX: 765,
-    targetY: 348, // Ghế họp sau bàn Oval Racetrack
+    floorColor: '#f7e7ce',
+    description: 'Bàn họp oval gỗ sồi hiện đại, 6 ghế trắng, 2 laptop và sổ tay chiến lược.',
+    targetX: 450,
+    targetY: 360, // Bàn họp trung tâm
+  },
+  {
+    id: 'kitchen_pantry',
+    name: 'Khu Trưng Bày & Giải Lao',
+    x: 520,
+    y: 120,
+    width: 260,
+    height: 120,
+    color: '#0f172a',
+    floorColor: '#f7e7ce',
+    description: 'Dãy tủ kệ gỗ dài dọc tường sau, bình hoa gốm sứ trang trí và cửa sổ rèm roman đón nắng.',
+    targetX: 680,
+    targetY: 240, // Đi lại thư giãn cạnh tủ kệ
   },
 ];

@@ -426,6 +426,31 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - `npm.cmd run build` hoàn tất 100% với **0 lỗi, 0 cảnh báo**.
 - [x] Đã đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-26] Nâng Cấp Toàn Bộ Phòng Ốc & Nội Thất 3D Isometric Chuẩn Pinterest 894809019751482321
+- [x] **Tích hợp Trọn vẹn Không gian Phòng 3D Isometric Chuẩn Hình Ảnh Tham Khảo (`https://www.pinterest.com/pin/894809019751482321/`)**:
+  - Không gian Studio mở hiện đại tỉ lệ chuẩn pixel `900 x 695` với tường trắng cắt góc 3D, sàn gạch men màu kem bóng ấm áp phản chiếu ánh sáng.
+  - **Tường trái (Top-Left)**: Hệ kệ sách nổi đôi (double floating shelves) chạy dài chứa các hộp lưu trữ nhiều màu (hồng, tím, xanh lá, xanh cyan) và tài liệu gáy xanh.
+  - **Dãy bàn Dev bên trái (Left Workstations)**: Bàn gỗ sáng dài trang bị 4 máy tính để bàn (màn hình mỏng hiển thị hình nền Windows 10 xanh, bàn phím, chuột) và 4 ghế xoay công thái học đen (Chỗ ngồi của **Dũng 3** và **Dũng 2**).
+  - **Tường sau (Top-Right)**: Hệ tủ buffet/credenza gỗ thấp chạy dài chứa bình gốm sứ trang trí, 2 cửa sổ rèm cuốn Roman trang nhã và 2 máy điều hòa treo tường.
+  - **Bàn họp chiến lược trung tâm (Center Conference Table)**: Bàn oval gỗ sồi viền bo cong nghệ thuật, 6 ghế chân quỳ hiện đại trắng, trang bị 2 laptop (1 laptop mở code, 1 laptop gập), chuột đen và sổ tay chiến lược màu vàng (Nơi 4 Dũng hội tụ khi có đề bài mới).
+  - **Vách ngăn riêng & Góc Giám đốc (Executive Manager Alcove)**: Vách ngăn trắng lửng ngăn chia khu vực họp và bàn làm việc riêng của Giám đốc **Dũng 1** (bàn L-shape, điện thoại bàn và máy tính quản trị).
+  - **Dãy bàn QA & Máy in Laser (Front Linear Desk & Photocopier)**: Dãy bàn trước với 4 màn hình máy tính và máy in/photocopier laser đa năng màu đen đứng đầu dãy (Trạm kiểm thử của **Dũng 4**).
+- [x] **Kỹ thuật Phân tầng Foreground & Z-Depth Sorting 2.5D**:
+  - Trích xuất 3 lớp vật thể tiền cảnh (Foreground Layers) với nền trong suốt pixel-perfect:
+    + `foreground_divider_wall.png`: Vách ngăn trắng (`zY = 320`) che trước Dũng 1 khi ngồi tại bàn giám đốc.
+    + `foreground_meeting_table.png`: Bàn họp oval + 2 laptop + sổ tay + ghế trước (`zY = 380`) che chân các nhân vật ngồi sau bàn.
+    + `foreground_front_desk.png`: Dãy bàn trước + 4 màn hình + máy in photocopier (`zY = 460`) che chân nhân viên ngồi dãy trước.
+- [x] **Cân chỉnh Tỉ lệ Nhân vật Chibi Phù hợp Hoàn hảo với Ghế Ngồi 3D**:
+  - Tinh chỉnh chiều cao Chibi `charH = 38px`, chiều rộng tự động co giãn theo tỷ lệ gốc, ăn khớp chuẩn xác với đệm ghế ngồi `~28px` của văn phòng 3D.
+  - Tọa độ bàn làm việc được cập nhật đồng bộ từ Backend FastAPI, Database SQLite / SQL Server và Canvas Frontend:
+    + **Dũng 1** (Director): `(505, 265)` tại bàn giám đốc sau vách ngăn.
+    + **Dũng 2** (Architect & PM): `(425, 230)` tại bàn kiến trúc sư cạnh giá sách.
+    + **Dũng 3** (Fullstack Dev): `(345, 265)` tại bàn Dev Lab trước máy tính màn hình xanh.
+    + **Dũng 4** (QA Lead): `(595, 395)` tại bàn kiểm thử trước máy in photocopier.
+    + **Họp Hội đồng (Boardroom)**: Tập hợp tại bàn họp oval trung tâm (`450, 360`).
+- [x] Kiểm tra build đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Đã đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

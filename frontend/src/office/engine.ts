@@ -10,14 +10,14 @@ import { ImageLoader } from './imageLoader';
 
 // Tọa độ bàn làm việc chính của 4 Dũng (Ngồi làm việc nghiêm túc 95% thời gian)
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
-  dung_1: { x: 135, y: 132, room: 'director_office', status: 'idle' },
-  dung_2: { x: 413, y: 168, room: 'architect_office', status: 'idle' },
-  dung_3: { x: 388, y: 372, room: 'dev_lab', status: 'coding' },
-  dung_4: { x: 714, y: 168, room: 'games_room', status: 'testing' },
+  dung_1: { x: 505, y: 265, room: 'director_office', status: 'idle' },
+  dung_2: { x: 425, y: 230, room: 'architect_office', status: 'idle' },
+  dung_3: { x: 345, y: 265, room: 'dev_lab', status: 'coding' },
+  dung_4: { x: 595, y: 395, room: 'games_room', status: 'testing' },
 };
 
-// Khu vực Pantry lấy nước / cà phê
-const PANTRY_COFFEE = { x: 160, y: 375, room: 'kitchen_pantry' };
+// Khu vực Pantry / giải lao thư giãn
+const PANTRY_COFFEE = { x: 680, y: 240, room: 'kitchen_pantry' };
 
 export class OfficeEngine {
   public canvas: HTMLCanvasElement;
