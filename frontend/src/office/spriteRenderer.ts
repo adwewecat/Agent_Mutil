@@ -18,12 +18,12 @@ export class SpriteRenderer {
    * 1. Dựng nền tổng thể và kiến trúc văn phòng (Sàn nhà, Tường 3D, Cửa sổ kính, Vách ngăn phòng)
    */
   public static drawOfficeStructure(ctx: CanvasRenderingContext2D, width: number, height: number) {
-    const roomImg = ImageLoader.getOffice('pin_894809019751482321_room');
+    const roomImg = ImageLoader.getOffice('pin_651403533596027077_room') || ImageLoader.getOffice('pin_894809019751482321_room');
     if (roomImg) {
       // Nền tối công nghệ sang trọng bao quanh phòng cắt 3D
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, width, height);
-      // Vẽ phòng 3D Isometric chuẩn Pinterest pin_894809019751482321
+      // Vẽ phòng 3D Isometric chuẩn Pinterest pin_651403533596027077
       ctx.drawImage(roomImg, 0, 0, width, height);
       return;
     }
@@ -461,11 +461,54 @@ export class SpriteRenderer {
     const drawables: ZDrawable[] = [];
 
     // ───────────────────────────────────────────────────────────────────────
-    // CĂN PHÒNG 3D ISOMETRIC THỰC TẾ CHUẨN PINTEREST pin_894809019751482321
+    // CĂN PHÒNG 3D ISOMETRIC THỰC TẾ CHUẨN PINTEREST pin_651403533596027077
     // ───────────────────────────────────────────────────────────────────────
-    const roomImg = ImageLoader.getOffice('pin_894809019751482321_room');
-    if (roomImg) {
-      // 1. Vách ngăn Divider Wall che trước phòng giám đốc Dũng 1 (zY = 320)
+    const newRoomImg = ImageLoader.getOffice('pin_651403533596027077_room');
+    if (newRoomImg) {
+      // 1. Bàn giám đốc + ghế khách che thân dưới Dũng 1 (zY = 250)
+      const dirDeskImg = ImageLoader.getOffice('foreground_director_desk');
+      if (dirDeskImg) {
+        drawables.push({
+          zY: 250,
+          draw: ctx => ctx.drawImage(dirDeskImg, 0, 0),
+        });
+      }
+
+      // 2. Mặt bàn làm việc cụm 4 người + vách ngăn vàng che chân Dũng 2 (zY = 380)
+      const benchImg = ImageLoader.getOffice('foreground_team_bench');
+      if (benchImg) {
+        drawables.push({
+          zY: 380,
+          draw: ctx => ctx.drawImage(benchImg, 0, 0),
+        });
+      }
+
+      // 3. Tủ kệ phân cách trung tâm (zY = 460)
+      const credenzaImg = ImageLoader.getOffice('foreground_divider_credenza');
+      if (credenzaImg) {
+        drawables.push({
+          zY: 460,
+          draw: ctx => ctx.drawImage(credenzaImg, 0, 0),
+        });
+      }
+
+      // 4. Bàn trà và sofa VIP Lounge (zY = 470)
+      const loungeTableImg = ImageLoader.getOffice('foreground_lounge_table');
+      if (loungeTableImg) {
+        drawables.push({
+          zY: 470,
+          draw: ctx => ctx.drawImage(loungeTableImg, 0, 0),
+        });
+      }
+
+      return drawables;
+    }
+
+    // ───────────────────────────────────────────────────────────────────────
+    // FALLBACK PHÒNG 3D CŨ pin_894809019751482321
+    // ───────────────────────────────────────────────────────────────────────
+    const oldRoomImg = ImageLoader.getOffice('pin_894809019751482321_room');
+    if (oldRoomImg) {
       const divImg = ImageLoader.getOffice('foreground_divider_wall');
       if (divImg) {
         drawables.push({
@@ -474,7 +517,6 @@ export class SpriteRenderer {
         });
       }
 
-      // 2. Bàn họp oval gỗ sồi + 2 laptop + sổ tay + ghế trước (zY = 380)
       const meetImg = ImageLoader.getOffice('foreground_meeting_table');
       if (meetImg) {
         drawables.push({
@@ -483,7 +525,6 @@ export class SpriteRenderer {
         });
       }
 
-      // 3. Dãy bàn trước + 4 màn hình máy tính + máy in laser photocopier (zY = 460)
       const frontImg = ImageLoader.getOffice('foreground_front_desk');
       if (frontImg) {
         drawables.push({

@@ -451,6 +451,31 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Kiểm tra build đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
 - [x] Đã đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-26] Tái Thiết Kế Toàn Diện Nội Thất Văn Phòng 3D Isometric Chuẩn Pinterest 651403533596027077
+- [x] **Xóa Bỏ Layout Cũ & Tái Dựng Không Gian Văn Phòng 3D Chuẩn Xác 100% Theo Pinterest (`https://www.pinterest.com/pin/651403533596027077/`)**:
+  - Tải hình ảnh gốc độ phân giải cao `800x800 px` không gian văn phòng góc nhìn Isometric nhìn từ trên xuống cực kỳ thoáng đãng, sang trọng và hiện đại.
+  - Xóa sạch 100% các logo và watermark ("RIRONG" góc trên trái, "One-stop furniture / Customized supplier" góc dưới trái) bằng polygon mask và thuật toán dọn dẹp pixel màu cam, trả lại góc cắt 3D nguyên bản hoàn hảo.
+  - **Khu Bàn Giám Đốc Điều Hành (Dũng 1)**: Bàn làm việc chữ nhật gỗ óc chó với tấm lót bàn da đen (leather blotter), đèn bàn kiến trúc, ghế xoay điều hành lưng cao màu xám công thái học (`430, 200`), tủ credenza ngăn kéo phía sau dưới cửa sổ kính lớn, 2 ghế tiếp khách lưng gỗ nệm da xám và chậu cây xanh phong thủy.
+  - **Cụm Trạm Làm Việc Đội Ngũ 4 Người (Mid-Left Workstation Pod)**: Bàn dài 4 chỗ mặt gỗ sồi sáng màu, vách ngăn vàng rực rỡ (yellow divider screen) ở giữa, 4 ghế xoay lưới vàng chân sao trắng cao cấp và 4 laptop mỏng mở sẵn:
+    + Ghế vàng trên (`250, 340`): Trạm làm việc của **Dũng 2 (Software Architect & PM)**.
+    + Ghế vàng dưới (`245, 490`): Trạm lập trình của **Dũng 3 (Senior Fullstack Dev)**.
+    + Ghế vàng cạnh phải (`320, 440`): Trạm kiểm thử của **Dũng 4 (Test Lead & QA)**.
+  - **Tủ Kệ Phân Cách Trung Tâm (Center Credenza with Succulents)**: Tủ gỗ thấp có cửa kính mờ, mặt trên đặt các chậu cây mọng nước nhỏ tạo ranh giới mềm mại giữa khu làm việc và khu giám đốc.
+  - **Khu VIP Lounge & Thảo Luận Chiến Lược (Right Lounge Suite)**: Sofa da đen 3 chỗ sang trọng, 2 ghế bành đơn da đen, bàn trà gỗ thấp có sách tạp chí kiến trúc (`660, 360`), tủ credenza trưng bày cây cảnh và bình nước khoáng nóng lạnh úp bình xanh tươi mát tại lối đi (`645, 560`).
+  - **Sàn & Tường Nghệ Thuật**: Thảm dệt sợi xám họa tiết herringbone/weave công sở cao cấp, tường trắng treo 3 tranh nghệ thuật lá cây nhiệt đới viền đen và hệ cửa sổ kính kịch trần khung đen đón nắng tự nhiên.
+- [x] **Kiến Trúc Phân Tầng Foreground & Z-Depth Sorting Không Khuyết Tật (Zero-Artifact Pipeline)**:
+  - Trích xuất 4 lớp tiền cảnh trong suốt `800x800 px` đồng bộ tọa độ `(0, 0)`:
+    + `foreground_director_desk.png` (`zY = 250`): Bàn giám đốc che phủ chân và thân dưới của Dũng 1 khi ngồi trên ghế xoay.
+    + `foreground_team_bench.png` (`zY = 380`): Mặt bàn gỗ sồi và vách ngăn vàng che chân Dũng 2, trong khi Dũng 3 và Dũng 4 ngồi ở các ghế trước bàn một cách tự nhiên.
+    + `foreground_divider_credenza.png` (`zY = 460`): Tủ kệ phân cách trung tâm.
+    + `foreground_lounge_table.png` (`zY = 470`): Bàn trà kính và khu vực VIP Lounge.
+- [x] **Cân Chỉnh Kích Thước Canvas & Tỷ Lệ 1:1 Chuẩn Mực**:
+  - `OFFICE_WIDTH = 800`, `OFFICE_HEIGHT = 800`.
+  - `.canvas-wrapper`: `max-width: 800px; aspect-ratio: 1 / 1;` cân đối hoàn hảo trong mọi độ phân giải màn hình.
+  - Đồng bộ cơ sở dữ liệu SQLite (`backend/agent_multi.db`), backend FastAPI (`office_manager.py`) và frontend React Canvas.
+- [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Đã đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

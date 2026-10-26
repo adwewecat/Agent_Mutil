@@ -10,14 +10,14 @@ import { ImageLoader } from './imageLoader';
 
 // Tọa độ bàn làm việc chính của 4 Dũng (Ngồi làm việc nghiêm túc 95% thời gian)
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
-  dung_1: { x: 505, y: 265, room: 'director_office', status: 'idle' },
-  dung_2: { x: 425, y: 230, room: 'architect_office', status: 'idle' },
-  dung_3: { x: 345, y: 265, room: 'dev_lab', status: 'coding' },
-  dung_4: { x: 595, y: 395, room: 'games_room', status: 'testing' },
+  dung_1: { x: 430, y: 200, room: 'director_office', status: 'idle' },
+  dung_2: { x: 250, y: 340, room: 'architect_office', status: 'idle' },
+  dung_3: { x: 245, y: 490, room: 'dev_lab', status: 'coding' },
+  dung_4: { x: 320, y: 440, room: 'games_room', status: 'testing' },
 };
 
 // Khu vực Pantry / giải lao thư giãn
-const PANTRY_COFFEE = { x: 680, y: 240, room: 'kitchen_pantry' };
+const PANTRY_COFFEE = { x: 645, y: 560, room: 'kitchen_pantry' };
 
 export class OfficeEngine {
   public canvas: HTMLCanvasElement;
@@ -444,28 +444,25 @@ export class OfficeEngine {
     if (agent.status === 'moving') {
       return agent.pos_y + 10;
     }
-    // Khi họp tại Boardroom: Dũng 1 đứng đầu bàn thuyết trình (zY: 410), Dũng 2 và các đại biểu ngồi ghế sau bàn (zY: 355)
-    if (agent.current_room === 'boardroom' || agent.status === 'debating') {
-      if (agent.code === 'dung_1') {
-        return 410; // Đứng đầu bàn họp Oval, tay đặt lên mặt bàn
-      }
-      return 355; // Ngồi ghế họp phía sau mặt bàn Oval
-    }
-    // Khi Giám đốc ngồi sofa: Z-Depth 160 nằm trên đệm sofa (155) nhưng sau bàn trà tiếp khách (190)
+    // Khi Giám đốc ngồi ghế điều hành: Z-Depth 205 nằm sau bàn giám đốc (zY = 250)
     if (agent.code === 'dung_1' && agent.current_room === 'director_office') {
-      return 160;
+      return 205;
     }
-    // Khi Dũng 3 ngồi tại Dev Lab: Z-Depth 396 nằm trước khung bàn dev (395), tay đặt lên bàn phím
-    if (agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
-      return 396;
-    }
-    // Khi Dũng 2 ngồi tại bàn kiến trúc sư: Z-Depth 176 nằm trước khung bàn (175)
+    // Khi Dũng 2 ngồi tại ghế vàng trên: Z-Depth 345 nằm sau bàn làm việc & vách ngăn (zY = 380)
     if (agent.code === 'dung_2' && agent.current_room === 'architect_office') {
-      return 176;
+      return 345;
     }
-    // Khi Dũng 4 ngồi tại bàn QA: Z-Depth 176 nằm trước khung bàn (175)
+    // Khi Dũng 4 ngồi tại ghế vàng cạnh phải: Z-Depth 445 nằm trước bàn (380) và sau tủ kệ (460)
     if (agent.code === 'dung_4' && agent.current_room === 'games_room') {
-      return 176;
+      return 445;
+    }
+    // Khi Dũng 3 ngồi tại ghế vàng dưới: Z-Depth 495 nằm trước bàn làm việc (380)
+    if (agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
+      return 495;
+    }
+    // Khi thảo luận tại VIP Lounge / Boardroom
+    if (agent.current_room === 'boardroom' || agent.status === 'debating') {
+      return agent.pos_y + 10;
     }
     return agent.pos_y + 10;
   }

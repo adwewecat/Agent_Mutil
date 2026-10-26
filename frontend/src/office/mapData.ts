@@ -6,86 +6,86 @@
 
 import { OfficeRoom } from '../types';
 
-export const OFFICE_WIDTH = 900;
-export const OFFICE_HEIGHT = 695;
+export const OFFICE_WIDTH = 800;
+export const OFFICE_HEIGHT = 800;
 
 export const ROOMS: OfficeRoom[] = [
   {
     id: 'director_office',
     name: 'Góc Giám Đốc Điều Hành (Dũng 1)',
-    x: 430,
-    y: 200,
-    width: 200,
+    x: 420,
+    y: 150,
+    width: 250,
     height: 180,
     color: '#0f172a',
     floorColor: '#f7e7ce',
-    description: 'Bàn điều hành L-shape góc riêng sau vách ngăn, điện thoại bàn và máy tính quản trị.',
-    targetX: 505,
-    targetY: 265, // Ghế xoay giám đốc sau vách ngăn
+    description: 'Bàn giám đốc gỗ óc chó cao cấp, ghế da xám bọc công thái học và view kính thành phố.',
+    targetX: 430,
+    targetY: 200, // Ghế xoay giám đốc
   },
   {
     id: 'architect_office',
     name: 'Bàn Kiến Trúc Sư & PM (Dũng 2)',
-    x: 390,
-    y: 150,
-    width: 140,
-    height: 120,
+    x: 180,
+    y: 300,
+    width: 150,
+    height: 100,
     color: '#0f172a',
     floorColor: '#f7e7ce',
-    description: 'Trạm làm việc kiến trúc sư cạnh giá sách tường, màn hình CAD và bản vẽ hệ thống.',
-    targetX: 425,
-    targetY: 230, // Ghế xoay L3 cạnh giá sách
+    description: 'Bàn làm việc cụm hiện đại, vách ngăn vàng nổi bật và laptop thiết kế kiến trúc.',
+    targetX: 250,
+    targetY: 340, // Ghế vàng trên
   },
   {
     id: 'dev_lab',
     name: 'Trạm Fullstack Dev (Dũng 3)',
-    x: 200,
-    y: 200,
-    width: 200,
-    height: 160,
+    x: 180,
+    y: 440,
+    width: 150,
+    height: 110,
     color: '#0f172a',
     floorColor: '#f7e7ce',
-    description: 'Bàn lập trình viên chính với màn hình máy tính Windows desktop, phím cơ và chuột.',
-    targetX: 345,
-    targetY: 265, // Ghế xoay L2 trước máy tính
+    description: 'Trạm lập trình Fullstack tại bàn làm việc gỗ sồi, gõ phím cơ và màn hình lập trình.',
+    targetX: 245,
+    targetY: 490, // Ghế vàng dưới
   },
   {
     id: 'games_room',
-    name: 'Trạm QA & Máy In Laser (Dũng 4)',
-    x: 480,
-    y: 330,
-    width: 220,
-    height: 160,
+    name: 'Trạm QA & Test Lead (Dũng 4)',
+    x: 270,
+    y: 390,
+    width: 140,
+    height: 110,
     color: '#0f172a',
     floorColor: '#f7e7ce',
-    description: 'Trạm kiểm thử QA chuyên dụng, máy in/photocopier đa năng laser đứng đầu dãy.',
-    targetX: 595,
-    targetY: 395, // Ghế xoay F2 trước máy tính kiểm thử
+    description: 'Trạm kiểm thử hệ thống & phân tích test cases, ma trận stress test.',
+    targetX: 320,
+    targetY: 440, // Ghế vàng cạnh phải
   },
   {
     id: 'boardroom',
-    name: 'Bàn Họp Chiến Lược Trung Tâm',
-    x: 280,
-    y: 260,
-    width: 280,
-    height: 230,
+    name: 'Khu VIP Lounge & Thảo Luận',
+    x: 600,
+    y: 300,
+    width: 190,
+    height: 200,
     color: '#0f172a',
     floorColor: '#f7e7ce',
-    description: 'Bàn họp oval gỗ sồi hiện đại, 6 ghế trắng, 2 laptop và sổ tay chiến lược.',
-    targetX: 450,
-    targetY: 360, // Bàn họp trung tâm
+    description: 'Khu tiếp khách VIP & thảo luận chiến lược, sofa da đen 3 chỗ và bàn trà kính.',
+    targetX: 660,
+    targetY: 360, // Bàn VIP Lounge
   },
   {
     id: 'kitchen_pantry',
-    name: 'Khu Trưng Bày & Giải Lao',
-    x: 520,
-    y: 120,
-    width: 260,
-    height: 120,
+    name: 'Khu Trưng Bày & Bình Nước Khoáng',
+    x: 580,
+    y: 500,
+    width: 200,
+    height: 170,
     color: '#0f172a',
     floorColor: '#f7e7ce',
-    description: 'Dãy tủ kệ gỗ dài dọc tường sau, bình hoa gốm sứ trang trí và cửa sổ rèm roman đón nắng.',
-    targetX: 680,
-    targetY: 240, // Đi lại thư giãn cạnh tủ kệ
+    description: 'Tủ lưu trữ gỗ cây cảnh, bình nước nóng lạnh và lối đi sảnh chính.',
+    targetX: 645,
+    targetY: 560, // Đi lại thư giãn tại bình nước
   },
 ];
