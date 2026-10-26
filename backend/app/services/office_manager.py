@@ -8,14 +8,14 @@ from app.models import AgentModel
 
 # Tọa độ các phòng chính trong Virtual Pixel Office 4D Isometric chuẩn Pin 412290540892514371
 ROOM_COORDINATES: Dict[str, Dict[str, int]] = {
-    "director_office": {"x": 142, "y": 142},   # Ngồi trên sofa nỉ Royal Blue làm việc
-    "architect_office": {"x": 415, "y": 195},  # Ngồi ghế xoay trước bàn CAD thiết kế
-    "boardroom": {"x": 740, "y": 410},         # Khu vực thảo luận chiến lược
-    "dev_lab": {"x": 415, "y": 400},           # Ngồi ghế xoay trước máy tính Dev Lab
-    "games_room": {"x": 740, "y": 195},        # Ngồi ghế xoay trước màn hình QA & Security
-    "kitchen_pantry": {"x": 160, "y": 375},    # Đi lấy cà phê / nước uống giải lao
-    "qa_lab": {"x": 740, "y": 195},            # Trạm kiểm thử QA cubicle
-    "lounge": {"x": 142, "y": 142},            # Sofa tiếp khách làm việc
+    "director_office": {"x": 135, "y": 132},   # Ngồi lún sâu vào đệm sofa da, tay cầm tách cà phê
+    "architect_office": {"x": 413, "y": 168},  # Ngồi ghế xoay trước bàn CAD & bản vẽ blueprint
+    "boardroom": {"x": 740, "y": 342},         # Khu vực thảo luận chiến lược (ghế họp sau bàn)
+    "dev_lab": {"x": 388, "y": 372},           # Ngồi ghế xoay trước bàn máy tính 2 màn hình, gõ phím cơ RGB
+    "games_room": {"x": 714, "y": 168},        # Ngồi ghế xoay trạm QA kiểm thử, mèo ngủ bên cạnh
+    "kitchen_pantry": {"x": 160, "y": 375},    # Đứng quầy bar pha cà phê giải lao
+    "qa_lab": {"x": 714, "y": 168},            # Trạm kiểm thử QA cubicle
+    "lounge": {"x": 135, "y": 132},            # Sofa tiếp khách làm việc
 }
 
 # Dữ liệu khởi tạo cho 4 Dũng (Tọa độ ghế ngồi chuẩn xác tại bàn làm việc)
@@ -26,12 +26,12 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "role": "Software Director",
         "experience_years": 25,
         "specialty": "Định hướng chiến lược, phân tích bài toán nghiệp vụ, đề xuất giải pháp tối ưu và đàm phán giải pháp kỹ thuật cốt lõi.",
-        "status": "working",
+        "status": "idle",
         "current_room": "director_office",
-        "pos_x": 142,
-        "pos_y": 142,
-        "target_x": 142,
-        "target_y": 142,
+        "pos_x": 135,
+        "pos_y": 132,
+        "target_x": 135,
+        "target_y": 132,
         "avatar_color": "#3b82f6",  # Xanh dương Giám đốc
     },
     {
@@ -40,12 +40,12 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "role": "Software Architect & Project Manager",
         "experience_years": 40,
         "specialty": "40 năm kinh nghiệm kiến trúc hệ thống & quản lý dự án: Thẩm định khả thi, tối ưu tài nguyên, chi phí, rủi ro, phản biện sâu sắc, đánh giá độ trễ và tải hệ thống.",
-        "status": "working",
+        "status": "idle",
         "current_room": "architect_office",
-        "pos_x": 415,
-        "pos_y": 195,
-        "target_x": 415,
-        "target_y": 195,
+        "pos_x": 413,
+        "pos_y": 168,
+        "target_x": 413,
+        "target_y": 168,
         "avatar_color": "#8b5cf6",  # Tím Kiến trúc sư
     },
     {
@@ -56,10 +56,10 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "specialty": "40 năm kinh nghiệm lập trình Fullstack: Hiện thực hóa mã nguồn chuẩn xác, tối ưu thuật toán, xây dựng API sạch, loại bỏ triệt để code dư thừa.",
         "status": "coding",
         "current_room": "dev_lab",
-        "pos_x": 415,
-        "pos_y": 400,
-        "target_x": 415,
-        "target_y": 400,
+        "pos_x": 388,
+        "pos_y": 372,
+        "target_x": 388,
+        "target_y": 372,
         "avatar_color": "#10b981",  # Xanh lá Lập trình viên
     },
     {
@@ -70,10 +70,10 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "specialty": "40 năm kinh nghiệm QA & Security: Thiết lập ma trận Test Cases, Boundary Values Analysis, Stress Test, bắt trọn mọi bug tiềm ẩn và lỗ hổng an ninh.",
         "status": "testing",
         "current_room": "games_room",
-        "pos_x": 740,
-        "pos_y": 195,
-        "target_x": 740,
-        "target_y": 195,
+        "pos_x": 714,
+        "pos_y": 168,
+        "target_x": 714,
+        "target_y": 168,
         "avatar_color": "#ef4444",  # Đỏ Kiểm thử & An ninh
     },
 ]

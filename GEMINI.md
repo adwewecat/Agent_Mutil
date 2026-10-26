@@ -346,6 +346,30 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
 - [x] Đã đẩy toàn bộ mã nguồn lên GitHub.
 
+### [2026-10-26] Tái thiết kế toàn diện tư thế ngồi chân thật, xoay người 3/4, gõ bàn phím cơ, ngồi họp và nâng cấp Hardware Art chuẩn Habbo / Pinterest
+- [x] **Khắc phục triệt để hiện tượng "không thấy ngồi mà toàn đứng trên ghế"**:
+  - **Nguyên nhân**: Hàm `drawAgent` trước đây khi phát hiện ảnh Sprite PNG thì vẽ toàn bộ nhân vật ở tư thế đứng thẳng (`charY - 8` đến `charY + 10`), bất kể nhân vật đang ở bàn làm việc hay bàn họp.
+  - **Giải pháp**: Thay thế hoàn toàn bằng bộ dựng đồ họa chuyên biệt theo ngữ cảnh công việc thực tế (Contextual Procedural 2.5D Isometric Postures):
+    + **Dũng 3 (Senior Fullstack Dev tại Dev Lab)**: Ngồi lọt vào ghế xoay công thái học 5 bánh xe lăn bọc nỉ Royal Blue có đệm đỡ thắt lưng (Lumbar Support) và tay vịn; chân gập 90 độ luồn dưới gầm bàn; thân áo thun tech đen xoay góc 3/4 hướng về cụm 2 màn hình cong; hai cánh tay vươn ra gõ liên tục trên bàn phím cơ nhấp nháy theo chu kỳ gõ phím (`Math.sin(frame * 0.7)`), có ánh sáng RGB cyan phản chiếu lên cổ tay; tai nghe lập trình cyan đeo trên tai; đầu lắc nhẹ tập trung vào từng dòng code ma trận matrix.
+    + **Dũng 2 (Software Architect & PM 40 năm KN)**: Ngồi ghế da cao cấp trước bàn vẽ kiến trúc CAD; chân xếp ngay ngắn dưới hộc tủ; áo com-lê xám lịch lãm, kính gọng vàng trí thức; tay trái cầm thước chữ T trên bản vẽ kiến trúc blueprint, tay phải rê chuột quang CAD nhấp nháy; tư thế ngồi điềm đạm, tập trung cao độ.
+    + **Dũng 4 (QA & Security Lead tại Trạm Kiểm Thử)**: Ngồi ghế xoay trước trạm kiểm thử; áo len xanh lá cổ tim có huy hiệu QA vàng; hai tay gõ phím liên hồi kiểm thử stress test 5,000 TPS; chú mèo trắng đốm cam nằm ngủ cuộn tròn kế bên thở phập phồng đáng yêu.
+    + **Phòng họp chiến lược (Boardroom Suite)**: Khi bước vào họp hoặc kích hoạt quy trình tranh luận, Dũng 1 (Software Director) và Dũng 2 (Architect & PM) ngồi vào dãy ghế da hội nghị phía sau bàn họp, xoay người hướng vào nhau đối thoại trực tiếp (Dũng 1 xoay góc 3/4 sang phải, Dũng 2 xoay góc 3/4 sang trái). Hai tay đặt lên bàn giơ lên cử chỉ tranh luận sinh động (`debating arm gestures`).
+    + **Executive Lounge (Dũng 1)**: Ngồi thư thái lún sâu vào đệm sofa nỉ Royal Blue, chân duỗi trên thảm sọc xanh, tay cầm tách espresso nóng nghi ngút khói, dáng vẻ phong độ quyền uy.
+    + **Dáng đi bộ (Smooth 4-Frame Walk Cycle)**: Khi điều động di chuyển, nhân vật tự động xoay mặt trái/phải (`facingLeft = target_x < pos_x`), đu đưa 2 tay và sải 2 chân nhịp nhàng 4 khung hình, tuyệt đối không bị cứng đơ.
+- [x] **Tối ưu kiến trúc Z-Depth Sorting nhiều tầng (Layered Depth Pipeline)**:
+  - Bàn họp Boardroom có bề mặt tại `zY: 405`, ghế họp tại `zY: 338`.
+  - Hai Dũng ngồi họp được cấp `zY: 355` -> Ngồi lọt lòng trên ghế họp (sau lưng ghế) nhưng toàn bộ mặt bàn họp (laptop mở máy, cốc nước đá, tài liệu) tự động che phủ phần chân và nửa thân dưới một cách tự nhiên 100%, không bao giờ trèo hay lơ lửng trên bàn.
+  - Cơ chế tự động quản lý ghế trống: Khi nhân viên rời bàn đi giải lao hoặc đi họp, ghế xoay tại bàn làm việc tự động hiển thị; khi nhân viên ngồi vào bàn làm việc, ghế cá nhân của nhân viên được tích hợp liền mạch với cơ thể.
+- [x] **Nâng cấp phần cứng (Hardware Art) và nội thất chuẩn Habbo / Pinterest**:
+  - Tháp máy tính để bàn (PC Desktop Tower Chassis) đặt dưới gầm bàn với đầy đủ khoang ổ đĩa, nút nguồn, đèn LED xanh lá/đỏ HDD nhấp nháy, khe tản nhiệt và dây cáp bện.
+  - Vách kính mờ cubicle có 3 giấy nhớ Post-It màu vàng, xanh lá, hồng dán trang trí.
+  - Màn hình phụ có dán giấy nhớ màu vàng góc viền bezel và cáp nối.
+  - Máy photocopy văn phòng đa chức năng công nghiệp (Xerox WorkCentre) với khay nạp ADF nghiêng 2.5D, bảng điều khiển cảm ứng LED, khay chứa giấy in, đèn quét laser nhấp nháy và thùng rác tái chế bên hông.
+  - Bàn phím cơ có dây cáp dạng lò xo xoắn (Coiled Aviator Cable) nối vào PC.
+- [x] Cập nhật Database SQLite / SQL Server và dữ liệu cấu hình đồng bộ.
+- [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Đã đẩy toàn bộ mã nguồn lên GitHub.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

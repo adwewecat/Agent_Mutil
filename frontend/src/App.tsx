@@ -72,15 +72,15 @@ export const App: React.FC = () => {
   const handleDispatchAgent = (code: string, room: string, statusOverride?: string) => {
     const targetCoords: Record<string, { x: number; y: number }> = {
       boardroom: {
-        dung_1: { x: 700, y: 380 },
-        dung_2: { x: 770, y: 380 },
+        dung_1: { x: 725, y: 342 },
+        dung_2: { x: 795, y: 342 },
         dung_3: { x: 700, y: 440 },
         dung_4: { x: 770, y: 440 },
-      }[code] || { x: 740, y: 410 },
-      director_office: { x: 142, y: 142 }, // Ngồi sofa nỉ Royal Blue làm việc
-      architect_office: { x: 415, y: 195 }, // Ngồi ghế xoay trước bàn CAD thiết kế
-      dev_lab: { x: 415, y: 400 }, // Ngồi ghế xoay trước máy tính Dev Lab
-      games_room: { x: 740, y: 195 }, // Ngồi ghế xoay trước màn hình QA & Security
+      }[code] || { x: 740, y: 342 },
+      director_office: { x: 135, y: 132 }, // Ngồi sâu vào đệm sofa nỉ Royal Blue
+      architect_office: { x: 413, y: 168 }, // Ngồi ghế xoay trước bàn CAD thiết kế
+      dev_lab: { x: 388, y: 372 }, // Ngồi ghế xoay trước máy tính Dev Lab gõ phím
+      games_room: { x: 714, y: 168 }, // Ngồi ghế xoay trước màn hình QA & Security
       kitchen_pantry: { x: 160, y: 375 }, // Đi giải lao lấy nước / cà phê
     };
 

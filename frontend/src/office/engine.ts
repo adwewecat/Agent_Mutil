@@ -9,10 +9,10 @@ import { soundFx } from './soundEffects';
 
 // Tọa độ bàn làm việc chính của 4 Dũng (Ngồi làm việc nghiêm túc 95% thời gian)
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
-  dung_1: { x: 142, y: 142, room: 'director_office', status: 'idle' },
-  dung_2: { x: 415, y: 195, room: 'architect_office', status: 'idle' },
-  dung_3: { x: 415, y: 400, room: 'dev_lab', status: 'coding' },
-  dung_4: { x: 740, y: 195, room: 'games_room', status: 'testing' },
+  dung_1: { x: 135, y: 132, room: 'director_office', status: 'idle' },
+  dung_2: { x: 413, y: 168, room: 'architect_office', status: 'idle' },
+  dung_3: { x: 388, y: 372, room: 'dev_lab', status: 'coding' },
+  dung_4: { x: 714, y: 168, room: 'games_room', status: 'testing' },
 };
 
 // Khu vực Pantry lấy nước / cà phê
@@ -396,11 +396,11 @@ export class OfficeEngine {
     SpriteRenderer.drawOfficeStructure(ctx, OFFICE_WIDTH, OFFICE_HEIGHT);
 
     // 2. Gom toàn bộ đồ đạc nội thất và 4 Dũng vào danh sách Z-Sort
-    const furnitureDrawables = SpriteRenderer.getFurnitureDrawables();
+    const furnitureDrawables = SpriteRenderer.getFurnitureDrawables(this.agents);
     const allDrawables: { zY: number; draw: (c: CanvasRenderingContext2D) => void }[] = [
       ...furnitureDrawables,
       ...this.agents.map(agent => ({
-        zY: agent.pos_y + 10,
+        zY: this.getAgentZDepth(agent),
         draw: (c: CanvasRenderingContext2D) => this.renderAgentWithEffects(c, agent),
       })),
     ];
@@ -437,6 +437,37 @@ export class OfficeEngine {
         ctx.restore();
       }
     }
+  }
+
+  /**
+   * Tính toán chiều sâu Z-Depth cho từng Dũng dựa trên hành vi và vị trí ngồi làm việc/họp
+   * Đảm bảo nhân vật ngồi vào ghế, tay đặt lên bàn, không trèo lên bàn, bàn họp che chân tự nhiên
+   */
+  private getAgentZDepth(agent: Agent): number {
+    if (agent.status === 'moving') {
+      return agent.pos_y + 10;
+    }
+    // Khi họp tại Boardroom: Z-Depth 355 nằm sau mặt bàn hội nghị (405) nhưng trước ghế họp (338)
+    if (agent.current_room === 'boardroom' || agent.status === 'debating') {
+      return 355;
+    }
+    // Khi Giám đốc ngồi sofa: Z-Depth 160 nằm trên đệm sofa (155) nhưng sau bàn trà tiếp khách (190)
+    if (agent.code === 'dung_1' && agent.current_room === 'director_office') {
+      return 160;
+    }
+    // Khi Dũng 3 ngồi tại Dev Lab: Z-Depth 396 nằm trước khung bàn dev (395), tay đặt lên bàn phím
+    if (agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
+      return 396;
+    }
+    // Khi Dũng 2 ngồi tại bàn kiến trúc sư: Z-Depth 176 nằm trước khung bàn (175)
+    if (agent.code === 'dung_2' && agent.current_room === 'architect_office') {
+      return 176;
+    }
+    // Khi Dũng 4 ngồi tại bàn QA: Z-Depth 176 nằm trước khung bàn (175)
+    if (agent.code === 'dung_4' && agent.current_room === 'games_room') {
+      return 176;
+    }
+    return agent.pos_y + 10;
   }
 
   /**
