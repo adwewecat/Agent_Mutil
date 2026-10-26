@@ -17,13 +17,29 @@ export class SpriteRenderer {
   /**
    * 1. Dựng nền tổng thể và kiến trúc văn phòng (Sàn nhà, Tường 3D, Cửa sổ kính, Vách ngăn phòng)
    */
-  public static drawOfficeStructure(ctx: CanvasRenderingContext2D, width: number, height: number) {
+  public static drawOfficeStructure(ctx: CanvasRenderingContext2D, width: number, height: number, frame: number = 0) {
+    // 1. THÁP CÔNG NGHỆ TƯƠNG LAI 4 TẦNG (Pin 1083256516649506882)
+    const towerImg = ImageLoader.getOffice('ai_cyber_tower');
+    if (towerImg) {
+      // Nền đêm thành phố công nghệ cao
+      ctx.fillStyle = '#0a0e17';
+      ctx.fillRect(0, 0, width, height);
+      // Vẽ tòa tháp kính 3D Isometric 4 tầng
+      ctx.drawImage(towerImg, 0, 0, width, height);
+
+      // Hiệu ứng tương lai & Animations A.I. đỉnh cao
+      this.drawCyberParticles(ctx, frame);
+      this.drawNeuralDataStreams(ctx, frame);
+      this.drawRooftopAIQuantumCore(ctx, frame);
+      this.drawCapsuleElevator(ctx, frame);
+      this.drawHolographicFloorElements(ctx, frame);
+      return;
+    }
+
     const roomImg = ImageLoader.getOffice('pin_651403533596027077_room') || ImageLoader.getOffice('pin_894809019751482321_room');
     if (roomImg) {
-      // Nền tối công nghệ sang trọng bao quanh phòng cắt 3D
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, width, height);
-      // Vẽ phòng 3D Isometric chuẩn Pinterest pin_651403533596027077
       ctx.drawImage(roomImg, 0, 0, width, height);
       return;
     }
@@ -457,8 +473,17 @@ export class SpriteRenderer {
    * Tạo danh sách toàn bộ vật phẩm nội thất với toạ độ Z-Depth chuẩn xác
    * Đồng thời tự động quản lý trạng thái ghế trống khi nhân viên đang rời bàn
    */
-  public static getFurnitureDrawables(agents: Agent[] = []): ZDrawable[] {
+  public static getFurnitureDrawables(agents: Agent[] = [], _frame: number = 0): ZDrawable[] {
     const drawables: ZDrawable[] = [];
+
+    // ───────────────────────────────────────────────────────────────────────
+    // THÁP CÔNG NGHỆ TƯƠNG LAI 4 TẦNG (Pin 1083256516649506882)
+    // ───────────────────────────────────────────────────────────────────────
+    const towerImg = ImageLoader.getOffice('ai_cyber_tower');
+    if (towerImg) {
+      // Trong chế độ Tháp AI, toàn bộ nội thất và công nghệ cao đã được tích hợp 3D trong kiến trúc kính
+      return drawables;
+    }
 
     // ───────────────────────────────────────────────────────────────────────
     // CĂN PHÒNG 3D ISOMETRIC THỰC TẾ CHUẨN PINTEREST pin_651403533596027077
@@ -3723,5 +3748,386 @@ export class SpriteRenderer {
     ctx.fillStyle = '#22c55e';
     ctx.font = 'bold 10px "JetBrains Mono", monospace';
     ctx.fillText(`CAM: ${cameraName.toUpperCase()}`, pad + 72, pad + 17);
+  }
+
+  // ═════════════════════════════════════════════════════════════════════════
+  // CÁC MODULE HIỆU ỨNG TƯƠNG LAI & ANIMATION A.I. CHO THÁP CÔNG NGHỆ 4 TẦNG
+  // ═════════════════════════════════════════════════════════════════════════
+
+  /**
+   * 1. Rooftop 3D Holographic AI Quantum Core (Lõi AI Lượng Tử Nóc Tòa Tháp)
+   */
+  public static drawRooftopAIQuantumCore(ctx: CanvasRenderingContext2D, frame: number) {
+    const cx = 397;
+    const cy = 120;
+    const time = frame * 0.03;
+
+    ctx.save();
+
+    // Sóng xung năng lượng (Pulsing Energy Shockwaves)
+    const waveCount = 3;
+    for (let w = 0; w < waveCount; w++) {
+      const phase = ((frame * 0.015 + w / waveCount) % 1);
+      const r = 25 + phase * 95;
+      const alpha = (1 - phase) * 0.45;
+      ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, r, r * 0.5, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Vành đai quỹ đạo Hologram 1 (Tilt 35°)
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(time * 0.6);
+    ctx.scale(1, 0.42);
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 48, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Hạt photon quay trên vành đai 1
+    const p1x = Math.cos(time * 2) * 48;
+    const p1y = Math.sin(time * 2) * 48;
+    ctx.fillStyle = '#38bdf8';
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(p1x, p1y, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Vành đai quỹ đạo Hologram 2 (Tilt -35°, quay ngược chiều)
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(-time * 0.8);
+    ctx.scale(1, 0.42);
+    ctx.strokeStyle = 'rgba(192, 132, 252, 0.7)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 58, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Hạt photon tím quay trên vành đai 2
+    const p2x = Math.cos(-time * 2.2) * 58;
+    const p2y = Math.sin(-time * 2.2) * 58;
+    ctx.fillStyle = '#c084fc';
+    ctx.shadowColor = '#c084fc';
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(p2x, p2y, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Khối bát diện 3D Lượng Tử (Rotating 3D Quantum Octahedron Wireframe)
+    const size = 20;
+    const rot = time * 1.2;
+    const topV = { x: 0, y: -size * 1.3 };
+    const botV = { x: 0, y: size * 1.3 };
+    const midV: { x: number; y: number }[] = [];
+    for (let i = 0; i < 4; i++) {
+      const angle = rot + (i * Math.PI) / 2;
+      midV.push({
+        x: Math.cos(angle) * size * 1.4,
+        y: Math.sin(angle) * size * 0.6,
+      });
+    }
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.9)';
+    ctx.lineWidth = 1.6;
+    ctx.shadowColor = '#00f0ff';
+    ctx.shadowBlur = 15;
+
+    // Cạnh nối đỉnh trên và đáy
+    for (let i = 0; i < 4; i++) {
+      const m = midV[i];
+      const nextM = midV[(i + 1) % 4];
+      ctx.beginPath();
+      ctx.moveTo(topV.x, topV.y);
+      ctx.lineTo(m.x, m.y);
+      ctx.lineTo(botV.x, botV.y);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y);
+      ctx.lineTo(nextM.x, nextM.y);
+      ctx.stroke();
+    }
+
+    // Tâm phát sáng Neon Core
+    const coreGrad = ctx.createRadialGradient(0, 0, 2, 0, 0, 18);
+    coreGrad.addColorStop(0, '#ffffff');
+    coreGrad.addColorStop(0.3, 'rgba(56, 189, 248, 0.9)');
+    coreGrad.addColorStop(0.7, 'rgba(168, 85, 247, 0.4)');
+    coreGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = coreGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, 18, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Banner HUD Công nghệ tương lai trên đỉnh tháp
+    const title = '✦ AI 4 DŨNG • QUANTUM NEXUS ✦';
+    ctx.font = 'bold 10px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    const tw = ctx.measureText(title).width + 24;
+    ctx.fillStyle = 'rgba(10, 14, 23, 0.85)';
+    ctx.beginPath();
+    ctx.roundRect(cx - tw / 2, 38, tw, 22, 6);
+    ctx.fill();
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.roundRect(cx - tw / 2, 38, tw, 22, 6);
+    ctx.stroke();
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 8;
+    ctx.fillText(title, cx, 53);
+
+    ctx.restore();
+  }
+
+  /**
+   * 2. Buồng Thang Máy Capsule Kính Tương Lai (Futuristic Glass Capsule Elevator)
+   */
+  public static drawCapsuleElevator(ctx: CanvasRenderingContext2D, frame: number) {
+    const shaftX = 482; // Bên phải trục lõi kính trung tâm
+    const topY = 360;
+    const botY = 945;
+
+    ctx.save();
+
+    // Ray trượt laser trục thang máy
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(shaftX - 10, topY);
+    ctx.lineTo(shaftX - 10, botY + 20);
+    ctx.moveTo(shaftX + 10, topY);
+    ctx.lineTo(shaftX + 10, botY + 20);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Tọa độ chuyển động êm của buồng thang máy capsule
+    const cycle = (Math.sin(frame * 0.012) + 1) / 2;
+    const cabinY = topY + 20 + cycle * (botY - topY - 50);
+
+    // Xác định tầng hiện tại hiển thị LED
+    let floorLabel = 'F1';
+    if (cabinY < 450) floorLabel = 'F4';
+    else if (cabinY < 640) floorLabel = 'F3';
+    else if (cabinY < 830) floorLabel = 'F2';
+
+    // Thân buồng capsule kính
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+    ctx.beginPath();
+    ctx.roundRect(shaftX - 11, cabinY - 18, 22, 36, 10);
+    ctx.fill();
+
+    // Viền kính phát sáng
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.8;
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.roundRect(shaftX - 11, cabinY - 18, 22, 36, 10);
+    ctx.stroke();
+
+    // Cửa kính trong suốt & ánh sáng nội thất ấm áp
+    ctx.fillStyle = 'rgba(254, 240, 138, 0.35)';
+    ctx.fillRect(shaftX - 7, cabinY - 11, 14, 22);
+
+    // Đèn LED chỉ thị tầng
+    ctx.fillStyle = '#22c55e';
+    ctx.shadowColor = '#22c55e';
+    ctx.shadowBlur = 6;
+    ctx.font = 'bold 7px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(floorLabel, shaftX, cabinY + 2);
+
+    // Tia sáng dẫn hướng dưới đáy thang máy
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(shaftX, cabinY + 18);
+    ctx.lineTo(shaftX, cabinY + 28);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  /**
+   * 3. Hologram và Màn hình công nghệ cao tại 4 Tầng
+   */
+  public static drawHolographicFloorElements(ctx: CanvasRenderingContext2D, frame: number) {
+    ctx.save();
+
+    // ── TẦNG 4: Quả địa cầu chiến lược Hologram bên cạnh Dũng 1 ──
+    const gX = 310;
+    const gY = 370;
+    ctx.save();
+    ctx.translate(gX, gY);
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.65)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 14, 0, Math.PI * 2);
+    ctx.stroke();
+    // Vĩ tuyến xoay
+    const gRot = frame * 0.04;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, Math.abs(Math.sin(gRot)) * 14, 14, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    // Vòng phát sáng
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // ── TẦNG 3: Hologram Microservices DAG trên bàn tròn Dũng 2 ──
+    const t3X = 395;
+    const t3Y = 540;
+    ctx.save();
+    ctx.translate(t3X, t3Y);
+    // Vòng tròn quét Hologram
+    ctx.strokeStyle = 'rgba(168, 85, 247, 0.5)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 26, 11, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    // 3 Node dịch vụ lơ lửng
+    const nodeA = frame * 0.03;
+    for (let i = 0; i < 3; i++) {
+      const a = nodeA + (i * Math.PI * 2) / 3;
+      const nx = Math.cos(a) * 22;
+      const ny = Math.sin(a) * 9 - 6;
+      ctx.fillStyle = i === 0 ? '#38bdf8' : i === 1 ? '#c084fc' : '#34d399';
+      ctx.shadowColor = ctx.fillStyle;
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(nx, ny, 2.8, 0, Math.PI * 2);
+      ctx.fill();
+      // Nối về tâm
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.beginPath();
+      ctx.moveTo(0, -6);
+      ctx.lineTo(nx, ny);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    // ── TẦNG 2: Matrix Code Rain tại Dev Lab Dũng 3 ──
+    const mX = 295;
+    const mY = 705;
+    ctx.save();
+    ctx.fillStyle = 'rgba(16, 185, 129, 0.85)';
+    ctx.shadowColor = '#10b981';
+    ctx.shadowBlur = 6;
+    ctx.font = 'bold 6.5px "JetBrains Mono", monospace';
+    const glyphs = ['1', '0', 'λ', '{', '}', ';', '=>', 'OK'];
+    for (let c = 0; c < 4; c++) {
+      const colX = mX + c * 10;
+      const offset = Math.floor((frame * 0.15 + c * 3) % glyphs.length);
+      for (let r = 0; r < 3; r++) {
+        const glyph = glyphs[(offset + r) % glyphs.length];
+        const alpha = 0.3 + (r / 2) * 0.65;
+        ctx.fillStyle = `rgba(52, 211, 153, ${alpha})`;
+        ctx.fillText(glyph, colX, mY + r * 9);
+      }
+    }
+    ctx.restore();
+
+    // ── TẦNG 1: Radar quét an ninh 360° tại trạm QA Dũng 4 ──
+    const rX = 320;
+    const rY = 925;
+    ctx.save();
+    ctx.translate(rX, rY);
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.55)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(0, 0, 16, 0, Math.PI * 2);
+    ctx.arc(0, 0, 8, 0, Math.PI * 2);
+    ctx.stroke();
+    // Tia quét radar
+    const radarAngle = frame * 0.05;
+    ctx.strokeStyle = 'rgba(34, 197, 94, 0.85)';
+    ctx.shadowColor = '#22c55e';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(Math.cos(radarAngle) * 16, Math.sin(radarAngle) * 16);
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.restore();
+  }
+
+  /**
+   * 4. Luồng Tia Sáng Dữ Liệu Photon Nối Giữa Các Tầng (Neural Data Streams)
+   */
+  public static drawNeuralDataStreams(ctx: CanvasRenderingContext2D, frame: number) {
+    ctx.save();
+    const coreX = 395;
+    const startY = 385;
+    const endY = 940;
+
+    // Đường truyền dữ liệu trục trung tâm
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(coreX, startY);
+    ctx.lineTo(coreX, endY);
+    ctx.stroke();
+
+    // Hạt photon xung dữ liệu chạy dọc trục (Data pulse photons)
+    const pulseCount = 4;
+    for (let p = 0; p < pulseCount; p++) {
+      const prog = ((frame * 0.02 + p / pulseCount) % 1);
+      const py = startY + prog * (endY - startY);
+      ctx.fillStyle = '#00f0ff';
+      ctx.shadowColor = '#00f0ff';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(coreX, py, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Đuôi sáng hạt photon (light trail)
+      ctx.strokeStyle = 'rgba(0, 240, 255, 0.5)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(coreX, py);
+      ctx.lineTo(coreX, py - 12);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  /**
+   * 5. Hạt nano công nghệ lơ lửng trong không khí (Ambient Cyber Nano-Particles)
+   */
+  public static drawCyberParticles(ctx: CanvasRenderingContext2D, frame: number) {
+    ctx.save();
+    const count = 30;
+    for (let i = 0; i < count; i++) {
+      const seed = i * 137.5;
+      const x = 180 + ((seed * 7.3 + frame * 0.3) % 440);
+      const y = 80 + ((seed * 11.7 + frame * 0.2) % 1060);
+      const alpha = 0.2 + 0.45 * Math.sin(frame * 0.03 + i);
+      const size = 1 + (i % 3) * 0.7;
+
+      ctx.fillStyle = i % 2 === 0 ? `rgba(56, 189, 248, ${alpha})` : `rgba(168, 85, 247, ${alpha})`;
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
   }
 }

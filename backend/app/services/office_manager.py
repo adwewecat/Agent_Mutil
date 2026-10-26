@@ -6,19 +6,19 @@ from typing import Dict, Any, List
 from sqlalchemy.orm import Session
 from app.models import AgentModel
 
-# Tọa độ các phòng chính trong Virtual Studio 3D Isometric chuẩn Pin 651403533596027077
+# Tọa độ các phòng chính trong Tháp Công Nghệ AI 4 Tầng (Pin 1083256516649506882)
 ROOM_COORDINATES: Dict[str, Dict[str, int]] = {
-    "director_office": {"x": 430, "y": 200},   # Ghế xoay giám đốc sau bàn điều hành gỗ óc chó
-    "architect_office": {"x": 250, "y": 340},  # Ghế vàng trên trạm làm việc kiến trúc sư
-    "boardroom": {"x": 660, "y": 360},         # Bàn VIP Lounge & Thảo luận chiến lược
-    "dev_lab": {"x": 245, "y": 490},           # Ghế vàng dưới trạm Fullstack Dev
-    "games_room": {"x": 320, "y": 440},        # Ghế vàng cạnh phải trạm QA & Test Lead
-    "kitchen_pantry": {"x": 645, "y": 560},    # Cạnh bình nước khoáng nóng lạnh & tủ trưng bày
-    "qa_lab": {"x": 320, "y": 440},
-    "lounge": {"x": 660, "y": 360},
+    "director_office": {"x": 395, "y": 385},   # Tầng 4: Penthouse Giám Đốc (Dũng 1)
+    "architect_office": {"x": 395, "y": 555},  # Tầng 3: Bàn Tròn Kiến Trúc & PM (Dũng 2)
+    "boardroom": {"x": 395, "y": 555},         # Hội đồng chiến lược đa tầng
+    "dev_lab": {"x": 380, "y": 750},           # Tầng 2: Cyber Dev Workshop (Dũng 3)
+    "games_room": {"x": 395, "y": 940},        # Tầng 1: QA Cyber Defense (Dũng 4)
+    "kitchen_pantry": {"x": 440, "y": 940},    # Sảnh kính tiếp đón tầng trệt
+    "qa_lab": {"x": 395, "y": 940},
+    "lounge": {"x": 440, "y": 940},
 }
 
-# Dữ liệu khởi tạo cho 4 Dũng (Tọa độ ghế ngồi chuẩn xác tại bàn làm việc)
+# Dữ liệu khởi tạo cho 4 Dũng (Tọa độ trên 4 tầng Tháp AI)
 DEFAULT_AGENTS: List[Dict[str, Any]] = [
     {
         "code": "dung_1",
@@ -28,10 +28,10 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "specialty": "Định hướng chiến lược, phân tích bài toán nghiệp vụ, đề xuất giải pháp tối ưu và đàm phán giải pháp kỹ thuật cốt lõi.",
         "status": "idle",
         "current_room": "director_office",
-        "pos_x": 430,
-        "pos_y": 200,
-        "target_x": 430,
-        "target_y": 200,
+        "pos_x": 395,
+        "pos_y": 385,
+        "target_x": 395,
+        "target_y": 385,
         "avatar_color": "#3b82f6",  # Xanh dương Giám đốc
     },
     {
@@ -42,10 +42,10 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "specialty": "40 năm kinh nghiệm kiến trúc hệ thống & quản lý dự án: Thẩm định khả thi, tối ưu tài nguyên, chi phí, rủi ro, phản biện sâu sắc, đánh giá độ trễ và tải hệ thống.",
         "status": "idle",
         "current_room": "architect_office",
-        "pos_x": 250,
-        "pos_y": 340,
-        "target_x": 250,
-        "target_y": 340,
+        "pos_x": 395,
+        "pos_y": 555,
+        "target_x": 395,
+        "target_y": 555,
         "avatar_color": "#8b5cf6",  # Tím Kiến trúc sư
     },
     {
@@ -56,10 +56,10 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "specialty": "40 năm kinh nghiệm lập trình Fullstack: Hiện thực hóa mã nguồn chuẩn xác, tối ưu thuật toán, xây dựng API sạch, loại bỏ triệt để code dư thừa.",
         "status": "coding",
         "current_room": "dev_lab",
-        "pos_x": 245,
-        "pos_y": 490,
-        "target_x": 245,
-        "target_y": 490,
+        "pos_x": 380,
+        "pos_y": 750,
+        "target_x": 380,
+        "target_y": 750,
         "avatar_color": "#10b981",  # Xanh lá Lập trình viên
     },
     {
@@ -70,10 +70,10 @@ DEFAULT_AGENTS: List[Dict[str, Any]] = [
         "specialty": "40 năm kinh nghiệm QA & Security: Thiết lập ma trận Test Cases, Boundary Values Analysis, Stress Test, bắt trọn mọi bug tiềm ẩn và lỗ hổng an ninh.",
         "status": "testing",
         "current_room": "games_room",
-        "pos_x": 320,
-        "pos_y": 440,
-        "target_x": 320,
-        "target_y": 440,
+        "pos_x": 395,
+        "pos_y": 940,
+        "target_x": 395,
+        "target_y": 940,
         "avatar_color": "#ef4444",  # Đỏ Kiểm thử & An ninh
     },
 ]

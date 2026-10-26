@@ -8,16 +8,16 @@ import { SpriteRenderer } from './spriteRenderer';
 import { soundFx } from './soundEffects';
 import { ImageLoader } from './imageLoader';
 
-// Tọa độ bàn làm việc chính của 4 Dũng (Ngồi làm việc nghiêm túc 95% thời gian)
+// Tọa độ các tầng của 4 Dũng trong Tháp Công Nghệ AI (800x1200)
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
-  dung_1: { x: 430, y: 200, room: 'director_office', status: 'idle' },
-  dung_2: { x: 250, y: 340, room: 'architect_office', status: 'idle' },
-  dung_3: { x: 245, y: 490, room: 'dev_lab', status: 'coding' },
-  dung_4: { x: 320, y: 440, room: 'games_room', status: 'testing' },
+  dung_1: { x: 395, y: 385, room: 'director_office', status: 'idle' },  // Tầng 4: Penthouse Giám Đốc
+  dung_2: { x: 395, y: 555, room: 'architect_office', status: 'idle' }, // Tầng 3: Bàn Tròn Kiến Trúc & PM
+  dung_3: { x: 380, y: 750, room: 'dev_lab', status: 'coding' },        // Tầng 2: Cyber Dev Workshop
+  dung_4: { x: 395, y: 940, room: 'games_room', status: 'testing' },    // Tầng 1: QA Cyber Defense
 };
 
-// Khu vực Pantry / giải lao thư giãn
-const PANTRY_COFFEE = { x: 645, y: 560, room: 'kitchen_pantry' };
+// Khu vực sảnh kính tiếp đón & cafe tầng trệt
+const PANTRY_COFFEE = { x: 440, y: 940, room: 'kitchen_pantry' };
 
 export class OfficeEngine {
   public canvas: HTMLCanvasElement;
@@ -134,7 +134,7 @@ export class OfficeEngine {
       if (room) {
         const centerX = room.x + room.width / 2;
         const centerY = room.y + room.height / 2;
-        this.targetZoom = 1.12; // Zoom tinh tế, không làm vỡ tỉ lệ hoặc che khuất tầm nhìn
+        this.targetZoom = 1.45; // Zoom vào tầng chi tiết trong Tháp AI
         const viewW = OFFICE_WIDTH / this.targetZoom;
         const viewH = OFFICE_HEIGHT / this.targetZoom;
         const rawX = centerX - viewW / 2;
@@ -390,10 +390,10 @@ export class OfficeEngine {
     ctx.translate(-this.viewX, -this.viewY);
 
     // 1. Dựng nền tổng thể và kiến trúc văn phòng (Sàn nhà, Tường 3D, Cửa sổ kính, Vách ngăn phòng)
-    SpriteRenderer.drawOfficeStructure(ctx, OFFICE_WIDTH, OFFICE_HEIGHT);
+    SpriteRenderer.drawOfficeStructure(ctx, OFFICE_WIDTH, OFFICE_HEIGHT, this.frameCount);
 
     // 2. Gom toàn bộ đồ đạc nội thất và 4 Dũng vào danh sách Z-Sort
-    const furnitureDrawables = SpriteRenderer.getFurnitureDrawables(this.agents);
+    const furnitureDrawables = SpriteRenderer.getFurnitureDrawables(this.agents, this.frameCount);
     const allDrawables: { zY: number; draw: (c: CanvasRenderingContext2D) => void }[] = [
       ...furnitureDrawables,
       ...this.agents.map(agent => ({
@@ -437,33 +437,9 @@ export class OfficeEngine {
   }
 
   /**
-   * Tính toán chiều sâu Z-Depth cho từng Dũng dựa trên hành vi và vị trí ngồi làm việc/họp
-   * Đảm bảo nhân vật ngồi vào ghế, tay đặt lên bàn, không trèo lên bàn, bàn họp che chân tự nhiên
+   * Tính toán chiều sâu Z-Depth cho từng Dũng trên 4 tầng Tháp AI
    */
   private getAgentZDepth(agent: Agent): number {
-    if (agent.status === 'moving') {
-      return agent.pos_y + 10;
-    }
-    // Khi Giám đốc ngồi ghế điều hành: Z-Depth 205 nằm sau bàn giám đốc (zY = 250)
-    if (agent.code === 'dung_1' && agent.current_room === 'director_office') {
-      return 205;
-    }
-    // Khi Dũng 2 ngồi tại ghế vàng trên: Z-Depth 345 nằm sau bàn làm việc & vách ngăn (zY = 380)
-    if (agent.code === 'dung_2' && agent.current_room === 'architect_office') {
-      return 345;
-    }
-    // Khi Dũng 4 ngồi tại ghế vàng cạnh phải: Z-Depth 445 nằm trước bàn (380) và sau tủ kệ (460)
-    if (agent.code === 'dung_4' && agent.current_room === 'games_room') {
-      return 445;
-    }
-    // Khi Dũng 3 ngồi tại ghế vàng dưới: Z-Depth 495 nằm trước bàn làm việc (380)
-    if (agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
-      return 495;
-    }
-    // Khi thảo luận tại VIP Lounge / Boardroom
-    if (agent.current_room === 'boardroom' || agent.status === 'debating') {
-      return agent.pos_y + 10;
-    }
     return agent.pos_y + 10;
   }
 

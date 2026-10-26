@@ -24,6 +24,7 @@ export class ImageLoader {
   ];
 
   private static readonly OFFICE_ITEMS = [
+    'ai_cyber_tower',
     'pin_651403533596027077_room',
     'foreground_director_desk',
     'foreground_team_bench',
