@@ -54,8 +54,10 @@ class ProjectSessionModel(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     title = Column(String(255), nullable=False)
     user_problem = Column(Text, nullable=False)  # Đề bài người dùng nhập
-    status = Column(String(50), default="pending")  # pending, in_progress, completed, failed
-    current_stage = Column(String(50), default="idle")  # director_proposal, architect_critique, dev_implementation, qa_validation, finished
+    status = Column(String(50), default="pending")  # pending, in_progress, waiting_feature_selection, waiting_approval, completed, failed
+    current_stage = Column(String(50), default="idle")  # initial_deliberation, waiting_feature_selection, deep_dive, workstations, boardroom_review, finished
+    selected_features = Column(Text, nullable=True)  # JSON lưu danh sách mã ý tưởng người dùng chọn phát triển
+    consensus_features = Column(Text, nullable=True)  # JSON lưu bảng chốt lại cuối cùng của 4 Dũng
     
     created_at = Column(DateTime, default=utc_now)
     updated_at = Column(DateTime, default=utc_now, onupdate=utc_now)

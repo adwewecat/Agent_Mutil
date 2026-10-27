@@ -39,7 +39,7 @@ export const api = {
   },
 
   /**
-   * Kích hoạt chu trình làm việc của 4 Dũng (director, architect, developer, qa, full_cycle)
+   * Kích hoạt chu trình làm việc của 4 Dũng (initial_deliberation, full_cycle,...)
    */
   async triggerWorkflow(sessionId: number, step: string): Promise<DeliberationMessage[]> {
     const res = await fetch(`${API_BASE}/workflow/trigger`, {
@@ -52,16 +52,45 @@ export const api = {
   },
 
   /**
-   * Phê duyệt phương án của Dũng 1 & Dũng 2 để kích hoạt Dũng 3 & Dũng 4
+   * Lấy Bảng Thông Tin Chốt Lại (Consensus Board) của 4 Dũng sau vòng 1
    */
-  async approveWorkflow(sessionId: number): Promise<DeliberationMessage[]> {
-    const res = await fetch(`${API_BASE}/workflow/approve`, {
+  async getConsensusFeatures(sessionId: number): Promise<import('../types').ConsensusFeatureItem[]> {
+    const res = await fetch(`${API_BASE}/workflow/consensus-features/${sessionId}`);
+    if (!res.ok) throw new Error('Không thể lấy bảng thông tin chốt lại');
+    return res.json();
+  },
+
+  /**
+   * Người dùng chọn các ý phát triển phần mềm -> 4 Dũng tranh luận chuyên sâu tại phòng họp
+   */
+  async selectFeaturesAndDeepDive(sessionId: number, selectedFeatureIds: string[]): Promise<DeliberationMessage[]> {
+    const res = await fetch(`${API_BASE}/workflow/select-features`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId, selected_feature_ids: selectedFeatureIds }),
+    });
+    if (!res.ok) throw new Error('Lỗi gửi lựa chọn phát triển phần mềm');
+    return res.json();
+  },
+
+  /**
+   * Kích hoạt về bàn làm việc (Dũng 3 viết code, Dũng 4 test) và họp nghiệm thu lần 2 tại Boardroom
+   */
+  async executeWorkstations(sessionId: number): Promise<DeliberationMessage[]> {
+    const res = await fetch(`${API_BASE}/workflow/execute-workstations`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ session_id: sessionId }),
     });
-    if (!res.ok) throw new Error('Lỗi phê duyệt phương án');
+    if (!res.ok) throw new Error('Lỗi thực thi tại bàn làm việc');
     return res.json();
+  },
+
+  /**
+   * Phê duyệt phương án của Dũng 1 & Dũng 2 để kích hoạt Dũng 3 & Dũng 4 (Tương thích ngược)
+   */
+  async approveWorkflow(sessionId: number): Promise<DeliberationMessage[]> {
+    return this.executeWorkstations(sessionId);
   },
 
   /**

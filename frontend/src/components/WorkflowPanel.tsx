@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
-import { Play, Sparkles, Send, ShieldAlert, Cpu, CheckCircle2, AlertTriangle, ArrowRight } from 'lucide-react';
+import {
+  Play,
+  Sparkles,
+  Cpu,
+  ArrowRight,
+  Terminal,
+  Trophy,
+} from 'lucide-react';
 
 interface WorkflowPanelProps {
   onRunWorkflow: (problem: string, step: string) => Promise<void>;
   isLoading: boolean;
   currentStage: string;
-  isWaitingApproval?: boolean;
-  onApproveWorkflow?: () => Promise<void>;
+  workflowStage?: string; // initial, waiting_feature_selection, ready_for_workstations, finished
+  onExecuteWorkstations?: () => Promise<void>;
+  onOpenFinalModal?: () => void;
 }
 
 const SAMPLE_PROBLEMS = [
@@ -20,8 +28,9 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
   onRunWorkflow,
   isLoading,
   currentStage,
-  isWaitingApproval = false,
-  onApproveWorkflow,
+  workflowStage,
+  onExecuteWorkstations,
+  onOpenFinalModal,
 }) => {
   const [problem, setProblem] = useState(SAMPLE_PROBLEMS[0]);
 
@@ -35,7 +44,7 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
       <div className="workflow-card-header">
         <div className="workflow-title-wrap">
           <Sparkles className="text-yellow-400" size={18} />
-          <h2>GIAO ĐỀ BÀI CHO BỘ TỨ DŨNG</h2>
+          <h2>GIAO ĐỀ BÀI CHO HỘI ĐỒNG 4 DŨNG</h2>
         </div>
         {isLoading && (
           <div className="workflow-active-badge">
@@ -47,7 +56,7 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
 
       <div className="problem-input-group">
         <textarea
-          rows={3}
+          rows={2}
           value={problem}
           onChange={e => setProblem(e.target.value)}
           placeholder="Nhập yêu cầu phần mềm hoặc bài toán kỹ thuật tại đây..."
@@ -73,36 +82,54 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
         ))}
       </div>
 
-      {/* CỔNG PHÊ DUYỆT CHIẾN LƯỢC (HUMAN-IN-THE-LOOP APPROVAL GATE) */}
-      {isWaitingApproval && (
-        <div className="approval-gate-banner animate-fade-in">
-          <div className="approval-gate-header">
-            <AlertTriangle className="text-amber-400" size={20} />
-            <div className="approval-gate-title">
-              <span className="approval-badge">CHỜ NGƯỜI DÙNG PHÊ DUYỆT</span>
-              <h3>Dũng 1 (Thị trường/Vận hành) & Dũng 2 (Hệ thống/Kiến trúc) đã chốt phương án</h3>
+      {/* BANNER BƯỚC 3: SẴN SÀNG VỀ BÀN LÀM VIỆC */}
+      {workflowStage === 'ready_for_workstations' && onExecuteWorkstations && (
+        <div className="workstation-dispatch-banner animate-fade-in">
+          <div className="dispatch-header">
+            <Terminal className="text-emerald-400" size={20} />
+            <div>
+              <span className="dispatch-badge">ĐÃ TRANH LUẬN CHUYÊN SÂU XONG TẠI PHÒNG HỌP</span>
+              <h4>4 Dũng đã chốt kế hoạch thực thi! Sẵn sàng về bàn làm việc để viết code & chạy test</h4>
             </div>
           </div>
-          <p className="approval-gate-desc">
-            Quy trình được thiết kế chuẩn mực: Hai chuyên gia đầu não đã hoàn tất phân tích thị trường, tâm lý khách hàng,
-            rủi ro rớt đơn, nguy cơ tráo mã QR và chốt giải pháp Dynamic QR HMAC + Local SQLite Sync.
-            <strong> Dũng 3 (Lập trình) và Dũng 4 (Kiểm thử) chỉ được phép thực hiện khi bạn bấm Phê duyệt dưới đây:</strong>
+          <p className="dispatch-desc">
+            Dũng 1 (Giám đốc) và Dũng 2 (PM) đã phân tích kỹ mặt hạn chế & rủi ro của các ý bạn chọn.
+            Dũng 3 đã cam kết cấu trúc Clean Code và Dũng 4 đã lên ma trận 8 kịch bản kiểm thử:
           </p>
-          <div className="approval-gate-action">
-            <button
-              onClick={() => onApproveWorkflow && onApproveWorkflow()}
-              disabled={isLoading}
-              className="action-btn-approve"
-            >
-              <CheckCircle2 size={18} />
-              <span>PHÊ DUYỆT PHƯƠNG ÁN & KÍCH HOẠT DŨNG 3, DŨNG 4 THỰC THI</span>
-              <ArrowRight size={16} />
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={onExecuteWorkstations}
+            disabled={isLoading}
+            className="action-btn-dispatch"
+          >
+            <Cpu size={18} />
+            <span>⚡ LỆNH CHO CẢ 4 DŨNG VỀ BÀN LÀM VIỆC: DŨNG 3 VIẾT CODE & DŨNG 4 TEST</span>
+            <ArrowRight size={18} />
+          </button>
         </div>
       )}
 
-      {/* Bảng nút kích hoạt */}
+      {/* BANNER BƯỚC 5: ĐÃ HOÀN TẤT & HỌP LẦN 2 */}
+      {workflowStage === 'finished' && onOpenFinalModal && (
+        <div className="finished-review-banner animate-fade-in">
+          <div className="flex items-center gap-2">
+            <Trophy className="text-amber-400" size={20} />
+            <div>
+              <span className="text-xs text-amber-300 font-semibold tracking-wider uppercase">Nghiệm thu hoàn tất</span>
+              <h4 className="text-sm font-bold text-white">4 Dũng đã họp lại tại Boardroom lần 2 và bàn giao kết quả!</h4>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onOpenFinalModal}
+            className="btn-open-final-modal"
+          >
+            <Trophy size={16} /> Xem Báo Cáo Nghiệm Thu Toàn Diện
+          </button>
+        </div>
+      )}
+
+      {/* Nút kích hoạt chính */}
       <div className="workflow-actions-grid">
         <button
           onClick={() => handleSubmit('full_cycle')}
@@ -110,50 +137,8 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
           className="action-btn-primary"
         >
           <Play size={18} />
-          <span>KÍCH HOẠT QUY TRÌNH (DŨNG 1 & DŨNG 2 TRANH LUẬN CHIẾN LƯỢC)</span>
+          <span>KÍCH HOẠT HỘI ĐỒNG 4 DŨNG: HỌP BÀN TRÒN & TRANH LUẬN ĐA CHIỀU (VÒNG 1)</span>
         </button>
-
-        <div className="step-actions-row">
-          <button
-            onClick={() => handleSubmit('director')}
-            disabled={isLoading || !problem.trim()}
-            className="action-btn-step step-director"
-            title="Dũng 1 nghiên cứu thị trường và rủi ro vận hành"
-          >
-            <Send size={14} />
-            <span>1. Dũng 1 (Thị trường)</span>
-          </button>
-
-          <button
-            onClick={() => handleSubmit('architect')}
-            disabled={isLoading || !problem.trim()}
-            className="action-btn-step step-architect"
-            title="Dũng 2 phản biện rủi ro hệ thống và chốt kiến trúc"
-          >
-            <Cpu size={14} />
-            <span>2. Dũng 2 (Hệ thống)</span>
-          </button>
-
-          <button
-            onClick={() => handleSubmit('developer')}
-            disabled={isLoading || !problem.trim()}
-            className="action-btn-step step-developer"
-            title="Dũng 3 hiện thực hóa mã nguồn sạch chuẩn xác"
-          >
-            <Sparkles size={14} />
-            <span>3. Dũng 3 (Code)</span>
-          </button>
-
-          <button
-            onClick={() => handleSubmit('qa')}
-            disabled={isLoading || !problem.trim()}
-            className="action-btn-step step-qa"
-            title="Dũng 4 lập ma trận kiểm thử và quét an ninh"
-          >
-            <ShieldAlert size={14} />
-            <span>4. Dũng 4 (Stress Test)</span>
-          </button>
-        </div>
       </div>
     </div>
   );

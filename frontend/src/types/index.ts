@@ -34,12 +34,28 @@ export interface DeliberationMessage {
   timestamp: string;
 }
 
+export interface ConsensusFeatureItem {
+  id: string;
+  title: string;
+  proposer: string;
+  category: string;
+  drawbacks: string;
+  counter_arguments: string;
+  capabilities: string;
+  limitations: string;
+  technical_risks: string;
+  software_recommended: boolean;
+  recommendation_reason: string;
+}
+
 export interface ProjectSession {
   id: number;
   title: string;
   user_problem: string;
-  status: 'pending' | 'in_progress' | 'waiting_approval' | 'completed' | 'failed';
+  status: 'pending' | 'in_progress' | 'waiting_feature_selection' | 'ready_for_workstations' | 'waiting_approval' | 'completed' | 'failed';
   current_stage: string;
+  selected_features?: string | null;
+  consensus_features?: string | null;
   created_at: string;
   updated_at: string;
   messages: DeliberationMessage[];

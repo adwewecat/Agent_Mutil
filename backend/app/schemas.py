@@ -74,6 +74,8 @@ class ProjectSessionResponse(BaseModel):
     user_problem: str
     status: str
     current_stage: str
+    selected_features: Optional[str] = None
+    consensus_features: Optional[str] = None
     created_at: datetime
     updated_at: datetime
     messages: List[DeliberationMessageResponse] = []
@@ -81,13 +83,34 @@ class ProjectSessionResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+# -----------------------------------------------------------------------------
+# Consensus Feature Schemas (Bảng thông tin chốt lại cuối cùng của 4 Dũng)
+# -----------------------------------------------------------------------------
+class ConsensusFeatureItem(BaseModel):
+    id: str = Field(..., description="Mã định danh ý tưởng: feature_1, feature_2,...")
+    title: str = Field(..., description="Tiêu đề phương án / ý tưởng")
+    proposer: str = Field(..., description="Người đề xuất chính: Dũng 1, Dũng 2, Dũng 3, Dũng 4")
+    category: str = Field(..., description="Phân loại: Bảo mật, Hiệu năng, Vận hành, UX/UI, Quy trình")
+    drawbacks: str = Field(..., description="Mặt hạn chế & Tiêu cực nếu triển khai")
+    counter_arguments: str = Field(..., description="Giải pháp phản biện & Cách hóa giải mặt hạn chế")
+    capabilities: str = Field(..., description="Đáp ứng được những gì cho hệ thống")
+    limitations: str = Field(..., description="Những gì không đáp ứng được (giới hạn)")
+    technical_risks: str = Field(..., description="Rủi ro kỹ thuật & rủi ro vận hành cần lưu ý")
+    software_recommended: bool = Field(..., description="Khuyến nghị nên xây phần mềm (True) hay làm quy trình ngoài (False)")
+    recommendation_reason: str = Field(..., description="Lý giải tại sao nên hoặc không nên làm phần mềm")
+
+
+class WorkflowSelectFeaturesPayload(BaseModel):
+    session_id: int = Field(..., description="ID phiên làm việc")
+    selected_feature_ids: List[str] = Field(..., min_items=1, description="Danh sách mã ý tưởng người dùng chọn phát triển")
+
 
 # -----------------------------------------------------------------------------
 # Workflow Trigger Schemas
 # -----------------------------------------------------------------------------
 class WorkflowStepTrigger(BaseModel):
     session_id: int
-    step: str = Field(..., description="director, architect, developer, qa, hoặc full_cycle")
+    step: str = Field(..., description="initial_deliberation, deep_dive, workstations, full_cycle, director, architect, developer, qa")
 
 
 class WorkflowApprovePayload(BaseModel):

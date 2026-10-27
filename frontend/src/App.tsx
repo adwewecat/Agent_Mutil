@@ -1,15 +1,24 @@
 /**
  * Component trung tâm kết nối toàn bộ hệ thống Virtual Pixel Office và 4 Dũng
+ * Triển khai chu trình 5 giai đoạn:
+ * 1. Hội đồng 4 Dũng cùng ngồi vào phòng họp bàn tròn Hologram 3D tranh luận & phản biện mặt hạn chế.
+ * 2. Đưa kịch bản tranh luận lên và hiển thị Bảng Thông Tin Chốt Lại (Consensus Board).
+ * 3. Người dùng tích chọn dòng/ý nào nên phát triển phần mềm -> 4 Dũng tranh luận chuyên sâu về hạn chế & rủi ro.
+ * 4. Cả 4 Dũng đều về bàn làm việc riêng: Dũng 3 lập trình Clean Code, Dũng 4 chạy Stress Test & Security.
+ * 5. Dũng 3 & 4 bàn giao cho Giám đốc (Dũng 1) & PM (Dũng 2) -> Cả 4 người lại ngồi vào Boardroom lần 2
+ *    và hiện lên Popup Tổng Kết Báo Cáo Toàn Diện để người dùng xem.
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Agent, CameraView, DeliberationMessage, ProjectSession, SystemHealth } from './types';
+import { Agent, CameraView, DeliberationMessage, ProjectSession, SystemHealth, ConsensusFeatureItem } from './types';
 import { api } from './services/api';
 import { Header } from './components/Header';
 import { SecurityCameraBar } from './components/SecurityCameraBar';
 import { OfficeCanvas, OfficeCanvasHandle } from './office/OfficeCanvas';
 import { AgentCard } from './components/AgentCard';
 import { WorkflowPanel } from './components/WorkflowPanel';
+import { ConsensusBoard } from './components/ConsensusBoard';
+import { FinalReviewModal } from './components/FinalReviewModal';
 import { DeliberationChat } from './components/DeliberationChat';
 import { CodeArtifactViewer } from './components/CodeArtifactViewer';
 import { TestMatrixModal } from './components/TestMatrixModal';
@@ -26,6 +35,12 @@ export const App: React.FC = () => {
   const [messages, setMessages] = useState<DeliberationMessage[]>([]);
   const [health, setHealth] = useState<SystemHealth | null>(null);
 
+  // Trạng thái quy trình 5 giai đoạn
+  const [consensusFeatures, setConsensusFeatures] = useState<ConsensusFeatureItem[]>([]);
+  const [selectedFeatureIds, setSelectedFeatureIds] = useState<string[]>([]);
+  const [workflowStage, setWorkflowStage] = useState<'initial' | 'waiting_feature_selection' | 'ready_for_workstations' | 'finished'>('initial');
+  const [showFinalReviewModal, setShowFinalReviewModal] = useState<boolean>(false);
+
   // Trạng thái UI & Camera
   const [camera, setCamera] = useState<CameraView>('overview');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
@@ -33,7 +48,6 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentStageText, setCurrentStageText] = useState<string>('');
   const [selectedAgentCode, setSelectedAgentCode] = useState<string | null>(null);
-  const [isWaitingApproval, setIsWaitingApproval] = useState<boolean>(false);
 
   // Ref điều khiển Canvas trực tiếp
   const canvasRef = useRef<OfficeCanvasHandle | null>(null);
@@ -55,10 +69,33 @@ export const App: React.FC = () => {
 
       const sessions = await api.getSessions();
       if (sessions.length > 0) {
-        setCurrentSession(sessions[0]);
-        setMessages(sessions[0].messages || []);
-        if (sessions[0].status === 'waiting_approval') {
-          setIsWaitingApproval(true);
+        const lastSession = sessions[0];
+        setCurrentSession(lastSession);
+        setMessages(lastSession.messages || []);
+
+        if (lastSession.consensus_features) {
+          try {
+            const parsed = JSON.parse(lastSession.consensus_features);
+            setConsensusFeatures(parsed);
+          } catch (e) {
+            console.warn('Lỗi parse consensus_features:', e);
+          }
+        }
+        if (lastSession.selected_features) {
+          try {
+            const parsedSel = JSON.parse(lastSession.selected_features);
+            setSelectedFeatureIds(parsedSel);
+          } catch (e) {
+            console.warn('Lỗi parse selected_features:', e);
+          }
+        }
+
+        if (lastSession.status === 'waiting_feature_selection') {
+          setWorkflowStage('waiting_feature_selection');
+        } else if (lastSession.status === 'ready_for_workstations') {
+          setWorkflowStage('ready_for_workstations');
+        } else if (lastSession.status === 'completed') {
+          setWorkflowStage('finished');
         }
       }
     } catch (err) {
@@ -70,7 +107,7 @@ export const App: React.FC = () => {
     loadInitialData();
   }, [loadInitialData]);
 
-  // 2. Xử lý điều động Agent sang phòng làm việc (Đã căn chuẩn tọa độ ghế ngồi, tuyệt đối không trèo lên bàn)
+  // 2. Xử lý điều động Agent sang phòng làm việc
   const handleDispatchAgent = (code: string, room: string, statusOverride?: string) => {
     const targetCoords: Record<string, { x: number; y: number }> = {
       boardroom: {
@@ -113,74 +150,43 @@ export const App: React.FC = () => {
     api.moveAgent(code, room).catch(e => console.warn('Lỗi lưu DB:', e));
   };
 
-  // 3. Xử lý kích hoạt chu trình làm việc 4 Dũng (Chạy tuần tự sống động có thời gian di chuyển & biểu diễn thực)
-  const handleRunWorkflow = async (problem: string, step: string) => {
+  // 3. GIAI ĐOẠN 1: HỌP KHỞI ĐẦU & TRANH LUẬN ĐA CHIỀU 4 DŨNG
+  const handleRunWorkflow = async (problem: string, _step: string) => {
     setIsLoading(true);
-    setIsWaitingApproval(false);
+    setShowFinalReviewModal(false);
+    setConsensusFeatures([]);
+    setSelectedFeatureIds([]);
 
     try {
-      // Tạo session mới
       const session = await api.createSession(problem);
       setCurrentSession(session);
 
-      if (step === 'full_cycle') {
-        // HỦY BỎ NGHỈ GIẢI LAO VÀ GOM TOÀN BỘ 4 DŨNG VỀ BÀN HỌP TRÒN TRUNG TÂM KHI CÓ VẤN ĐỀ
-        canvasRef.current?.cancelBreak();
-        handleDispatchAgent('dung_1', 'boardroom', 'debating');
-        handleDispatchAgent('dung_2', 'boardroom', 'debating');
-        handleDispatchAgent('dung_3', 'boardroom', 'debating');
-        handleDispatchAgent('dung_4', 'boardroom', 'debating');
+      // HỦY BỎ NGHỈ GIẢI LAO VÀ GOM TOÀN BỘ 4 DŨNG VỀ BÀN HỌP TRÒN TRUNG TÂM KHI CÓ VẤN ĐỀ
+      canvasRef.current?.cancelBreak();
+      handleDispatchAgent('dung_1', 'boardroom', 'debating');
+      handleDispatchAgent('dung_2', 'boardroom', 'debating');
+      handleDispatchAgent('dung_3', 'boardroom', 'debating');
+      handleDispatchAgent('dung_4', 'boardroom', 'debating');
 
-        // ─────────────────────────────────────────────────────────────────────
-        // GIAI ĐOẠN 1: DŨNG 1 (Software Director - Nghiên cứu thị trường & Rủi ro vận hành)
-        // ─────────────────────────────────────────────────────────────────────
-        setCurrentStageText('Giai đoạn 1: Cả 4 Dũng đã gom lại bàn họp! Dũng 1 (Software Director) phân tích thị trường & rủi ro vận hành...');
-        setCamera('boardroom');
-        soundFx.playAlert();
+      setCamera('boardroom');
+      soundFx.playAlert();
+      setCurrentStageText('Giai đoạn 1: 4 Dũng đang ngồi họp bàn tròn Hologram 3D, tranh luận phản biện mặt hạn chế...');
 
-        // Gọi API lấy ý kiến Dũng 1
-        const m1 = await api.triggerWorkflow(session.id, 'director');
-        setMessages(m1);
+      // Kích hoạt Vòng 1 tranh luận trên Backend
+      const newMsgs = await api.triggerWorkflow(session.id, 'initial_deliberation');
+      setMessages(newMsgs);
 
-        // Chờ 2.5 giây cho người dùng chứng kiến Dũng 1 phát biểu
-        await sleep(2500);
+      // Lấy Bảng Thông Tin Chốt Lại
+      const features = await api.getConsensusFeatures(session.id);
+      setConsensusFeatures(features);
 
-        // ─────────────────────────────────────────────────────────────────────
-        // GIAI ĐOẠN 2: DŨNG 2 (Software Architect & PM - 40 năm KN - Phản biện hệ thống & chốt kiến trúc)
-        // ─────────────────────────────────────────────────────────────────────
-        setCurrentStageText('Giai đoạn 2: Dũng 2 (40 năm KN) vào phòng họp phản biện rủi ro hệ thống & chốt kiến trúc...');
-        soundFx.playAlert();
+      // Mặc định chọn các ý được hội đồng khuyến nghị làm phần mềm
+      const recIds = features.filter(f => f.software_recommended).map(f => f.id);
+      setSelectedFeatureIds(recIds.length > 0 ? recIds : features.map(f => f.id));
 
-        // Dũng 2 rời phòng kiến trúc đi qua hành lang vào Boardroom ngồi cạnh Dũng 1
-        handleDispatchAgent('dung_2', 'boardroom', 'debating');
-
-        const m2 = await api.triggerWorkflow(session.id, 'architect');
-        setMessages(prev => [...prev, ...m2]);
-
-        // DỪNG LẠI CHỜ NGƯỜI DÙNG DUYỆT (Human-in-the-Loop Gate)
-        setIsWaitingApproval(true);
-        soundFx.playAlert();
-        setCurrentStageText('⏸️ Dũng 1 & Dũng 2 đã chốt phương án! Đang chờ bạn phê duyệt để giao việc cho Dũng 3 & Dũng 4.');
-      } else {
-        // Thực thi từng bước đơn lẻ
-        setCurrentStageText(`Đang thực thi: ${step.toUpperCase()}`);
-        const resMessages = await api.triggerWorkflow(session.id, step);
-        setMessages(prev => [...prev, ...resMessages]);
-
-        if (step === 'director') {
-          handleDispatchAgent('dung_1', 'boardroom', 'debating');
-          setCamera('boardroom');
-        } else if (step === 'architect') {
-          handleDispatchAgent('dung_2', 'boardroom', 'debating');
-          setCamera('boardroom');
-        } else if (step === 'developer') {
-          handleDispatchAgent('dung_3', 'dev_lab', 'coding');
-          setCamera('dev_lab');
-        } else if (step === 'qa') {
-          handleDispatchAgent('dung_4', 'games_room', 'testing');
-          setCamera('games_room');
-        }
-      }
+      setWorkflowStage('waiting_feature_selection');
+      soundFx.playAlert();
+      setCurrentStageText('Giai đoạn 2: Bảng thông tin chốt lại đã sẵn sàng! Mời bạn chọn các dòng cần phát triển phần mềm bên dưới.');
     } catch (err) {
       console.error('Lỗi khi chạy workflow:', err);
       alert('Đã xảy ra lỗi kết nối khi thực thi quy trình.');
@@ -189,61 +195,95 @@ export const App: React.FC = () => {
     }
   };
 
-  // 4. Xử lý người dùng PHÊ DUYỆT phương án -> Kích hoạt Dũng 3 và Dũng 4 thực thi
-  const handleApproveWorkflow = async () => {
-    if (!currentSession) return;
+  // 4. Xử lý tích chọn hoặc bỏ chọn tính năng trong Bảng Chốt Lại
+  const handleToggleFeature = (id: string) => {
+    setSelectedFeatureIds(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
+  // 5. GIAI ĐOẠN 3: PHÂN TÍCH CHUYÊN SÂU CHO CÁC Ý NGƯỜI DÙNG CHỌN NGAY TẠI PHÒNG HỌP
+  const handleSelectFeaturesAndDeepDive = async () => {
+    if (!currentSession || selectedFeatureIds.length === 0) return;
     setIsLoading(true);
-    setIsWaitingApproval(false);
 
     try {
-      // ─────────────────────────────────────────────────────────────────────
-      // GIAI ĐOẠN 3: DŨNG 3 (Senior Fullstack Developer - 40 năm KN)
-      // ─────────────────────────────────────────────────────────────────────
-      setCurrentStageText('Giai đoạn 3: Đã phê duyệt! Dũng 3 vào Dev Lab ngồi vào bàn máy tính gõ phím viết Clean Code...');
-      setCamera('dev_lab');
+      setCamera('boardroom');
       soundFx.playType();
+      setCurrentStageText('Giai đoạn 3: 4 Dũng đang tự nói chuyện, tranh luận chuyên sâu về các mặt hạn chế & rủi ro của các ý bạn chọn...');
 
-      // Dũng 3 đi vào Dev Lab ngồi vào ghế trước máy tính
-      handleDispatchAgent('dung_3', 'dev_lab', 'coding');
+      const deepDiveMsgs = await api.selectFeaturesAndDeepDive(currentSession.id, selectedFeatureIds);
+      setMessages(prev => [...prev, ...deepDiveMsgs]);
 
-      // Chờ 2.5 giây cho Dũng 3 di chuyển tới bàn và gõ phím
-      await sleep(2500);
-
-      const approvedMessages = await api.approveWorkflow(currentSession.id);
-      // Lọc các tin nhắn mới (chỉ lấy stage developer và qa)
-      const newMessages = approvedMessages.filter(m => m.stage === '3_developer' || m.stage === '4_qa');
-      if (newMessages.length > 0) {
-        setMessages(prev => [...prev, ...newMessages]);
-      } else {
-        setMessages(approvedMessages);
-      }
-
-      // ─────────────────────────────────────────────────────────────────────
-      // GIAI ĐOẠN 4: DŨNG 4 (Test Engineer & Security Lead - 40 năm KN)
-      // ─────────────────────────────────────────────────────────────────────
-      setCurrentStageText('Giai đoạn 4: Dũng 4 lập ma trận Stress Test 5,000 req/s & Quét lỗ hổng an ninh...');
-      setCamera('games_room');
+      setWorkflowStage('ready_for_workstations');
       soundFx.playAlert();
-
-      // Dũng 4 đi vào trạm kiểm thử cạnh bida
-      handleDispatchAgent('dung_4', 'games_room', 'testing');
-
-      // Chờ 2.5 giây biểu diễn test
-      await sleep(2500);
-
-      // Âm thanh hoàn thành xuất sắc
-      soundFx.playSuccess();
-      setCurrentStageText('✅ Hoàn thành 100%! Cả 4 Dũng đã hoàn tất xuất sắc toàn bộ quy trình được bạn phê duyệt!');
+      setCurrentStageText('Đã chốt phân tích chuyên sâu! Bấm nút "Lệnh cho cả 4 Dũng về bàn làm việc" ở trên để thực thi.');
     } catch (err) {
-      console.error('Lỗi khi phê duyệt workflow:', err);
-      alert('Đã xảy ra lỗi kết nối khi phê duyệt quy trình.');
+      console.error('Lỗi khi gửi lựa chọn tính năng:', err);
+      alert('Đã xảy ra lỗi khi gửi lựa chọn tính năng.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  // 6. GIAI ĐOẠN 4 & 5: VỀ BÀN LÀM VIỆC THỰC THI & HỌP BOARDROOM LẦN 2 (HIỆN POPUP TỔNG KẾT)
+  const handleExecuteWorkstations = async () => {
+    if (!currentSession) return;
+    setIsLoading(true);
 
-  // Xử lý khi click vào Agent trên Canvas: Bật cửa sổ thông tin chi tiết và điều khiển
+    try {
+      // Giai đoạn 4: Cả 4 Dũng đều về bàn làm việc riêng của mình
+      setCurrentStageText('Giai đoạn 4: Cả 4 Dũng về bàn làm việc: Dũng 3 viết Clean Code, Dũng 4 chạy Stress Test 5,000 TPS...');
+      handleDispatchAgent('dung_1', 'director_office', 'idle');
+      handleDispatchAgent('dung_2', 'architect_office', 'idle');
+      handleDispatchAgent('dung_3', 'dev_lab', 'coding');
+      handleDispatchAgent('dung_4', 'games_room', 'testing');
+
+      setCamera('dev_lab');
+      soundFx.playType();
+
+      // Chờ 2.5s mô phỏng gõ phím ở Dev Lab
+      await sleep(2500);
+
+      // Chuyển camera sang trạm QA Lab
+      setCamera('games_room');
+      soundFx.playAlert();
+      await sleep(2000);
+
+      // Gọi API hoàn tất thực thi tại bàn và nghiệm thu
+      const results = await api.executeWorkstations(currentSession.id);
+      setMessages(prev => [...prev, ...results]);
+
+      // Lấy artifact code và test matrix
+      const devMsg = results.find(m => m.code_artifact);
+      if (devMsg?.code_artifact) setActiveCodeArtifact(devMsg.code_artifact);
+      const qaMsg = results.find(m => m.test_matrix);
+      if (qaMsg?.test_matrix) setActiveTestMatrix(qaMsg.test_matrix);
+
+      // Giai đoạn 5: Dũng 3 & Dũng 4 bàn giao cho Giám đốc & PM -> Cả 4 người lại ngồi vào Boardroom lần 2!
+      setCurrentStageText('Giai đoạn 5: Dũng 3 & Dũng 4 bàn giao cho Giám đốc & PM -> Cả 4 người lại ngồi vào Boardroom lần 2!');
+      handleDispatchAgent('dung_1', 'boardroom', 'debating');
+      handleDispatchAgent('dung_2', 'boardroom', 'debating');
+      handleDispatchAgent('dung_3', 'boardroom', 'debating');
+      handleDispatchAgent('dung_4', 'boardroom', 'debating');
+
+      setCamera('boardroom');
+      await sleep(1500);
+
+      // Âm thanh vinh quang và bật POPUP BÁO CÁO NGHIỆM THU TOÀN DIỆN
+      soundFx.playSuccess();
+      setWorkflowStage('finished');
+      setShowFinalReviewModal(true);
+      setCurrentStageText('🏆 Hoàn tất 100%! Báo cáo nghiệm thu của Hội đồng 4 Dũng đã hiện lên màn hình.');
+    } catch (err) {
+      console.error('Lỗi khi thực thi tại bàn làm việc:', err);
+      alert('Đã xảy ra lỗi khi thực thi tại bàn làm việc.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Xử lý khi click vào Agent trên Canvas
   const handleSelectAgentOnCanvas = (agent: Agent) => {
     setSelectedAgentCode(agent.code);
     canvasRef.current?.selectAgent(agent.code);
@@ -260,6 +300,9 @@ export const App: React.FC = () => {
       )
     );
   };
+
+  // Lọc các feature người dùng đã chọn để gửi vào modal
+  const activeSelectedFeatures = consensusFeatures.filter(f => selectedFeatureIds.includes(f.id));
 
   return (
     <div className="app-layout">
@@ -279,13 +322,14 @@ export const App: React.FC = () => {
           onRunWorkflow={handleRunWorkflow}
           isLoading={isLoading}
           currentStage={currentStageText}
-          isWaitingApproval={isWaitingApproval}
-          onApproveWorkflow={handleApproveWorkflow}
+          workflowStage={workflowStage}
+          onExecuteWorkstations={handleExecuteWorkstations}
+          onOpenFinalModal={() => setShowFinalReviewModal(true)}
         />
 
         {/* 2. BỐ CỤC 2 CỘT CHÍNH: BÊN TRÁI (VĂN PHÒNG & CAMERA & CHAT) - BÊN PHẢI (4 DŨNG XẾP DỌC) */}
         <div className="workspace-split-layout">
-          {/* CỘT BÊN TRÁI: Camera giám sát, Canvas Pixel Office 2.5D, Tiến trình tranh luận */}
+          {/* CỘT BÊN TRÁI: Camera giám sát, Canvas Pixel Office 2.5D, Consensus Board, Tiến trình tranh luận */}
           <div className="left-stage-column">
             {/* Thanh chuyển đổi góc quay camera an ninh */}
             <SecurityCameraBar currentCamera={camera} onSelectCamera={setCamera} />
@@ -300,6 +344,17 @@ export const App: React.FC = () => {
               onAgentMoved={handleAgentMovedOnCanvas}
             />
 
+            {/* BẢNG THÔNG TIN CHỐT LẠI (CONSENSUS BOARD) KHI ĐÃ TRANH LUẬN VÒNG 1 XONG */}
+            {consensusFeatures.length > 0 && workflowStage === 'waiting_feature_selection' && (
+              <ConsensusBoard
+                features={consensusFeatures}
+                selectedFeatureIds={selectedFeatureIds}
+                onToggleFeature={handleToggleFeature}
+                onSubmitSelected={handleSelectFeaturesAndDeepDive}
+                isLoading={isLoading}
+              />
+            )}
+
             {/* Nhật ký tranh luận và sản phẩm bàn giao của 4 Dũng */}
             <DeliberationChat
               messages={messages}
@@ -309,7 +364,7 @@ export const App: React.FC = () => {
             />
           </div>
 
-          {/* CỘT BÊN PHẢI: BỘ TỨ DŨNG THEO CHIỀU DỌC ĐỂ DỄ NHÌN, LẤP ĐẦY KHOẢNG TRỐNG */}
+          {/* CỘT BÊN PHẢI: BỘ TỨ DŨNG THEO CHIỀU DỌC ĐỂ DỄ NHÌN */}
           <aside className="right-agents-sidebar">
             <div className="sidebar-sticky-header">
               <div className="flex items-center justify-between">
@@ -342,6 +397,24 @@ export const App: React.FC = () => {
           </aside>
         </div>
       </main>
+
+      {/* POPUP BÁO CÁO NGHIỆM THU TOÀN DIỆN CỦA HỘI ĐỒNG 4 DŨNG SAU KHI HỌP BOARDROOM LẦN 2 */}
+      <FinalReviewModal
+        isOpen={showFinalReviewModal}
+        onClose={() => setShowFinalReviewModal(false)}
+        session={currentSession}
+        selectedFeatures={activeSelectedFeatures.length > 0 ? activeSelectedFeatures : consensusFeatures}
+        codeArtifact={activeCodeArtifact}
+        testMatrix={activeTestMatrix}
+        onViewCode={code => {
+          setShowFinalReviewModal(false);
+          setActiveCodeArtifact(code);
+        }}
+        onViewTestMatrix={matrix => {
+          setShowFinalReviewModal(false);
+          setActiveTestMatrix(matrix);
+        }}
+      />
 
       {/* Modal hiển thị mã nguồn Clean Code của Dũng 3 */}
       {activeCodeArtifact && (

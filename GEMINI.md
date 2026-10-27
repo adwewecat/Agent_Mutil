@@ -699,6 +699,33 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Build `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
 - [x] Đã commit và đẩy toàn bộ mã nguồn lên GitHub.
 
+### [2026-10-27] Tái Cấu Trúc Toàn Diện Chu Trình Nghiệp Vụ 5 Giai Đoạn Hợp Tác Giữa 4 Dũng
+- [x] **Yêu cầu & Mục tiêu bài toán**:
+  - Khi có đề bài hoặc vấn đề phát sinh: Cả 4 Dũng cùng ngồi vào phòng họp bàn tròn Hologram 3D để tranh luận, phản biện lẫn nhau (Dũng 1, Dũng 2, Dũng 3 Dev và Dũng 4 QA/Tester) về các mặt hạn chế và giải pháp hóa giải.
+  - Hiển thị kịch bản tranh luận lên màn hình, sau đó hiển thị Bảng Thông Tin Chốt Lại Cuối Cùng của cả 4 người (Consensus Board).
+  - Cho phép Người dùng trực tiếp chọn các dòng/ý nào nên phát triển phần mềm.
+  - Sau khi chọn: 4 Dũng tiếp tục tranh luận chuyên sâu ngay tại phòng họp về mặt hạn chế & tiêu cực của ý đó, đáp ứng được gì, không được gì, rủi ro kỹ thuật là gì.
+  - Sau đó cả 4 Dũng đều rời phòng họp về bàn làm việc riêng của mình: Dũng 3 gõ phím viết Clean Code, Dũng 4 chạy Stress Test 5,000 TPS và quét an ninh.
+  - Làm xong, Dũng 3 và Dũng 4 bàn giao cho Giám đốc (Dũng 1) & PM (Dũng 2) cùng xem xét. Cả 4 người lại di chuyển ngồi vào Boardroom 1 lần nữa và kích hoạt Popup Báo Cáo Nghiệm Thu Toàn Diện để người dùng xem kết quả.
+- [x] **Giải pháp Kiến trúc & Thực thi chi tiết**:
+  1. **Backend FastAPI & Database**:
+     - Cập nhật Model `ProjectSessionModel`: Thêm 2 trường `selected_features` và `consensus_features`.
+     - Cập nhật Schemas Pydantic: `ConsensusFeatureItem`, `WorkflowSelectFeaturesPayload`.
+     - Viết lại `WorkflowEngine` với 5 giai đoạn tuần tự:
+       + `run_initial_boardroom_deliberation`: 4 Dũng vào Boardroom tranh luận đa chiều, sinh Bảng Thông Tin Chốt Lại (Consensus Board) phù hợp với lĩnh vực bài toán (`f_and_b_qr`, `fintech`, `logistics`, `general_enterprise`).
+       + `get_consensus_features`: API trả về danh sách các ý tưởng giải pháp để người dùng chọn.
+       + `run_deep_dive_analysis`: 4 Dũng tự thảo luận tại phòng họp về hạn chế, tiêu cực, đáp ứng được gì, không đáp ứng gì và rủi ro kỹ thuật của các ý đã chọn.
+       + `run_workstations_execution_and_final_review`: Điều động Dũng 1, 2, 3, 4 về trạm làm việc; Dũng 3 sinh Clean Code, Dũng 4 sinh test matrix 8 kịch bản; bàn giao cho Dũng 1 & 2; cả 4 Dũng lại gom về Boardroom họp lần 2 và chốt nghiệm thu.
+     - Đồng bộ Router `backend/app/routers/workflow.py` với các API endpoints mới.
+  2. **Frontend React + TypeScript + Canvas Engine**:
+     - Cập nhật `types/index.ts` và `services/api.ts` với các hàm và kiểu dữ liệu mới.
+     - Xây dựng component mới `frontend/src/components/ConsensusBoard.tsx`: Bảng thông tin chốt lại trực quan, mỗi dòng có checkbox chọn phát triển phần mềm, nhãn phân loại, người đề xuất, khuyến nghị của hội đồng, cùng phần xem chi tiết Mặt hạn chế, Phản biện, Đáp ứng và Rủi ro.
+     - Xây dựng component mới `frontend/src/components/FinalReviewModal.tsx`: Popup Báo cáo nghiệm thu dự án toàn diện hiển thị đề bài, các tính năng đã phát triển, nút xem mã nguồn Clean Code của Dũng 3, nút xem ma trận test của Dũng 4, đánh giá của Dũng 1 & 2 và nút tải file JSON báo cáo.
+     - Nâng cấp `WorkflowPanel.tsx` và `App.tsx` điều phối nhịp nhàng toàn bộ hành trình chuyển động, camera, âm thanh và trạng thái nhân vật xuyên suốt 5 giai đoạn.
+     - Bổ sung hệ thống CSS Cyberpunk Neon hiện đại, tương thích hoàn hảo Dark Mode tại `index.css`.
+- [x] Build `npm.cmd run build` thành công 100%, 0 lỗi, 0 cảnh báo (`dist/assets/index-BjffFWS1.js`).
+- [x] Đã đẩy toàn bộ mã nguồn lên GitHub.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER
