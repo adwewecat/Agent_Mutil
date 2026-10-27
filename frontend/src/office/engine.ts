@@ -16,12 +16,11 @@ const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status:
   dung_4: { x: 585, y: 620, room: 'games_room', status: 'testing' },    // Trạm QA & Test (Nữ)
 };
 
-// Chỗ ngồi quanh bàn tròn trung tâm khi diễn ra họp hoặc tranh luận dự án Hologram 3D (tất cả quay mặt vào Hologram)
+// Chỗ ngồi quanh bàn tròn trung tâm khi diễn ra họp hoặc tranh luận dự án Hologram 3D
 const MEETING_SEATS: Record<string, { x: number; y: number }> = {
-  dung_1: { x: 1000, y: 275 },  // Ghế Bắc: Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
-  dung_2: { x: 850, y: 340 },   // Ghế Tây: Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
-  dung_3: { x: 1000, y: 420 },  // Ghế Nam: Phía dưới bàn tròn (Dũng 3 - Nam Dev)
-  dung_4: { x: 1150, y: 340 },  // Ghế Đông: Bên phải bàn tròn (Dũng 4 - Nữ QA)
+  dung_1: { x: 1000, y: 275 },  // Ghế Bắc: Phía trên bàn tròn (Nhân viên 1 - GĐ Vận hành F&B 40 năm KN)
+  dung_2: { x: 860, y: 375 },   // Ghế Tây-Nam: Trái dưới bàn tròn (Nhân viên 2 - GĐ Phần mềm 40 năm KN)
+  dung_3: { x: 1140, y: 375 },  // Ghế Đông-Nam: Phải dưới bàn tròn (Nhân viên 3 - Senior Dev 30 năm KN)
 };
 
 export class OfficeEngine {
@@ -222,12 +221,11 @@ export class OfficeEngine {
       (window as any).__selectedAgentCode = clickedAgent.code;
       soundFx.playAlert();
 
-      // Phát lời chào đặc trưng của từng Dũng
+      // Phát lời chào đặc trưng của từng Nhân Viên
       const greetings: Record<string, string> = {
-        dung_1: 'Tôi là Dũng 1 (Director). Hãy giao bài toán cho tôi!',
-        dung_2: 'Dũng 2 (40 năm KN) sẵn sàng thẩm định kiến trúc!',
-        dung_3: 'Dũng 3 (Fullstack Dev) sẵn sàng viết Clean Code!',
-        dung_4: 'Dũng 4 (QA Lead) sẵn sàng bắn phá Stress Test!',
+        dung_1: 'Nhân viên 1 (GĐ Vận hành F&B 40 năm KN). Hãy giao bài toán F&B cho tôi!',
+        dung_2: 'Nhân viên 2 (GĐ Phần mềm 40 năm KN) sẵn sàng phân tích toàn diện hệ thống!',
+        dung_3: 'Nhân viên 3 (Senior Dev 30 năm KN) sẵn sàng lập trình Clean Code khi bạn duyệt!',
       };
       this.setCustomBubble(clickedAgent.code, greetings[clickedAgent.code] || 'Tôi đang lắng nghe!');
 

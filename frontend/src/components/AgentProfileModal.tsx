@@ -15,7 +15,7 @@ export const AgentProfileModal: React.FC<AgentProfileModalProps> = ({
 }) => {
   if (!agent) return null;
 
-  const isFemale = agent.code === 'dung_2' || agent.code === 'dung_4';
+  const isFemale = agent.code === 'dung_2';
   const genderLabel = isFemale ? 'Nữ Chuyên Gia' : 'Nam Chuyên Gia';
   const genderIcon = isFemale ? '👩' : '👨';
   const themeColor = isFemale ? '#ec4899' : '#38bdf8';
@@ -126,7 +126,6 @@ export const AgentProfileModal: React.FC<AgentProfileModalProps> = ({
                   if (agent.code === 'dung_1') destRoom = 'director_office';
                   if (agent.code === 'dung_2') destRoom = 'architect_office';
                   if (agent.code === 'dung_3') destRoom = 'dev_lab';
-                  if (agent.code === 'dung_4') destRoom = 'games_room';
                   onDispatch(agent.code, destRoom);
                   onClose();
                 }}

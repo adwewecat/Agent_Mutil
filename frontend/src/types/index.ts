@@ -2,7 +2,7 @@
  * Định nghĩa kiểu dữ liệu TypeScript cho toàn bộ Frontend Agent Multi
  */
 
-export type AgentCode = 'dung_1' | 'dung_2' | 'dung_3' | 'dung_4';
+export type AgentCode = 'dung_1' | 'dung_2' | 'dung_3';
 
 export type AgentStatus = 'idle' | 'moving' | 'debating' | 'coding' | 'testing' | 'resting';
 
@@ -36,16 +36,17 @@ export interface DeliberationMessage {
 
 export interface ConsensusFeatureItem {
   id: string;
-  title: string;
-  proposer: string;
-  category: string;
-  drawbacks: string;
-  counter_arguments: string;
-  capabilities: string;
-  limitations: string;
-  technical_risks: string;
-  software_recommended: boolean;
-  recommendation_reason: string;
+  requirement: string;
+  process_analysis: string;
+  positives: string;
+  negatives: string;
+  risks: string;
+  system_compliance_percent: number;
+  supported_features: string;
+  unsupported_gaps: string;
+  soft_solutions: string;
+  market_case_studies?: string;
+  software_task_for_dev: string;
 }
 
 export interface ProjectSession {

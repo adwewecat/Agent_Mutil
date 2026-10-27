@@ -1,11 +1,11 @@
 /**
- * Component trung tâm kết nối toàn bộ hệ thống Virtual Pixel Office và 4 Dũng
- * Triển khai chu trình 5 giai đoạn kèm HOẠT ẢNH TRÊN ĐẦU NHÂN VẬT & TỰ ĐỘNG BẬT POPUP:
- * 1. Hội đồng 4 Dũng ngồi vào Boardroom: Lần lượt xuất hiện bong bóng sóng âm thoại trên đầu từng Dũng.
- * 2. VÒNG 1 XONG -> TỰ ĐỘNG BẬT POPUP BẢNG CHỐT LẠI (ConsensusModal) để người dùng chọn ý phần mềm.
- * 3. Người dùng chọn xong -> 4 Dũng tiếp tục tranh luận chuyên sâu về hạn chế & rủi ro trên Canvas.
- * 4. Cả 4 Dũng về bàn làm việc riêng: Dũng 3 gõ code, Dũng 4 chạy test.
- * 5. Bàn giao kết quả -> Cả 4 Dũng lại ngồi vào Boardroom lần 2 -> TỰ ĐỘNG BẬT POPUP NGHIỆM THU (FinalReviewModal).
+ * Component trung tâm kết nối toàn bộ hệ thống Virtual Pixel Office và Bộ Ba Chuyên Gia (3 Nhân Viên Dũng)
+ * Triển khai chu trình chuẩn nghiệp vụ kèm HOẠT ẢNH TRÊN ĐẦU NHÂN VẬT & TỰ ĐỘNG BẬT POPUP:
+ * 1. Nhân viên 1 (GĐ Vận hành F&B 40 năm KN) & Nhân viên 2 (GĐ Phần mềm 40 năm KN) ngồi vào Boardroom tranh luận nảy lửa.
+ * 2. Đối chiếu đối thủ thị trường (McD, Starbucks vs Toast POS, Square) -> TỰ ĐỘNG BẬT POPUP BẢNG THỐNG NHẤT (ConsensusModal).
+ * 3. Người dùng duyệt từng ý -> Nhân viên 3 (Senior Dev 30 năm KN) mới thực sự bắt đầu lập trình.
+ * 4. Nhân viên 3 về Dev Lab viết Clean Code chuẩn OpenAPI, bọc bảo mật HMAC SHA-256 & Idempotency Key.
+ * 5. Bàn giao kết quả -> Nhân viên 1 & Nhân viên 2 đánh giá, nghiệm thu -> TỰ ĐỘNG BẬT POPUP NGHIỆM THU (FinalReviewModal).
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -29,13 +29,13 @@ import { soundFx } from './office/soundEffects';
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const App: React.FC = () => {
-  // Trạng thái dữ liệu
+  // Trạng thái dữ liệu 3 Nhân Viên
   const [agents, setAgents] = useState<Agent[]>([]);
   const [currentSession, setCurrentSession] = useState<ProjectSession | null>(null);
   const [messages, setMessages] = useState<DeliberationMessage[]>([]);
   const [health, setHealth] = useState<SystemHealth | null>(null);
 
-  // Trạng thái quy trình 5 giai đoạn
+  // Trạng thái quy trình thống nhất & phê duyệt
   const [consensusFeatures, setConsensusFeatures] = useState<ConsensusFeatureItem[]>([]);
   const [selectedFeatureIds, setSelectedFeatureIds] = useState<string[]>([]);
   const [workflowStage, setWorkflowStage] = useState<'initial' | 'waiting_feature_selection' | 'ready_for_workstations' | 'finished'>('initial');
@@ -111,19 +111,18 @@ export const App: React.FC = () => {
     loadInitialData();
   }, [loadInitialData]);
 
-  // 2. Xử lý điều động Agent sang phòng làm việc
+  // 2. Xử lý điều động Agent sang phòng làm việc (Bố cục 3 nhân viên đối xứng quanh bàn tròn)
   const handleDispatchAgent = (code: string, room: string, statusOverride?: string) => {
     const targetCoords: Record<string, { x: number; y: number }> = {
       boardroom: {
-        dung_1: { x: 1000, y: 275 },  // Ghế Bắc: Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
-        dung_2: { x: 850, y: 340 },   // Ghế Tây: Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
-        dung_3: { x: 1000, y: 420 },  // Ghế Nam: Phía dưới bàn tròn (Dũng 3 - Nam Dev)
-        dung_4: { x: 1150, y: 340 },  // Ghế Đông: Bên phải bàn tròn (Dũng 4 - Nữ QA)
+        dung_1: { x: 1000, y: 275 },  // Ghế Bắc: Phía trên bàn tròn (Nhân viên 1 - GĐ Vận hành F&B 40 năm KN)
+        dung_2: { x: 860, y: 375 },   // Ghế Tây-Nam: Trái dưới bàn tròn (Nhân viên 2 - GĐ Phần mềm 40 năm KN)
+        dung_3: { x: 1140, y: 375 },  // Ghế Đông-Nam: Phải dưới bàn tròn (Nhân viên 3 - Senior Dev 30 năm KN)
       }[code] || { x: 1000, y: 340 },
-      director_office: { x: 230, y: 260 }, // Bàn Giám Đốc Executive Suite (Nam)
-      architect_office: { x: 385, y: 620 }, // Trạm Kiến Trúc & PM (Nữ)
-      dev_lab: { x: 185, y: 620 }, // Trạm Cyber Dev Lab (Nam)
-      games_room: { x: 585, y: 620 }, // Trạm QA & Test (Nữ)
+      director_office: { x: 230, y: 260 }, // Phòng GĐ Vận hành F&B (Nhân viên 1)
+      architect_office: { x: 385, y: 620 }, // Trạm Kiến Trúc & GĐ Phần mềm (Nhân viên 2)
+      dev_lab: { x: 185, y: 620 }, // Trạm Cyber Dev Lab (Nhân viên 3)
+      games_room: { x: 585, y: 620 }, // Khu vực giải trí bida
       kitchen_pantry: { x: 980, y: 650 }, // Sảnh ngắm xe bay & cà phê
     };
 
@@ -154,7 +153,7 @@ export const App: React.FC = () => {
     api.moveAgent(code, room).catch(e => console.warn('Lỗi lưu DB:', e));
   };
 
-  // 3. GIAI ĐOẠN 1: HỌP KHỞI ĐẦU & TRANH LUẬN ĐA CHIỀU 4 DŨNG (KÈM HOẠT ẢNH TRÊN ĐẦU & BẬT POPUP XONG)
+  // 3. GIAI ĐOẠN 1: TRANH LUẬN NẢY LỬA GIỮA NHÂN VIÊN 1 & NHÂN VIÊN 2 (TỰ ĐỘNG BẬT POPUP BẢNG THỐNG NHẤT)
   const handleRunWorkflow = async (problem: string, _step: string) => {
     setIsLoading(true);
     setShowFinalReviewModal(false);
@@ -166,47 +165,45 @@ export const App: React.FC = () => {
       const session = await api.createSession(problem);
       setCurrentSession(session);
 
-      // HỦY BỎ NGHỈ GIẢI LAO VÀ GOM TOÀN BỘ 4 DŨNG VỀ BÀN HỌP TRÒN TRUNG TÂM KHI CÓ VẤN ĐỀ
+      // Gom 3 nhân viên về phòng họp trung tâm
       canvasRef.current?.cancelBreak();
       handleDispatchAgent('dung_1', 'boardroom', 'debating');
       handleDispatchAgent('dung_2', 'boardroom', 'debating');
-      handleDispatchAgent('dung_3', 'boardroom', 'debating');
-      handleDispatchAgent('dung_4', 'boardroom', 'debating');
+      handleDispatchAgent('dung_3', 'boardroom', 'idle');
 
       setCamera('boardroom');
       soundFx.playAlert();
-      setCurrentStageText('Giai đoạn 1: 4 Dũng đang ngồi họp bàn tròn Hologram 3D, tranh luận phản biện mặt hạn chế...');
+      setCurrentStageText('Giai đoạn 1: Nhân viên 1 (F&B) & Nhân viên 2 (Software) đang tranh luận nảy lửa và đối chiếu đối thủ thị trường...');
 
-      // Diễn hoạt luân phiên bong bóng thoại trên đầu 4 Dũng sống động
-      canvasRef.current?.setCustomBubble('dung_1', '🗣️ Phân tích thị trường & Rủi ro vận hành...', 3200);
-      await sleep(1500);
+      // Diễn hoạt bong bóng thoại tranh luận nảy lửa trên đầu Nhân viên 1 & Nhân viên 2
+      canvasRef.current?.setCustomBubble('dung_1', '🥩 NV1 (40 năm F&B): Bóc tách quy trình gọi món, case study McDonald\'s & Starbucks...', 3500);
+      await sleep(1800);
 
-      canvasRef.current?.setCustomBubble('dung_2', '⚡ Phản biện rủi ro hệ thống & Kiến trúc HMAC...', 3200);
-      await sleep(1500);
+      canvasRef.current?.setCustomBubble('dung_2', '💻 NV2 (40 năm Software): Phản biện toàn diện hệ thống, Toast POS & rủi ro nghẽn mạng...', 3500);
+      await sleep(1800);
 
-      canvasRef.current?.setCustomBubble('dung_3', '💻 Khả thi PWA & Cơ chế Idempotency Key...', 3200);
-      await sleep(1500);
+      canvasRef.current?.setCustomBubble('dung_1', '⚡ NV1: Tranh luận nảy lửa về rớt đơn, gian lận QR và rủi ro giờ cao điểm!', 3500);
+      await sleep(1800);
 
-      canvasRef.current?.setCustomBubble('dung_4', '🛡️ Cảnh báo hack QR, ghost orders & Test 5K TPS...', 3200);
-      await sleep(1500);
+      canvasRef.current?.setCustomBubble('dung_2', '🛡️ NV2: Chốt tỷ lệ % đáp ứng, giải pháp mềm SOP & khóa đặc tả cho Dev 3!', 3500);
+      await sleep(1800);
 
-      // Kích hoạt Vòng 1 tranh luận trên Backend
+      // Kích hoạt tranh luận trên Backend
       const newMsgs = await api.triggerWorkflow(session.id, 'initial_deliberation');
       setMessages(newMsgs);
 
-      // Lấy Bảng Thông Tin Chốt Lại
+      // Lấy Bảng Thông Tin Thống Nhất (Consensus Matrix)
       const features = await api.getConsensusFeatures(session.id);
       setConsensusFeatures(features);
 
-      // Mặc định chọn các ý được hội đồng khuyến nghị làm phần mềm
-      const recIds = features.filter(f => f.software_recommended).map(f => f.id);
-      setSelectedFeatureIds(recIds.length > 0 ? recIds : features.map(f => f.id));
+      // Mặc định chọn tất cả để người dùng dễ xem và duyệt
+      setSelectedFeatureIds(features.map(f => f.id));
 
       setWorkflowStage('waiting_feature_selection');
       soundFx.playAlert();
-      setCurrentStageText('Giai đoạn 2: Bảng thông tin chốt lại đã sẵn sàng! Popup đã hiện lên để bạn chọn các ý phần mềm.');
+      setCurrentStageText('Giai đoạn 2: Bảng thống nhất đã sẵn sàng! Popup đã hiện lên để bạn duyệt từng ý cho Nhân viên 3 thực thi.');
 
-      // TỰ ĐỘNG BẬT POPUP CHỌN TÍNH NĂNG ĐỂ NGƯỜI DÙNG BIẾT NGAY!
+      // TỰ ĐỘNG BẬT POPUP BẢNG THỐNG NHẤT CHO NGƯỜI DÙNG DUYỆT!
       setShowConsensusModal(true);
     } catch (err) {
       console.error('Lỗi khi chạy workflow:', err);
@@ -216,14 +213,14 @@ export const App: React.FC = () => {
     }
   };
 
-  // 4. Xử lý tích chọn hoặc bỏ chọn tính năng trong Bảng Chốt Lại
+  // 4. Xử lý duyệt hoặc bỏ duyệt từng ý tưởng trong Bảng Thống Nhất
   const handleToggleFeature = (id: string) => {
     setSelectedFeatureIds(prev =>
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
     );
   };
 
-  // 5. GIAI ĐOẠN 3: PHÂN TÍCH CHUYÊN SÂU CHO CÁC Ý NGƯỜI DÙNG CHỌN NGAY TẠI PHÒNG HỌP
+  // 5. GIAI ĐOẠN 3: NGƯỜI DÙNG DUYỆT TỪNG Ý -> CHUYỂN GIAO CHO NHÂN VIÊN 3 (SENIOR DEV 30 NĂM KN)
   const handleSelectFeaturesAndDeepDive = async () => {
     if (!currentSession || selectedFeatureIds.length === 0) return;
     setIsLoading(true);
@@ -232,19 +229,21 @@ export const App: React.FC = () => {
     try {
       setCamera('boardroom');
       soundFx.playType();
-      setCurrentStageText('Giai đoạn 3: 4 Dũng đang tự nói chuyện, tranh luận chuyên sâu về các mặt hạn chế & rủi ro của các ý bạn chọn...');
+      setCurrentStageText('Giai đoạn 3: Người dùng đã duyệt các ý! Nhân viên 1 & 2 chuyển giao cái cần thực thi cho Nhân viên 3...');
 
-      // Hoạt ảnh bong bóng thoại trên đầu Dũng 1, Dũng 2, Dũng 3 khi mổ xẻ rủi ro
-      canvasRef.current?.setCustomBubble('dung_2', '🔍 Mổ xẻ mặt hạn chế & rủi ro của các ý bạn đã chọn...', 3000);
+      // Hoạt ảnh bong bóng thoại trên đầu 3 nhân viên khi chốt bàn giao nhiệm vụ
+      canvasRef.current?.setCustomBubble('dung_1', `📋 NV1: Đã nhận lệnh duyệt ${selectedFeatureIds.length} ý từ Bạn, bàn giao cho Dev 3!`, 3000);
       await sleep(1500);
-      canvasRef.current?.setCustomBubble('dung_3', '🛠️ Chốt cam kết Clean Code & Ma trận Test 8 kịch bản...', 3000);
+      canvasRef.current?.setCustomBubble('dung_2', '📐 NV2: Đã khóa spec kỹ thuật HMAC SHA-256 & Idempotency Key!', 3000);
+      await sleep(1500);
+      canvasRef.current?.setCustomBubble('dung_3', '👨‍💻 NV3 (Dev 30 năm KN): Tiếp nhận nhiệm vụ đã duyệt, sẵn sàng lập trình Clean Code!', 3000);
 
       const deepDiveMsgs = await api.selectFeaturesAndDeepDive(currentSession.id, selectedFeatureIds);
       setMessages(prev => [...prev, ...deepDiveMsgs]);
 
       setWorkflowStage('ready_for_workstations');
       soundFx.playAlert();
-      setCurrentStageText('Đã chốt phân tích chuyên sâu! Bấm nút "Lệnh cho cả 4 Dũng về bàn làm việc" ở trên để thực thi.');
+      setCurrentStageText('Đã duyệt nhiệm vụ! Bấm nút "Lệnh cho Nhân viên 3 vào Dev Lab lập trình" ở trên để thực thi.');
     } catch (err) {
       console.error('Lỗi khi gửi lựa chọn tính năng:', err);
       alert('Đã xảy ra lỗi khi gửi lựa chọn tính năng.');
@@ -253,35 +252,26 @@ export const App: React.FC = () => {
     }
   };
 
-  // 6. GIAI ĐOẠN 4 & 5: VỀ BÀN LÀM VIỆC THỰC THI & HỌP BOARDROOM LẦN 2 (KÈM POPUP TỔNG KẾT)
+  // 6. GIAI ĐOẠN 4 & 5: NHÂN VIÊN 3 LẬP TRÌNH TẠI BÀN -> BÁO CÁO ĐỂ NHÂN VIÊN 1 & 2 ĐÁNH GIÁ, NGHIỆM THU
   const handleExecuteWorkstations = async () => {
     if (!currentSession) return;
     setIsLoading(true);
 
     try {
-      // Giai đoạn 4: Cả 4 Dũng đều về bàn làm việc riêng của mình
-      setCurrentStageText('Giai đoạn 4: Cả 4 Dũng về bàn làm việc: Dũng 3 viết Clean Code, Dũng 4 chạy Stress Test 5,000 TPS...');
+      // Giai đoạn 4: Nhân viên 3 vào Dev Lab gõ Clean Code
+      setCurrentStageText('Giai đoạn 4: Nhân viên 3 (Senior Dev 30 năm KN) đang viết Clean Code FastAPI Async & Unit Tests...');
       handleDispatchAgent('dung_1', 'director_office', 'idle');
       handleDispatchAgent('dung_2', 'architect_office', 'idle');
       handleDispatchAgent('dung_3', 'dev_lab', 'coding');
-      handleDispatchAgent('dung_4', 'games_room', 'testing');
 
       setCamera('dev_lab');
       soundFx.playType();
 
-      // Hoạt ảnh gõ code trên đầu Dũng 3
-      canvasRef.current?.setCustomBubble('dung_3', '⚡ Đang gõ phím Clean Code: FastAPI Async...', 3000);
+      // Hoạt ảnh gõ code trên đầu Nhân viên 3
+      canvasRef.current?.setCustomBubble('dung_3', '⚡ Đang gõ phím Clean Code: FastAPI + HMAC SHA-256 + Idempotency...', 3500);
 
-      // Chờ 2.5s mô phỏng gõ phím ở Dev Lab
-      await sleep(2500);
-
-      // Chuyển camera sang trạm QA Lab
-      setCamera('games_room');
-      soundFx.playAlert();
-
-      // Hoạt ảnh bắn phá test trên đầu Dũng 4
-      canvasRef.current?.setCustomBubble('dung_4', '🎯 Đang bắn phá: 8 Kịch bản Stress Test 5,000 TPS...', 3000);
-      await sleep(2200);
+      // Chờ 3.0s mô phỏng gõ phím ở Dev Lab
+      await sleep(3000);
 
       // Gọi API hoàn tất thực thi tại bàn và nghiệm thu
       const results = await api.executeWorkstations(currentSession.id);
@@ -293,25 +283,26 @@ export const App: React.FC = () => {
       const qaMsg = results.find(m => m.test_matrix);
       if (qaMsg?.test_matrix) setActiveTestMatrix(qaMsg.test_matrix);
 
-      // Giai đoạn 5: Dũng 3 & Dũng 4 bàn giao cho Giám đốc & PM -> Cả 4 người lại ngồi vào Boardroom lần 2!
-      setCurrentStageText('Giai đoạn 5: Dũng 3 & Dũng 4 bàn giao cho Giám đốc & PM -> Cả 4 người lại ngồi vào Boardroom lần 2!');
+      // Giai đoạn 5: Nhân viên 3 báo cáo lại để Nhân viên 1 & 2 đánh giá, nghiệm thu
+      setCurrentStageText('Giai đoạn 5: Nhân viên 3 báo cáo lại cho Nhân viên 1 & Nhân viên 2 đánh giá và nghiệm thu toàn diện!');
       handleDispatchAgent('dung_1', 'boardroom', 'debating');
       handleDispatchAgent('dung_2', 'boardroom', 'debating');
-      handleDispatchAgent('dung_3', 'boardroom', 'debating');
-      handleDispatchAgent('dung_4', 'boardroom', 'debating');
+      handleDispatchAgent('dung_3', 'boardroom', 'idle');
 
       setCamera('boardroom');
 
-      // Hoạt ảnh báo cáo nghiệm thu trên đầu Dũng 1 & Dũng 2
-      canvasRef.current?.setCustomBubble('dung_1', '🏆 Họp nghiệm thu Boardroom lần 2 thành công!', 4000);
-      await sleep(1500);
-      canvasRef.current?.setCustomBubble('dung_2', '✅ Đạt chuẩn triển khai Production 100%!', 4000);
+      // Hoạt ảnh báo cáo và nghiệm thu trên đầu 3 nhân viên
+      canvasRef.current?.setCustomBubble('dung_3', '📋 NV3: Đã lập trình xong phần mềm theo các ý duyệt, kính trình nghiệm thu!', 3500);
+      await sleep(1800);
+      canvasRef.current?.setCustomBubble('dung_1', '✅ NV1 (GĐ F&B): Nghiệm thu quy trình vận hành & chống rớt đơn tuyệt đối!', 3500);
+      await sleep(1800);
+      canvasRef.current?.setCustomBubble('dung_2', '🏆 NV2 (GĐ Phần mềm): Nghiệm thu Clean Code 1.5ms, ký phê chuẩn bàn giao!', 3500);
 
-      // Âm thanh vinh quang và TỰ ĐỘNG BẬT POPUP BÁO CÁO NGHIỆM THU TOÀN DIỆN
+      // Âm thanh vinh quang và TỰ ĐỘNG BẬT POPUP BÁO CÁO NGHIỆM THU CHO NGƯỜI DÙNG
       soundFx.playSuccess();
       setWorkflowStage('finished');
       setShowFinalReviewModal(true);
-      setCurrentStageText('🏆 Hoàn tất 100%! Popup Báo cáo nghiệm thu của Hội đồng 4 Dũng đã hiện lên màn hình.');
+      setCurrentStageText('🏆 Hoàn tất 100%! Popup Báo cáo nghiệm thu của Nhân viên 1 & Nhân viên 2 đã hiện lên màn hình.');
     } catch (err) {
       console.error('Lỗi khi thực thi tại bàn làm việc:', err);
       alert('Đã xảy ra lỗi khi thực thi tại bàn làm việc.');
@@ -354,7 +345,7 @@ export const App: React.FC = () => {
       />
 
       <main className="main-content">
-        {/* 1. GIAO ĐỀ BÀI CHO BỘ TỨ DŨNG - ĐẶT Ở TRÊN CÙNG THEO YÊU CẦU */}
+        {/* 1. GIAO ĐỀ BÀI CHO BỘ BA CHUYÊN GIA - ĐẶT Ở TRÊN CÙNG THEO YÊU CẦU */}
         <WorkflowPanel
           onRunWorkflow={handleRunWorkflow}
           isLoading={isLoading}
@@ -364,7 +355,7 @@ export const App: React.FC = () => {
           onOpenFinalModal={() => setShowFinalReviewModal(true)}
         />
 
-        {/* 2. BỐ CỤC 2 CỘT CHÍNH: BÊN TRÁI (VĂN PHÒNG & CAMERA & CHAT) - BÊN PHẢI (4 DŨNG XẾP DỌC) */}
+        {/* 2. BỐ CỤC 2 CỘT CHÍNH: BÊN TRÁI (VĂN PHÒNG & CAMERA & CHAT) - BÊN PHẢI (3 NHÂN VIÊN XẾP DỌC) */}
         <div className="workspace-split-layout">
           {/* CỘT BÊN TRÁI: Camera giám sát, Canvas Pixel Office 2.5D, Consensus Board, Tiến trình tranh luận */}
           <div className="left-stage-column">
@@ -381,7 +372,7 @@ export const App: React.FC = () => {
               onAgentMoved={handleAgentMovedOnCanvas}
             />
 
-            {/* BẢNG THÔNG TIN CHỐT LẠI (CONSENSUS BOARD) KHI ĐÃ TRANH LUẬN VÒNG 1 XONG */}
+            {/* BẢNG THÔNG TIN THỐNG NHẤT (CONSENSUS BOARD) KHI ĐÃ TRANH LUẬN XONG */}
             {consensusFeatures.length > 0 && workflowStage === 'waiting_feature_selection' && (
               <ConsensusBoard
                 features={consensusFeatures}
@@ -392,7 +383,7 @@ export const App: React.FC = () => {
               />
             )}
 
-            {/* Nhật ký tranh luận và sản phẩm bàn giao của 4 Dũng */}
+            {/* Nhật ký tranh luận và sản phẩm bàn giao */}
             <DeliberationChat
               messages={messages}
               sessionTitle={currentSession?.title}
@@ -401,15 +392,16 @@ export const App: React.FC = () => {
             />
           </div>
 
-          {/* CỘT BÊN PHẢI: BỘ TỨ DŨNG THEO CHIỀU DỌC ĐỂ DỄ NHÌN */}
+          {/* CỘT BÊN PHẢI: BỘ BA CHUYÊN GIA DŨNG THEO CHIỀU DỌC */}
           <aside className="right-agents-sidebar">
             <div className="sidebar-sticky-header">
               <div className="flex items-center justify-between">
-                <span className="sidebar-badge-title">👥 BỘ TỨ DŨNG AI</span>
-                <span className="status-live-indicator">TRỰC BAN</span>
+                <span className="sidebar-badge-title">👥 BỘ BA CHUYÊN GIA (3 NHÂN VIÊN)</span>
+                <span className="status-live-indicator">SẴN SÀNG</span>
               </div>
               <p className="sidebar-desc">
-                Nhấn "Họp", "Bàn làm việc", "Bida", "Pantry" hoặc click trực tiếp lên sàn để điều động nhân vật đi bộ!
+                Nhân viên 1 (F&B 40 năm) • Nhân viên 2 (Software 40 năm) • Nhân viên 3 (Dev 30 năm).
+                Click vào nhân vật hoặc chọn nút phòng để điều động!
               </p>
             </div>
 
@@ -435,7 +427,7 @@ export const App: React.FC = () => {
         </div>
       </main>
 
-      {/* POPUP 1: TỰ ĐỘNG BẬT KHI 4 DŨNG TRANH LUẬN XONG VÒNG 1 ĐỂ BẠN CHỌN Ý PHÁT TRIỂN PHẦN MỀM */}
+      {/* POPUP 1: TỰ ĐỘNG BẬT KHI NHÂN VIÊN 1 & 2 TRANH LUẬN XONG ĐỂ BẠN DUYỆT TỪNG Ý CHO NHÂN VIÊN 3 THỰC THI */}
       <ConsensusModal
         isOpen={showConsensusModal}
         onClose={() => setShowConsensusModal(false)}
@@ -446,7 +438,7 @@ export const App: React.FC = () => {
         isLoading={isLoading}
       />
 
-      {/* POPUP 2: TỰ ĐỘNG BẬT KHI 4 DŨNG LÀM XONG Ở BÀN LÀM VIỆC & HỌP BOARDROOM LẦN 2 */}
+      {/* POPUP 2: TỰ ĐỘNG BẬT KHI NHÂN VIÊN 3 LÀM XONG & ĐƯỢC NHÂN VIÊN 1 & 2 ĐÁNH GIÁ, NGHIỆM THU */}
       <FinalReviewModal
         isOpen={showFinalReviewModal}
         onClose={() => setShowFinalReviewModal(false)}
@@ -464,7 +456,7 @@ export const App: React.FC = () => {
         }}
       />
 
-      {/* Modal hiển thị mã nguồn Clean Code của Dũng 3 */}
+      {/* Modal hiển thị mã nguồn Clean Code của Nhân viên 3 */}
       {activeCodeArtifact && (
         <CodeArtifactViewer
           code={activeCodeArtifact}
@@ -472,7 +464,7 @@ export const App: React.FC = () => {
         />
       )}
 
-      {/* Modal hiển thị ma trận kiểm thử của Dũng 4 */}
+      {/* Modal hiển thị ma trận kiểm thử */}
       {activeTestMatrix && (
         <TestMatrixModal
           matrix={activeTestMatrix}

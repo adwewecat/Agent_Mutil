@@ -44,12 +44,12 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
       <div className="workflow-card-header">
         <div className="workflow-title-wrap">
           <Sparkles className="text-yellow-400" size={18} />
-          <h2>GIAO ĐỀ BÀI CHO HỘI ĐỒNG 4 DŨNG</h2>
+          <h2>GIAO ĐỀ BÀI CHO BỘ BA CHUYÊN GIA (3 NHÂN VIÊN DŨNG)</h2>
         </div>
         {isLoading && (
           <div className="workflow-active-badge">
             <span className="pulsing-dot"></span>
-            <span>Hội đồng 4 Dũng đang xử lý: {currentStage || 'Đang thực thi...'}</span>
+            <span>Hội đồng đang xử lý: {currentStage || 'Đang thực thi...'}</span>
           </div>
         )}
       </div>
@@ -82,19 +82,19 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
         ))}
       </div>
 
-      {/* BANNER BƯỚC 3: SẴN SÀNG VỀ BÀN LÀM VIỆC */}
+      {/* BANNER BƯỚC 3: SẴN SÀNG CHO NHÂN VIÊN 3 THỰC THI KHI NGƯỜI DÙNG DUYỆT */}
       {workflowStage === 'ready_for_workstations' && onExecuteWorkstations && (
         <div className="workstation-dispatch-banner animate-fade-in">
           <div className="dispatch-header">
             <Terminal className="text-emerald-400" size={20} />
             <div>
-              <span className="dispatch-badge">ĐÃ TRANH LUẬN CHUYÊN SÂU XONG TẠI PHÒNG HỌP</span>
-              <h4>4 Dũng đã chốt kế hoạch thực thi! Sẵn sàng về bàn làm việc để viết code & chạy test</h4>
+              <span className="dispatch-badge">BẠN ĐÃ DUYỆT CÁC Ý THỰC THI</span>
+              <h4>Nhân viên 1 & 2 đã thống nhất xong! Lệnh cho Nhân viên 3 (Senior Dev 30 năm KN) lập trình</h4>
             </div>
           </div>
           <p className="dispatch-desc">
-            Dũng 1 (Giám đốc) và Dũng 2 (PM) đã phân tích kỹ mặt hạn chế & rủi ro của các ý bạn chọn.
-            Dũng 3 đã cam kết cấu trúc Clean Code và Dũng 4 đã lên ma trận 8 kịch bản kiểm thử:
+            Nhân viên 1 (GĐ Vận hành F&B 40 năm KN) và Nhân viên 2 (GĐ Phần mềm 40 năm KN) đã khóa đặc tả kỹ thuật.
+            Nhân viên 3 (Senior Dev 30 năm KN) chỉ thực sự làm việc theo đúng các ý bạn đã phê duyệt:
           </p>
           <button
             type="button"
@@ -103,20 +103,22 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
             className="action-btn-dispatch"
           >
             <Cpu size={18} />
-            <span>⚡ LỆNH CHO CẢ 4 DŨNG VỀ BÀN LÀM VIỆC: DŨNG 3 VIẾT CODE & DŨNG 4 TEST</span>
+            <span>⚡ LỆNH CHO NHÂN VIÊN 3 VÀO DEV LAB VIẾT CLEAN CODE & KIỂM THỬ</span>
             <ArrowRight size={18} />
           </button>
         </div>
       )}
 
-      {/* BANNER BƯỚC 5: ĐÃ HOÀN TẤT & HỌP LẦN 2 */}
+      {/* BANNER BƯỚC 5: ĐÃ HOÀN TẤT & NGHIỆM THU */}
       {workflowStage === 'finished' && onOpenFinalModal && (
         <div className="finished-review-banner animate-fade-in">
           <div className="flex items-center gap-2">
             <Trophy className="text-amber-400" size={20} />
             <div>
               <span className="text-xs text-amber-300 font-semibold tracking-wider uppercase">Nghiệm thu hoàn tất</span>
-              <h4 className="text-sm font-bold text-white">4 Dũng đã họp lại tại Boardroom lần 2 và bàn giao kết quả!</h4>
+              <h4 className="text-sm font-bold text-white">
+                Nhân viên 3 đã nộp code! Nhân viên 1 & Nhân viên 2 đã đánh giá và nghiệm thu toàn diện.
+              </h4>
             </div>
           </div>
           <button
@@ -124,7 +126,7 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
             onClick={onOpenFinalModal}
             className="btn-open-final-modal"
           >
-            <Trophy size={16} /> Xem Báo Cáo Nghiệm Thu Toàn Diện
+            <Trophy size={16} /> Xem Popup Nghiệm Thu Của Nhân Viên 1 & 2
           </button>
         </div>
       )}
@@ -137,7 +139,7 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
           className="action-btn-primary"
         >
           <Play size={18} />
-          <span>KÍCH HOẠT HỘI ĐỒNG 4 DŨNG: HỌP BÀN TRÒN & TRANH LUẬN ĐA CHIỀU (VÒNG 1)</span>
+          <span>KÍCH HOẠT NHÂN VIÊN 1 & 2 TRANH LUẬN NẢY LỬA (ĐỐI CHIẾU THỊ TRƯỜNG & LẬP BẢNG THỐNG NHẤT)</span>
         </button>
       </div>
     </div>

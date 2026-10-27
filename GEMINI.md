@@ -39,16 +39,15 @@ Hệ thống được thiết kế theo mô hình **Độc lập tách biệt (D
 
 ---
 
-## 3. THIẾT KẾ ĐỘI NGŨ 4 AGENT (BỘ TỨ "DŨNG")
+## 3. THIẾT KẾ ĐỘI NGŨ 3 AGENT (BỘ BA CHUYÊN GIA DŨNG)
 
-Hệ thống gồm đúng 4 nhân vật AI chuyên gia cốt lõi:
+Hệ thống được chuẩn hóa gồm đúng 3 nhân vật AI chuyên gia cốt lõi theo phân vai chuyên sâu:
 
 | Nhân vật | Chức danh / Vai trò | Kinh nghiệm | Nhiệm vụ chính trong Workflow |
 | :--- | :--- | :--- | :--- |
-| **Dũng 1** | **Software Director** | Giám đốc phần mềm | Tiếp nhận đề bài từ người dùng, phân tích mục tiêu kinh doanh, đề xuất giải pháp chiến lược và trao đổi trực tiếp với Dũng 2 để chốt phương án tối ưu. |
-| **Dũng 2** | **Software Architect & Project Manager** | 40 năm kinh nghiệm | Thẩm định tính khả thi, tài nguyên, chi phí, rủi ro hệ thống; chủ động phản biện giải pháp của Dũng 1, đề xuất rẽ nhánh hoặc thậm chí tư vấn quy trình không cần phần mềm nếu không cần thiết; phân tích kỹ thuật sâu sắc, cấu trúc hệ thống, kiến trúc microservices/monolith, độ trễ và tài nguyên. |
-| **Dũng 3** | **Senior Fullstack Developer** | 40 năm kinh nghiệm | Hiện thực hóa giải pháp sau khi Dũng 1 và Dũng 2 đã chốt phương án; viết mã nguồn chuẩn xác, tối ưu thuật toán, xây dựng API RESTful và cấu trúc dữ liệu sạch. |
-| **Dũng 4** | **Test Engineer / QA Specialist** | 40 năm kinh nghiệm | Kiểm tra toàn bộ mã nguồn của Dũng 3; thiết lập ma trận Test Cases, phân tích giá trị biên (boundary values), stress test, phát hiện mọi lỗi tiềm ẩn và lỗ hổng bảo mật. |
+| **Nhân viên 1 (Dũng 1)** | **Giám đốc Vận hành & Chiến lược Phát triển Toàn diện** | 40 năm kinh nghiệm F&B & Fastfood | Đề xuất các quy trình liên quan, phân tích sâu nghiệp vụ F&B; tìm hiểu thị trường bên ngoài xem các đối tác hoặc đối thủ (McDonald's, Starbucks, Domino's, Haidilao...) đã từng trải qua chưa, họ làm như thế nào, gặp khó khăn gì, quy trình và cái hay của họ là gì. Tranh luận nảy lửa với Nhân viên 2. |
+| **Nhân viên 2 (Dũng 2)** | **Giám đốc Phần mềm & Kiến trúc Hệ thống** | 40 năm kinh nghiệm Software & Tech | Phân tích toàn diện hệ thống xem có đáp ứng được các vấn đề Nhân viên 1 nêu hay không; bóc tách mặt lợi và tiêu cực; tìm hiểu đối tác/đối thủ công nghệ (Toast POS, Olo, Square, Meituan...) xem họ làm thế nào, gặp khó khăn và cái hay công nghệ của họ là gì. Cùng Nhân viên 1 lập Bảng Thống Nhất gồm 5 tiêu chuẩn cốt lõi (% đáp ứng, quy trình, giải pháp mềm). |
+| **Nhân viên 3 (Dũng 3)** | **Senior Fullstack Developer** | 30 năm kinh nghiệm | **Chỉ thực sự làm việc khi Người dùng duyệt từng ý của Nhân viên 1 & 2 đã thống nhất** và cái cần thực thi là gì. Viết mã nguồn Clean Code tối ưu, chuẩn OpenAPI và bọc bảo mật HMAC SHA-256 + Idempotency Key. Sau khi hoàn thành, báo cáo lại để Nhân viên 1 & 2 đánh giá, nghiệm thu và kích hoạt Popup liên quan cho Người dùng. |
 
 ---
 
@@ -749,6 +748,27 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
      - **POPUP 2 - Khi thực thi và họp lần 2 xong**: Tự động bật `FinalReviewModal` (`showFinalReviewModal = true`) kèm âm thanh chiến thắng `soundFx.playSuccess()`, hiển thị toàn bộ báo cáo nghiệm thu, mã nguồn Clean Code và ma trận kiểm thử 8/8 kịch bản.
 - [x] Build `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 cảnh báo (`dist/assets/index-C9EmjGR1.js`).
 - [x] Đã commit và đẩy toàn bộ mã nguồn lên GitHub.
+
+### [2026-10-27] Tái cấu trúc chuẩn xác Bộ Ba Chuyên Gia (3 Nhân Viên), Tranh Luận Thị Trường & Cổng Phê Duyệt Từng Ý
+- [x] **Cơ cấu tổ chức đúng 3 nhân viên chuyên sâu**:
+  - **Nhân viên 1 (Dũng 1)**: Giám đốc Vận hành & Chiến lược F&B (40 năm KN). Bóc tách quy trình thực chiến chuỗi fastfood/nhà hàng, phân tích case studies McDonald's (kiosk + app), Starbucks (mobile order & pay), Domino's (tracker realtime), Haidilao (đặt bàn & gọi món).
+  - **Nhân viên 2 (Dũng 2)**: Giám đốc Phần mềm & Kiến trúc Hệ thống (40 năm KN). Phản biện toàn diện hệ thống, so sánh nền tảng công nghệ Toast POS, Square for Restaurants, Olo, Meituan; bóc tách mặt lợi/tiêu cực, tính toán tỷ lệ % đáp ứng của hệ thống và đề xuất giải pháp mềm/vận hành SOP cho phần chưa đáp ứng.
+  - **Nhân viên 3 (Dũng 3)**: Senior Fullstack Developer (30 năm KN). Chỉ bắt đầu viết code khi Người dùng tích duyệt từng ý đã chốt và chỉ định cái cần thực thi.
+- [x] **Tranh luận nảy lửa & Bảng Thống Nhất chuẩn 5 nội dung cốt lõi**:
+  - Bảng Thống Nhất (`ConsensusBoard`) hiển thị:
+    1. Yêu cầu là gì.
+    2. Phân tích quy trình, mặt tích cực, tiêu cực và rủi ro của yêu cầu (kèm đối chiếu đối thủ thị trường).
+    3. Hệ thống đáp ứng được bao nhiêu % (thanh tiến trình progress bar trực quan neon).
+    4. Các vấn đề hệ thống có thể đáp ứng được.
+    5. Những gì hệ thống chưa đáp ứng được và Giải pháp mềm (quy trình mềm SOP, đào tạo nhân sự chạy bàn, cơ chế vận hành con người).
+    6. Cái cần thực thi cụ thể giao cho Nhân viên 3.
+    7. Checkbox duyệt từng ý cho Nhân viên 3 thực thi.
+- [x] **Quy trình Nghiệm thu 2 Chiều & Popup Thông Báo Tự Động**:
+  - Khi Nhân viên 1 & 2 tranh luận xong -> Tự động bật `ConsensusModal` kèm chuông thông báo.
+  - Người dùng tích chọn duyệt từng ý -> Nhân viên 3 vào Dev Lab gõ Clean Code FastAPI + HMAC SHA-256 + Idempotency Key.
+  - Nhân viên 3 làm xong báo cáo lại cho Nhân viên 1 & Nhân viên 2 đánh giá, nghiệm thu -> Tự động bật `FinalReviewModal` với biên bản phê chuẩn toàn diện của cả GĐ Vận hành F&B và GĐ Phần mềm.
+- [x] Bản build đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
+- [x] Commit và sẵn sàng push toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 
 ---
 

@@ -84,20 +84,21 @@ class ProjectSessionResponse(BaseModel):
 
 
 # -----------------------------------------------------------------------------
-# Consensus Feature Schemas (Bảng thông tin chốt lại cuối cùng của 4 Dũng)
+# Consensus Feature Schemas (Bảng thống nhất tranh luận giữa Nhân viên 1 & Nhân viên 2)
 # -----------------------------------------------------------------------------
 class ConsensusFeatureItem(BaseModel):
-    id: str = Field(..., description="Mã định danh ý tưởng: feature_1, feature_2,...")
-    title: str = Field(..., description="Tiêu đề phương án / ý tưởng")
-    proposer: str = Field(..., description="Người đề xuất chính: Dũng 1, Dũng 2, Dũng 3, Dũng 4")
-    category: str = Field(..., description="Phân loại: Bảo mật, Hiệu năng, Vận hành, UX/UI, Quy trình")
-    drawbacks: str = Field(..., description="Mặt hạn chế & Tiêu cực nếu triển khai")
-    counter_arguments: str = Field(..., description="Giải pháp phản biện & Cách hóa giải mặt hạn chế")
-    capabilities: str = Field(..., description="Đáp ứng được những gì cho hệ thống")
-    limitations: str = Field(..., description="Những gì không đáp ứng được (giới hạn)")
-    technical_risks: str = Field(..., description="Rủi ro kỹ thuật & rủi ro vận hành cần lưu ý")
-    software_recommended: bool = Field(..., description="Khuyến nghị nên xây phần mềm (True) hay làm quy trình ngoài (False)")
-    recommendation_reason: str = Field(..., description="Lý giải tại sao nên hoặc không nên làm phần mềm")
+    id: str = Field(..., description="Mã định danh yêu cầu: req_1, req_2,...")
+    requirement: str = Field(..., description="Yêu cầu là gì")
+    process_analysis: str = Field(..., description="Phân tích quy trình vận hành và nghiệp vụ")
+    positives: str = Field(..., description="Mặt tích cực mang lại")
+    negatives: str = Field(..., description="Mặt tiêu cực & hạn chế")
+    risks: str = Field(..., description="Rủi ro của yêu cầu (vận hành & hệ thống)")
+    system_compliance_percent: int = Field(..., description="Hệ thống phần mềm đáp ứng được bao nhiêu % (0-100)")
+    supported_features: str = Field(..., description="Các vấn đề hệ thống có thể đáp ứng được")
+    unsupported_gaps: str = Field(..., description="Những gì hệ thống chưa đáp ứng được")
+    soft_solutions: str = Field(..., description="Giải pháp cho những điều chưa đáp ứng (quy trình mềm, vận hành mềm, SOP, đào tạo nhân sự)")
+    market_case_studies: Optional[str] = Field(default="", description="Nghiên cứu đối tác / đối thủ bên ngoài (McDonald's, Starbucks, Domino's, Toast POS, Olo...)")
+    software_task_for_dev: str = Field(..., description="Nhiệm vụ cụ thể giao cho Nhân viên 3 (Senior Dev 30 năm KN) thực thi khi được duyệt")
 
 
 class WorkflowSelectFeaturesPayload(BaseModel):

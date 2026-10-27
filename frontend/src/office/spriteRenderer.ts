@@ -2119,8 +2119,6 @@ export class SpriteRenderer {
       pose = 'thinking_stand'; // Dũng 2 đứng chống cằm suy nghĩ tại bàn kiến trúc
     } else if (agent.code === 'dung_3' && agent.current_room === 'dev_lab') {
       pose = 'three_quarter_idle'; // Dũng 3 tập trung code
-    } else if (agent.code === 'dung_4' && agent.current_room === 'games_room') {
-      pose = 'front_happy';
     } else if (agent.current_room === 'kitchen_pantry' || agent.status === 'resting') {
       pose = 'front_happy';
     }
@@ -2171,8 +2169,6 @@ export class SpriteRenderer {
         this.drawSittingDevAgent(ctx, x, y, frame, agent);
       } else if (agent.code === 'dung_2' && agent.current_room === 'architect_office') {
         this.drawSittingArchitectAgent(ctx, x, y, frame, agent);
-      } else if (agent.code === 'dung_4' && agent.current_room === 'games_room') {
-        this.drawSittingQAAgent(ctx, x, y, frame, agent);
       } else if (agent.current_room === 'kitchen_pantry' || agent.status === 'resting') {
         this.drawStandingPantryAgent(ctx, x, y, frame, agent);
       } else {
@@ -3910,7 +3906,7 @@ export class SpriteRenderer {
     const x = agent.pos_x;
     const y = agent.pos_y;
     const isMoving = agent.status === 'moving';
-    const isFemale = agent.code === 'dung_2' || agent.code === 'dung_4';
+    const isFemale = agent.code === 'dung_2';
     const facingLeft = isMoving && (agent.target_x < agent.pos_x);
     const isSelected = agent.code === (window as any).__selectedAgentCode;
 
@@ -3945,11 +3941,6 @@ export class SpriteRenderer {
           sprite = ImageLoader.getCharacter('male_typing_chair');
           charH = 138;
           flipHoriz = false;
-        } else if (agent.code === 'dung_4') {
-          // Dũng 4: Nữ QA Lead ngồi ghế bên phải bàn tròn, quay mặt sang trái vào Hologram
-          sprite = ImageLoader.getCharacter('female_sitting_chair');
-          charH = 125;
-          flipHoriz = false;
         }
       } else {
         // TẠI BÀN LÀM VIỆC RIÊNG BIỆT: Ngồi đúng ghế, gõ phím hướng vào máy tính và màn hình bên trái
@@ -3968,11 +3959,6 @@ export class SpriteRenderer {
           sprite = ImageLoader.getCharacter('male_typing_chair');
           charH = 138;
           flipHoriz = false;
-        } else if (agent.code === 'dung_4') {
-          // Dũng 4: Nữ QA Lead tại Desk 3 ngồi gõ phím kiểm thử hướng vào máy tính bên trái
-          sprite = ImageLoader.getCharacter('female_typing_chair');
-          charH = 102;
-          flipHoriz = false; // Sprite mới đã hướng sang trái
         }
       }
     }
@@ -4554,14 +4540,11 @@ export class SpriteRenderer {
       draw: ctx => this.drawArchitectPMStation(ctx, 275, 550, frame),
     });
 
-    // Trạm 3: Kiểm Thử An Ninh & QA (Dũng 4 - Test Lead tại 585, 620)
-    const dung4AtDesk = agents.some(a => a.code === 'dung_4' && a.current_room === 'games_room' && a.status !== 'moving');
-    if (!dung4AtDesk) {
-      drawables.push({
-        zY: 615,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 585, 620),
-      });
-    }
+    // Trạm 3: Bàn bida & giải trí thư giãn (585, 620)
+    drawables.push({
+      zY: 615,
+      draw: ctx => this.drawErgonomicMeshChair(ctx, 585, 620),
+    });
     drawables.push({
       zY: 625,
       draw: ctx => this.drawQASecurityStation(ctx, 475, 550, frame),

@@ -1,6 +1,6 @@
 /**
- * Modal Popup hiển thị BẢNG THÔNG TIN CHỐT LẠI CỦA 4 DŨNG sau khi kết thúc vòng 1 tranh luận.
- * Tự động bật lên màn hình với âm thanh thông báo để người dùng nhận biết ngay lập tức.
+ * Modal Popup hiển thị BẢNG THÔNG TIN THỐNG NHẤT CỦA NHÂN VIÊN 1 & NHÂN VIÊN 2.
+ * Tự động bật lên màn hình với âm thanh chuông sau khi 2 chuyên gia tranh luận xong.
  */
 
 import React from 'react';
@@ -32,12 +32,12 @@ export const ConsensusModal: React.FC<ConsensusModalProps> = ({
   return (
     <div className="modal-overlay animate-fade-in" onClick={onClose}>
       <div className="consensus-modal-wrapper" onClick={e => e.stopPropagation()}>
-        {/* Banner thông báo tự động hoàn tất vòng 1 */}
+        {/* Banner thông báo tự động hoàn tất tranh luận */}
         <div className="consensus-modal-alert-banner">
           <div className="flex items-center gap-2">
             <Sparkles className="text-cyan-400" size={18} />
-            <span className="consensus-modal-tag">VÒNG 1 TRANH LUẬN HOÀN TẤT</span>
-            <span className="consensus-modal-subtag">• CẢ 4 DŨNG ĐÃ THỐNG NHẤT CÁC PHƯƠNG ÁN</span>
+            <span className="consensus-modal-tag">TRANH LUẬN NẢY LỬA HOÀN TẤT</span>
+            <span className="consensus-modal-subtag">• NHÂN VIÊN 1 & NHÂN VIÊN 2 ĐÃ CHỐT BẢNG NĂNG LỰC & RỦI RO</span>
           </div>
           <button className="consensus-modal-close-btn" onClick={onClose} title="Đóng cửa sổ">
             <X size={18} />
