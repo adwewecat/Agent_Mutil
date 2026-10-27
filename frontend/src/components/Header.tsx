@@ -42,11 +42,11 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header className="header-container">
       <div className="header-brand">
-        <div className="brand-logo-pixel">4D</div>
+        <div className="brand-logo-pixel">3D</div>
         <div>
-          <h1 className="header-title">AGENT PIXELS • BỘ TỨ DŨNG</h1>
+          <h1 className="header-title">AGENT PIXELS • BỘ BA CHUYÊN GIA DŨNG</h1>
           <p className="header-subtitle">
-            Hệ thống văn phòng ảo AI 40 năm kinh nghiệm • Software Director, Architect, Fullstack Dev & QA
+            Hệ thống AI 3 chuyên gia • GĐ Vận hành F&B (40 năm KN), GĐ Phần mềm (40 năm KN), Senior Fullstack Dev (30 năm KN)
           </p>
         </div>
       </div>

@@ -770,6 +770,22 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Bản build đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
 - [x] Commit và sẵn sàng push toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-27] Khắc Phục Triệt Để Lỗi Hiển Thị Modal Overlay & Bố Cục Bảng Thống Nhất
+- [x] **Nguyên nhân cốt lõi gây lỗi hiển thị khi lướt xuống dưới**:
+  - Class `.modal-overlay` bị thiếu trong file CSS, khiến popup `ConsensusModal` không có `position: fixed; inset: 0`, bị đẩy xuống cuối luồng tài liệu dưới dạng block tĩnh lệch về bên trái màn hình.
+  - Header vẫn hiển thị tên cũ `AGENT PIXELS • BỘ TỨ DŨNG` và logo `4D`.
+  - `.detail-grid` sử dụng `repeat(auto-fit, minmax(240px, 1fr))` khiến 4 cột bị lẻ (3 cột trên, 1 cột dưới kéo dài mất cân đối).
+  - Xuất hiện tình trạng duplicate UI (vừa render Modal vừa render ConsensusBoard nội tuyến cùng lúc).
+- [x] **Giải pháp đã thực thi**:
+  1. Thêm định dạng chuẩn cho `.modal-overlay`: `position: fixed; inset: 0; width: 100vw; height: 100vh; background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(10px); z-index: 99999; display: flex; align-items: center; justify-content: center;`.
+  2. Mở rộng `.consensus-modal-wrapper` lên `max-width: 1200px` với `max-height: 90vh; overflow-y: auto;` giúp popup luôn căn giữa màn hình, viền neon phát sáng và cuộn mượt mà độc lập.
+  3. Căn chuẩn 4 cột đối xứng cho `.detail-grid` (`repeat(4, 1fr)` trên desktop, `repeat(2, 1fr)` trên tablet, `1fr` trên mobile).
+  4. Căn chuẩn 3 cột đối xứng cho `.compliance-analysis-grid` (`repeat(3, 1fr)`).
+  5. Cập nhật Header thành `3D` • `AGENT PIXELS • BỘ BA CHUYÊN GIA DŨNG`.
+  6. Ẩn `ConsensusBoard` nội tuyến khi Modal Popup đang mở, bổ sung nút mở lại Modal tại `WorkflowPanel`.
+- [x] Build `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 warning.
+- [x] Đã commit và đẩy code lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

@@ -353,6 +353,7 @@ export const App: React.FC = () => {
           workflowStage={workflowStage}
           onExecuteWorkstations={handleExecuteWorkstations}
           onOpenFinalModal={() => setShowFinalReviewModal(true)}
+          onOpenConsensusModal={() => setShowConsensusModal(true)}
         />
 
         {/* 2. BỐ CỤC 2 CỘT CHÍNH: BÊN TRÁI (VĂN PHÒNG & CAMERA & CHAT) - BÊN PHẢI (3 NHÂN VIÊN XẾP DỌC) */}
@@ -372,8 +373,8 @@ export const App: React.FC = () => {
               onAgentMoved={handleAgentMovedOnCanvas}
             />
 
-            {/* BẢNG THÔNG TIN THỐNG NHẤT (CONSENSUS BOARD) KHI ĐÃ TRANH LUẬN XONG */}
-            {consensusFeatures.length > 0 && workflowStage === 'waiting_feature_selection' && (
+            {/* BẢNG THÔNG TIN THỐNG NHẤT (CONSENSUS BOARD) KHI ĐÃ TRANH LUẬN XONG & ĐÃ ĐÓNG POPUP */}
+            {consensusFeatures.length > 0 && workflowStage === 'waiting_feature_selection' && !showConsensusModal && (
               <ConsensusBoard
                 features={consensusFeatures}
                 selectedFeatureIds={selectedFeatureIds}

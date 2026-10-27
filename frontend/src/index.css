@@ -1293,15 +1293,36 @@ body {
 }
 
 /* =============================================================================
+   MODAL OVERLAY & POPUP BACKDROP
+   ============================================================================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(3, 7, 18, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+/* =============================================================================
    CONSENSUS MODAL WRAPPER (POPUP BẢNG CHỐT LẠI SAU VÒNG 1)
    ============================================================================= */
 .consensus-modal-wrapper {
   background: #0f172a;
   border: 2px solid #00f0ff;
   border-radius: 14px;
-  width: 92vw;
-  max-width: 980px;
-  max-height: 88vh;
+  width: 95vw;
+  max-width: 1200px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1573,9 +1594,21 @@ body {
 
 .detail-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-bottom: 14px;
+}
+
+@media (max-width: 1024px) {
+  .detail-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .detail-col {
@@ -2208,9 +2241,15 @@ body {
 
 .compliance-analysis-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-bottom: 14px;
+}
+
+@media (max-width: 860px) {
+  .compliance-analysis-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .comp-col {

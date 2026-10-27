@@ -15,6 +15,7 @@ interface WorkflowPanelProps {
   workflowStage?: string; // initial, waiting_feature_selection, ready_for_workstations, finished
   onExecuteWorkstations?: () => Promise<void>;
   onOpenFinalModal?: () => void;
+  onOpenConsensusModal?: () => void;
 }
 
 const SAMPLE_PROBLEMS = [
@@ -31,6 +32,7 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
   workflowStage,
   onExecuteWorkstations,
   onOpenFinalModal,
+  onOpenConsensusModal,
 }) => {
   const [problem, setProblem] = useState(SAMPLE_PROBLEMS[0]);
 
@@ -81,6 +83,33 @@ export const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
           </button>
         ))}
       </div>
+
+      {/* BANNER BƯỚC 2: TRANH LUẬN XONG, CHỜ DUYỆT TỪNG Ý */}
+      {workflowStage === 'waiting_feature_selection' && (
+        <div className="workstation-dispatch-banner animate-fade-in" style={{ borderColor: '#00f0ff', background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(15, 23, 42, 0.95))' }}>
+          <div className="dispatch-header">
+            <Sparkles className="text-cyan-400" size={20} />
+            <div>
+              <span className="dispatch-badge" style={{ background: 'rgba(0, 240, 255, 0.2)', color: '#00f0ff' }}>TRANH LUẬN NẢY LỬA HOÀN TẤT</span>
+              <h4>Nhân viên 1 & 2 đã thống nhất Bảng Năng Lực & Rủi Ro! Đang chờ bạn duyệt từng ý</h4>
+            </div>
+          </div>
+          <p className="dispatch-desc">
+            Nhân viên 3 (Senior Dev 30 năm KN) chỉ thực hiện khi Bạn duyệt từng ý và cái cần thực thi là gì.
+          </p>
+          {onOpenConsensusModal && (
+            <button
+              type="button"
+              onClick={onOpenConsensusModal}
+              className="action-btn-dispatch"
+              style={{ background: 'linear-gradient(135deg, #0284c7, #00f0ff)', color: '#0f172a' }}
+            >
+              <Sparkles size={18} />
+              <span>📋 MỞ BẢNG THỐNG NHẤT (POPUP) ĐỂ DUYỆT CÁC Ý THỰC THI</span>
+            </button>
+          )}
+        </div>
+      )}
 
       {/* BANNER BƯỚC 3: SẴN SÀNG CHO NHÂN VIÊN 3 THỰC THI KHI NGƯỜI DÙNG DUYỆT */}
       {workflowStage === 'ready_for_workstations' && onExecuteWorkstations && (
