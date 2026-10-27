@@ -74,10 +74,10 @@ export const App: React.FC = () => {
   const handleDispatchAgent = (code: string, room: string, statusOverride?: string) => {
     const targetCoords: Record<string, { x: number; y: number }> = {
       boardroom: {
-        dung_1: { x: 1000, y: 290 },  // Ghế Bắc: Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
-        dung_2: { x: 820, y: 350 },   // Ghế Tây: Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
-        dung_3: { x: 1000, y: 440 },  // Ghế Nam: Phía dưới bàn tròn (Dũng 3 - Nam Dev)
-        dung_4: { x: 1180, y: 350 },  // Ghế Đông: Bên phải bàn tròn (Dũng 4 - Nữ QA)
+        dung_1: { x: 1000, y: 275 },  // Ghế Bắc: Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
+        dung_2: { x: 850, y: 340 },   // Ghế Tây: Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
+        dung_3: { x: 1000, y: 420 },  // Ghế Nam: Phía dưới bàn tròn (Dũng 3 - Nam Dev)
+        dung_4: { x: 1150, y: 340 },  // Ghế Đông: Bên phải bàn tròn (Dũng 4 - Nữ QA)
       }[code] || { x: 1000, y: 340 },
       director_office: { x: 230, y: 260 }, // Bàn Giám Đốc Executive Suite (Nam)
       architect_office: { x: 385, y: 620 }, // Trạm Kiến Trúc & PM (Nữ)

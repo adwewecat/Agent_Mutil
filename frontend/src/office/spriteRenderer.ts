@@ -4022,64 +4022,151 @@ export class SpriteRenderer {
    * 9. Bàn tròn trung tâm: Chiếu Hologram 3D xoay vòng đỉnh cao (Center Round Table Hologram)
    * Tọa độ chuẩn xác trùng khớp tâm lõi thành phố 3D trong Cyberpunk Office (cx: 948, cy: 499)
    */
-  public static drawCenterRoundTableHologram(ctx: CanvasRenderingContext2D, frame: number) {
-    const cx = 948;
-    const cy = 499;
-
+  public static drawCenterRoundTableHologram(ctx: CanvasRenderingContext2D, cx: number, cy: number, frame: number) {
     ctx.save();
 
     // ─────────────────────────────────────────────────────────────────────────
-    // VÒNG TRÒN PHÁT SÓNG EMITTER MỞ RỘNG TRÊN MẶT BÀN (Pulsing Emitter Rings)
+    // 1. VÒNG TRÒN PHÁT SÓNG EMITTER MỞ RỘNG CHÍNH GIỮA MẶT BÀN (Pulsing Emitter Rings)
     // ─────────────────────────────────────────────────────────────────────────
     for (let r = 0; r < 3; r++) {
-      const pulseProgress = ((frame * 0.5 + r * 22) % 65) / 65;
-      const rx = 80 + pulseProgress * 45;
-      const ry = rx * 0.44;
-      const alpha = (1 - pulseProgress) * 0.45;
+      const pulseProgress = ((frame * 0.45 + r * 20) % 60) / 60;
+      const rx = 40 + pulseProgress * 65;
+      const ry = rx * 0.46;
+      const alpha = (1 - pulseProgress) * 0.65;
 
-      ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
-      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+      ctx.lineWidth = 1.4;
+      ctx.shadowColor = '#00f0ff';
+      ctx.shadowBlur = 8;
       ctx.beginPath();
-      ctx.ellipse(cx, cy + 18, rx, ry, 0, 0, Math.PI * 2);
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
       ctx.stroke();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // CẤU TRÚC VÒNG QUỸ ĐẠO DỮ LIỆU XOAY TRÊN LÕI THÀNH PHỐ (Orbit Data Rings)
+    // 2. HÌNH NÓN ÁNH SÁNG MÁY CHIẾU HOLOGRAM CHIẾU THẲNG ĐỨNG TỪ TÂM BÀN
     // ─────────────────────────────────────────────────────────────────────────
-    const coreY = cy - 35;
-    const rot = frame * 0.02;
+    const coreY = cy - 22;
+    const coneGrad = ctx.createLinearGradient(cx, cy, cx, coreY - 35);
+    coneGrad.addColorStop(0, 'rgba(0, 240, 255, 0.35)');
+    coneGrad.addColorStop(0.6, 'rgba(56, 189, 248, 0.15)');
+    coneGrad.addColorStop(1, 'rgba(168, 85, 247, 0)');
+    ctx.fillStyle = coneGrad;
+    ctx.beginPath();
+    ctx.moveTo(cx - 45, cy);
+    ctx.lineTo(cx + 45, cy);
+    ctx.lineTo(cx + 25, coreY - 30);
+    ctx.lineTo(cx - 25, coreY - 30);
+    ctx.closePath();
+    ctx.fill();
 
-    for (let o = 0; o < 2; o++) {
-      const angle = rot + o * (Math.PI / 2);
-      ctx.save();
-      ctx.translate(cx, coreY);
-      ctx.rotate(0.25);
-      ctx.strokeStyle = o === 0 ? 'rgba(56, 189, 248, 0.55)' : 'rgba(168, 85, 247, 0.55)';
-      ctx.lineWidth = 1.2;
+    // ─────────────────────────────────────────────────────────────────────────
+    // 3. QUẢ CẦU LƯỢNG TỬ & 3 VÒNG QUỸ ĐẠO HOLOGRAM XOAY TRÒN 3D (3D Orbit Rings)
+    // ─────────────────────────────────────────────────────────────────────────
+    const rot = frame * 0.025;
+
+    // Vành 1: Xoay nghiêng góc 25 độ màu Cyan
+    ctx.save();
+    ctx.translate(cx, coreY);
+    ctx.rotate(0.35);
+    ctx.strokeStyle = '#00f0ff';
+    ctx.lineWidth = 1.5;
+    ctx.shadowColor = '#00f0ff';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 48, 18, rot, 0, Math.PI * 2);
+    ctx.stroke();
+    // Nốt hạt photon chạy trên vành 1
+    const p1X = Math.cos(rot) * 48;
+    const p1Y = Math.sin(rot) * 18;
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = '#ffffff';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(p1X, p1Y, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Vành 2: Xoay nghiêng góc -35 độ màu Tím Neon
+    ctx.save();
+    ctx.translate(cx, coreY);
+    ctx.rotate(-0.45);
+    ctx.strokeStyle = '#c084fc';
+    ctx.lineWidth = 1.5;
+    ctx.shadowColor = '#c084fc';
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 48, 18, -rot * 0.9, 0, Math.PI * 2);
+    ctx.stroke();
+    // Nốt photon chạy trên vành 2
+    const p2X = Math.cos(-rot * 0.9) * 48;
+    const p2Y = Math.sin(-rot * 0.9) * 18;
+    ctx.fillStyle = '#fef08a';
+    ctx.shadowColor = '#fef08a';
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.arc(p2X, p2Y, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // Lõi bát diện 3D Wireframe phát sáng ở chính giữa quả cầu
+    ctx.save();
+    ctx.translate(cx, coreY);
+    const coreRot = rot * 1.5;
+    const rSize = 14;
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.2;
+    ctx.shadowColor = '#38bdf8';
+    ctx.shadowBlur = 8;
+
+    const topPt = { x: 0, y: -rSize };
+    const botPt = { x: 0, y: rSize };
+    const pt1 = { x: Math.cos(coreRot) * rSize, y: Math.sin(coreRot) * (rSize * 0.45) };
+    const pt2 = { x: Math.cos(coreRot + Math.PI / 2) * rSize, y: Math.sin(coreRot + Math.PI / 2) * (rSize * 0.45) };
+    const pt3 = { x: Math.cos(coreRot + Math.PI) * rSize, y: Math.sin(coreRot + Math.PI) * (rSize * 0.45) };
+    const pt4 = { x: Math.cos(coreRot + Math.PI * 1.5) * rSize, y: Math.sin(coreRot + Math.PI * 1.5) * (rSize * 0.45) };
+
+    const pts = [pt1, pt2, pt3, pt4];
+    for (let i = 0; i < 4; i++) {
+      const nextPt = pts[(i + 1) % 4];
       ctx.beginPath();
-      ctx.ellipse(0, 0, 55, 20, angle, 0, Math.PI * 2);
+      ctx.moveTo(topPt.x, topPt.y);
+      ctx.lineTo(pts[i].x, pts[i].y);
+      ctx.lineTo(botPt.x, botPt.y);
       ctx.stroke();
 
-      // Nốt dữ liệu phát sáng chạy trên quỹ đạo
-      const nodeX = Math.cos(angle) * 55;
-      const nodeY = Math.sin(angle) * 20;
-      ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(nodeX, nodeY, 2.5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
+      ctx.moveTo(pts[i].x, pts[i].y);
+      ctx.lineTo(nextPt.x, nextPt.y);
+      ctx.stroke();
     }
+    ctx.restore();
 
-    // Tia Laser Hologram quét dọc (Sweeping Scanline)
-    const scanProgress = (frame * 1.5) % 70;
-    const scanY = coreY - 35 + scanProgress;
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+    // ─────────────────────────────────────────────────────────────────────────
+    // 4. TIA QUÉT LASER HOLOGRAM QUÉT DỌC & BANNER TRẠNG THÁI
+    // ─────────────────────────────────────────────────────────────────────────
+    const scanProgress = (frame * 1.2) % 60;
+    const scanY = coreY - 28 + scanProgress;
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.6)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(cx - 45, scanY);
-    ctx.lineTo(cx + 45, scanY);
+    ctx.moveTo(cx - 40, scanY);
+    ctx.lineTo(cx + 40, scanY);
     ctx.stroke();
+
+    // Nhãn HUD nhỏ trên đỉnh quả cầu
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+    ctx.beginPath();
+    ctx.roundRect(cx - 52, coreY - 46, 104, 15, 3);
+    ctx.fill();
+    ctx.strokeStyle = '#00f0ff';
+    ctx.lineWidth = 0.8;
+    ctx.stroke();
+
+    ctx.fillStyle = '#00f0ff';
+    ctx.font = 'bold 7px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('◈ AI 4 DŨNG • HOLO CORE ◈', cx, coreY - 36);
 
     ctx.restore();
   }
@@ -4448,47 +4535,17 @@ export class SpriteRenderer {
 
     // ───────────────────────────────────────────────────────────────────────
     // 3. KHU BÀN TRÒN HỌP DỰ ÁN HOLOGRAM 3D TRUNG TÂM (cx: 1000, cy: 340)
+    // Loại bỏ toàn bộ ghế cố định thừa bên phải để tránh chồng chéo theo yêu cầu
+    // Khi họp thì cả 4 Dũng sẽ tự bước tới ngồi quanh bàn (sprite đã tích hợp sẵn ghế ngồi)
     // ───────────────────────────────────────────────────────────────────────
-    // Ghế Bắc (Dũng 1 tại 1000, 290 - phía trên bàn, zY = 285 < 340)
-    const dung1InBoardroom = agents.some(a => a.code === 'dung_1' && (a.current_room === 'boardroom' || a.status === 'debating') && a.status !== 'moving');
-    if (!dung1InBoardroom) {
-      drawables.push({
-        zY: 285,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 1000, 290),
-      });
-    }
-    // Ghế Tây (Dũng 2 tại 820, 350 - bên trái bàn)
-    const dung2InBoardroom = agents.some(a => a.code === 'dung_2' && (a.current_room === 'boardroom' || a.status === 'debating') && a.status !== 'moving');
-    if (!dung2InBoardroom) {
-      drawables.push({
-        zY: 345,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 820, 350),
-      });
-    }
-    // Ghế Đông (Dũng 4 tại 1180, 350 - bên phải bàn)
-    const dung4InBoardroom = agents.some(a => a.code === 'dung_4' && (a.current_room === 'boardroom' || a.status === 'debating') && a.status !== 'moving');
-    if (!dung4InBoardroom) {
-      drawables.push({
-        zY: 345,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 1180, 350),
-      });
-    }
-    // Mặt Bàn Tròn Họp Hologram 3D (zY = 340)
+    // Mặt Bàn Tròn Họp Hologram 3D (zY = 340) với quả cầu xoay tròn chính giữa tâm bàn
     drawables.push({
       zY: 340,
       draw: ctx => this.drawCustomRoundConferenceTable(ctx, 1000, 340, frame),
     });
-    // Ghế Nam (Dũng 3 tại 1000, 440 - phía dưới bàn, zY = 445 > 340)
-    const dung3InBoardroom = agents.some(a => a.code === 'dung_3' && (a.current_room === 'boardroom' || a.status === 'debating') && a.status !== 'moving');
-    if (!dung3InBoardroom) {
-      drawables.push({
-        zY: 445,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 1000, 440),
-      });
-    }
 
     // ───────────────────────────────────────────────────────────────────────
-    // 4. KHU SẢNH THƯ GIÃN CAFE & NGẮM XE BAY
+    // 4. KHU SẢNH THƯ GIÃN CAFE & NGẮM XE BAY (Đã dọn sạch ghế sofa thừa để thoáng đãng)
     // ───────────────────────────────────────────────────────────────────────
     drawables.push({
       zY: 630,
@@ -4497,10 +4554,6 @@ export class SpriteRenderer {
     drawables.push({
       zY: 625,
       draw: ctx => this.drawWaterCooler(ctx, 885, 600),
-    });
-    drawables.push({
-      zY: 660,
-      draw: ctx => this.drawLoungeSofaSuite(ctx, 970, 630),
     });
 
     return drawables;
@@ -4840,8 +4893,8 @@ export class SpriteRenderer {
     ctx.ellipse(cx, cy, 95, 50, 0, 0, Math.PI * 2);
     ctx.stroke();
 
-    // Chiếu Màn Hình 3D Hologram Thành Phố Xoay Vòng Đỉnh Cao
-    this.drawCenterRoundTableHologram(ctx, frame);
+    // Chiếu Màn Hình 3D Hologram Quả Cầu Xoay Tròn Chính Giữa Tâm Bàn Tròn
+    this.drawCenterRoundTableHologram(ctx, cx, cy, frame);
 
     ctx.restore();
   }

@@ -678,6 +678,27 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - Build `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
   - Đẩy toàn bộ mã nguồn lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-27] Định Vị Quả Cầu Hologram Đúng Tâm Bàn Tròn & Tinh Giản Ghế Thừa Bên Phải
+- [x] **Vấn đề đã khắc phục**:
+  - Quả cầu Hologram 3D xoay tròn trước đó bị lệch tọa độ cố định `(948, 499)` nên rơi xuống góc dưới bên trái, tách rời khỏi bàn họp tròn hội nghị bên phải (`cx: 1000, cy: 340`).
+  - Quanh bàn họp tròn có vẽ 4 ghế cố định và khu lounge sofa bên góc phải gây chật chội, chồng chéo khi nhân vật di chuyển hoặc ngồi họp.
+- [x] **Giải pháp đã thực hiện**:
+  1. **Định vị Quả Cầu Hologram 3D Chính Giữa Tâm Bàn Tròn**:
+     - Cập nhật hàm `drawCenterRoundTableHologram(ctx, cx, cy, frame)` nhận trực tiếp tọa độ tâm bàn `(cx: 1000, cy: 340)`.
+     - Lồng ghép hiệu ứng đa tầng: Vành phát xạ đế bàn tròn (`cy: 340`), luồng sáng nón chiếu thẳng đứng lên lõi (`coreY: 318`), 2 vành đai quang tử Gimbal 3D (Xanh Cyan & Tím Neon) xoay góc đối xứng mang nốt photon lấp lánh, lõi khối bát diện 3D Wireframe xoay đa trục phát sáng cực mạnh, tia quét laser hologram và banner HUD trạng thái `◈ AI 4 DŨNG • HOLO CORE ◈`.
+  2. **Tọa độ Ngồi Họp Đối Xứng Chuẩn Xác Cho Cả 4 Dũng**:
+     - Đồng bộ cả 4 chuyên gia Dũng ngồi đối xứng quanh Hologram trung tâm:
+       + Dũng 1 (Bắc): `(1000, 275)` - phía trên bàn nhìn xuống.
+       + Dũng 2 (Tây): `(850, 340)` - bên trái bàn nhìn sang.
+       + Dũng 3 (Nam): `(1000, 420)` - phía dưới bàn nhìn lên.
+       + Dũng 4 (Đông): `(1150, 340)` - bên phải bàn nhìn sang.
+     - Cập nhật đồng bộ tại `backend/app/services/office_manager.py` (BOARDROOM_SEATS), `frontend/src/office/engine.ts` (MEETING_SEATS), `frontend/src/App.tsx`.
+  3. **Loại Bỏ Hoàn Toàn Ghế Thừa & Chống Chồng Chéo**:
+     - Dọn sạch các ghế tĩnh `drawErgonomicMeshChair` quanh bàn tròn và bộ sofa lounge `drawLoungeSofaSuite` ở góc phải.
+     - Giữ không gian sảnh kính công nghệ cao thoáng đãng, sắc nét; khi họp các nhân vật tự mang ghế ngồi công thái học tích hợp sẵn theo sprite, đảm bảo không bao giờ bị đè hay trùng lặp hình vẽ.
+- [x] Build `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
+- [x] Đã commit và đẩy toàn bộ mã nguồn lên GitHub.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

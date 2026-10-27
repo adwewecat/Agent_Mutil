@@ -21,10 +21,10 @@ ROOM_COORDINATES: Dict[str, Dict[str, int]] = {
 
 # Ghế ngồi chỉ định riêng biệt cho từng Dũng quanh Bàn tròn Hologram 3D (Tất cả quay mặt vào Hologram)
 BOARDROOM_SEATS: Dict[str, Dict[str, int]] = {
-    "dung_1": {"x": 1000, "y": 290},  # Ghế Bắc: Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
-    "dung_2": {"x": 820, "y": 350},   # Ghế Tây: Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
-    "dung_3": {"x": 1000, "y": 440},  # Ghế Nam: Phía dưới bàn tròn (Dũng 3 - Nam Dev)
-    "dung_4": {"x": 1180, "y": 350},  # Ghế Đông: Bên phải bàn tròn (Dũng 4 - Nữ QA)
+    "dung_1": {"x": 1000, "y": 275},  # Ghế Bắc: Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
+    "dung_2": {"x": 850, "y": 340},   # Ghế Tây: Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
+    "dung_3": {"x": 1000, "y": 420},  # Ghế Nam: Phía dưới bàn tròn (Dũng 3 - Nam Dev)
+    "dung_4": {"x": 1150, "y": 340},  # Ghế Đông: Bên phải bàn tròn (Dũng 4 - Nữ QA)
 }
 
 # Dữ liệu khởi tạo cho 4 Dũng tại các trạm chuyên môn (2 Nam, 2 Nữ Anime chuyên nghiệp)
