@@ -495,7 +495,22 @@ export class OfficeEngine {
    */
   private renderAgentWithEffects(ctx: CanvasRenderingContext2D, agent: Agent) {
     const isSelected = agent.code === this.selectedAgentCode;
+    const isDebating = agent.status === 'debating';
     const customBubble = this.customBubbles[agent.code]?.text;
+
+    // Vòng phát sáng hào quang dưới chân khi đang tranh luận trong phòng họp
+    if (isDebating) {
+      ctx.save();
+      ctx.strokeStyle = agent.avatar_color;
+      ctx.lineWidth = 1.5;
+      ctx.shadowColor = agent.avatar_color;
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      const auraPulse = Math.sin(this.frameCount * 0.12) * 2.5;
+      ctx.ellipse(agent.pos_x, agent.pos_y + 8, 16 + auraPulse, 6 + auraPulse * 0.35, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
 
     // Vẽ vòng phát sáng dưới chân nếu đang được chọn (vừa vặn với nhân vật thu nhỏ)
     if (isSelected) {
@@ -513,58 +528,69 @@ export class OfficeEngine {
     // Dựng nhân vật với sprite chất lượng cao chuẩn Pinterest và animation
     SpriteRenderer.drawAgent(ctx, agent, this.frameCount, this.characterSprites[agent.code]);
 
-    // Nếu có bong bóng thoại đặc biệt thì vẽ đè lên
+    // Nếu có bong bóng thoại đặc biệt thì vẽ chuẩn ngay trên đỉnh đầu
     if (customBubble) {
-      this.drawSpecialBubble(ctx, agent.pos_x, agent.pos_y - 140, customBubble);
+      this.drawSpecialBubble(ctx, agent.pos_x, agent.pos_y - 52, customBubble, agent.avatar_color);
     }
   }
 
-  private drawSpecialBubble(ctx: CanvasRenderingContext2D, x: number, y: number, text: string) {
-    const displayText = text.length > 42 ? text.substring(0, 40) + '...' : text;
+  private drawSpecialBubble(ctx: CanvasRenderingContext2D, x: number, y: number, text: string, accentColor: string = '#00f0ff') {
+    const displayText = text.length > 46 ? text.substring(0, 44) + '...' : text;
     ctx.save();
-    ctx.font = 'bold 10px "JetBrains Mono", monospace';
+    ctx.font = 'bold 8.5px "JetBrains Mono", monospace';
     const textW = ctx.measureText(displayText).width;
-    const w = Math.max(120, textW + 24);
-    const h = 24;
+    const w = Math.max(120, textW + 36);
+    const h = 20;
 
     // Bóng đổ HUD
     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
     ctx.beginPath();
-    ctx.roundRect(x - w / 2 + 2, y - h + 2, w, h, 6);
+    ctx.roundRect(x - w / 2 + 2, y - h + 2, w, h, 5);
     ctx.fill();
 
     // Hộp thoại Cyber Dark
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
     ctx.beginPath();
-    ctx.roundRect(x - w / 2, y - h, w, h, 6);
+    ctx.roundRect(x - w / 2, y - h, w, h, 5);
     ctx.fill();
 
-    ctx.strokeStyle = '#00f0ff';
+    ctx.strokeStyle = accentColor;
     ctx.lineWidth = 1.2;
-    ctx.shadowColor = '#00f0ff';
+    ctx.shadowColor = accentColor;
     ctx.shadowBlur = 8;
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
     // Mũi nhọn chỉ xuống đầu nhân vật
     ctx.fillStyle = '#0f172a';
     ctx.beginPath();
-    ctx.moveTo(x - 5, y);
-    ctx.lineTo(x + 5, y);
-    ctx.lineTo(x, y + 5);
+    ctx.moveTo(x - 4, y);
+    ctx.lineTo(x + 4, y);
+    ctx.lineTo(x, y + 4);
     ctx.closePath();
     ctx.fill();
-    ctx.strokeStyle = '#00f0ff';
+    ctx.strokeStyle = accentColor;
     ctx.beginPath();
-    ctx.moveTo(x - 5, y);
-    ctx.lineTo(x, y + 5);
-    ctx.lineTo(x + 5, y);
+    ctx.moveTo(x - 4, y);
+    ctx.lineTo(x, y + 4);
+    ctx.lineTo(x + 4, y);
     ctx.stroke();
 
+    // 3 nốt chấm nhảy nhót biểu thị đang trò chuyện (Voice Typing Dots)
+    const dotX = x - w / 2 + 10;
+    const dotY = y - h / 2;
+    for (let i = 0; i < 3; i++) {
+      const dotBounce = Math.sin(this.frameCount * 0.25 + i * 0.9) * 2;
+      ctx.fillStyle = accentColor;
+      ctx.beginPath();
+      ctx.arc(dotX + i * 4.5, dotY + dotBounce, 1.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
     // Text phát sáng
-    ctx.shadowBlur = 0;
     ctx.fillStyle = '#f8fafc';
-    ctx.textAlign = 'center';
-    ctx.fillText(displayText, x, y - 8);
+    ctx.textAlign = 'left';
+    ctx.fillText(displayText, x - w / 2 + 26, y - 7);
     ctx.restore();
   }
 }

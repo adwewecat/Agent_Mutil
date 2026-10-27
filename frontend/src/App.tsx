@@ -1,12 +1,11 @@
 /**
  * Component trung tâm kết nối toàn bộ hệ thống Virtual Pixel Office và 4 Dũng
- * Triển khai chu trình 5 giai đoạn:
- * 1. Hội đồng 4 Dũng cùng ngồi vào phòng họp bàn tròn Hologram 3D tranh luận & phản biện mặt hạn chế.
- * 2. Đưa kịch bản tranh luận lên và hiển thị Bảng Thông Tin Chốt Lại (Consensus Board).
- * 3. Người dùng tích chọn dòng/ý nào nên phát triển phần mềm -> 4 Dũng tranh luận chuyên sâu về hạn chế & rủi ro.
- * 4. Cả 4 Dũng đều về bàn làm việc riêng: Dũng 3 lập trình Clean Code, Dũng 4 chạy Stress Test & Security.
- * 5. Dũng 3 & 4 bàn giao cho Giám đốc (Dũng 1) & PM (Dũng 2) -> Cả 4 người lại ngồi vào Boardroom lần 2
- *    và hiện lên Popup Tổng Kết Báo Cáo Toàn Diện để người dùng xem.
+ * Triển khai chu trình 5 giai đoạn kèm HOẠT ẢNH TRÊN ĐẦU NHÂN VẬT & TỰ ĐỘNG BẬT POPUP:
+ * 1. Hội đồng 4 Dũng ngồi vào Boardroom: Lần lượt xuất hiện bong bóng sóng âm thoại trên đầu từng Dũng.
+ * 2. VÒNG 1 XONG -> TỰ ĐỘNG BẬT POPUP BẢNG CHỐT LẠI (ConsensusModal) để người dùng chọn ý phần mềm.
+ * 3. Người dùng chọn xong -> 4 Dũng tiếp tục tranh luận chuyên sâu về hạn chế & rủi ro trên Canvas.
+ * 4. Cả 4 Dũng về bàn làm việc riêng: Dũng 3 gõ code, Dũng 4 chạy test.
+ * 5. Bàn giao kết quả -> Cả 4 Dũng lại ngồi vào Boardroom lần 2 -> TỰ ĐỘNG BẬT POPUP NGHIỆM THU (FinalReviewModal).
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -18,6 +17,7 @@ import { OfficeCanvas, OfficeCanvasHandle } from './office/OfficeCanvas';
 import { AgentCard } from './components/AgentCard';
 import { WorkflowPanel } from './components/WorkflowPanel';
 import { ConsensusBoard } from './components/ConsensusBoard';
+import { ConsensusModal } from './components/ConsensusModal';
 import { FinalReviewModal } from './components/FinalReviewModal';
 import { DeliberationChat } from './components/DeliberationChat';
 import { CodeArtifactViewer } from './components/CodeArtifactViewer';
@@ -39,6 +39,9 @@ export const App: React.FC = () => {
   const [consensusFeatures, setConsensusFeatures] = useState<ConsensusFeatureItem[]>([]);
   const [selectedFeatureIds, setSelectedFeatureIds] = useState<string[]>([]);
   const [workflowStage, setWorkflowStage] = useState<'initial' | 'waiting_feature_selection' | 'ready_for_workstations' | 'finished'>('initial');
+
+  // Trạng thái tự động bật Popups
+  const [showConsensusModal, setShowConsensusModal] = useState<boolean>(false);
   const [showFinalReviewModal, setShowFinalReviewModal] = useState<boolean>(false);
 
   // Trạng thái UI & Camera
@@ -52,7 +55,7 @@ export const App: React.FC = () => {
   // Ref điều khiển Canvas trực tiếp
   const canvasRef = useRef<OfficeCanvasHandle | null>(null);
 
-  // Trạng thái Modals
+  // Trạng thái Modals khác
   const [activeCodeArtifact, setActiveCodeArtifact] = useState<string | null>(null);
   const [activeTestMatrix, setActiveTestMatrix] = useState<string | null>(null);
   const [showStatusModal, setShowStatusModal] = useState<boolean>(false);
@@ -92,6 +95,7 @@ export const App: React.FC = () => {
 
         if (lastSession.status === 'waiting_feature_selection') {
           setWorkflowStage('waiting_feature_selection');
+          setShowConsensusModal(true);
         } else if (lastSession.status === 'ready_for_workstations') {
           setWorkflowStage('ready_for_workstations');
         } else if (lastSession.status === 'completed') {
@@ -150,10 +154,11 @@ export const App: React.FC = () => {
     api.moveAgent(code, room).catch(e => console.warn('Lỗi lưu DB:', e));
   };
 
-  // 3. GIAI ĐOẠN 1: HỌP KHỞI ĐẦU & TRANH LUẬN ĐA CHIỀU 4 DŨNG
+  // 3. GIAI ĐOẠN 1: HỌP KHỞI ĐẦU & TRANH LUẬN ĐA CHIỀU 4 DŨNG (KÈM HOẠT ẢNH TRÊN ĐẦU & BẬT POPUP XONG)
   const handleRunWorkflow = async (problem: string, _step: string) => {
     setIsLoading(true);
     setShowFinalReviewModal(false);
+    setShowConsensusModal(false);
     setConsensusFeatures([]);
     setSelectedFeatureIds([]);
 
@@ -172,6 +177,19 @@ export const App: React.FC = () => {
       soundFx.playAlert();
       setCurrentStageText('Giai đoạn 1: 4 Dũng đang ngồi họp bàn tròn Hologram 3D, tranh luận phản biện mặt hạn chế...');
 
+      // Diễn hoạt luân phiên bong bóng thoại trên đầu 4 Dũng sống động
+      canvasRef.current?.setCustomBubble('dung_1', '🗣️ Phân tích thị trường & Rủi ro vận hành...', 3200);
+      await sleep(1500);
+
+      canvasRef.current?.setCustomBubble('dung_2', '⚡ Phản biện rủi ro hệ thống & Kiến trúc HMAC...', 3200);
+      await sleep(1500);
+
+      canvasRef.current?.setCustomBubble('dung_3', '💻 Khả thi PWA & Cơ chế Idempotency Key...', 3200);
+      await sleep(1500);
+
+      canvasRef.current?.setCustomBubble('dung_4', '🛡️ Cảnh báo hack QR, ghost orders & Test 5K TPS...', 3200);
+      await sleep(1500);
+
       // Kích hoạt Vòng 1 tranh luận trên Backend
       const newMsgs = await api.triggerWorkflow(session.id, 'initial_deliberation');
       setMessages(newMsgs);
@@ -186,7 +204,10 @@ export const App: React.FC = () => {
 
       setWorkflowStage('waiting_feature_selection');
       soundFx.playAlert();
-      setCurrentStageText('Giai đoạn 2: Bảng thông tin chốt lại đã sẵn sàng! Mời bạn chọn các dòng cần phát triển phần mềm bên dưới.');
+      setCurrentStageText('Giai đoạn 2: Bảng thông tin chốt lại đã sẵn sàng! Popup đã hiện lên để bạn chọn các ý phần mềm.');
+
+      // TỰ ĐỘNG BẬT POPUP CHỌN TÍNH NĂNG ĐỂ NGƯỜI DÙNG BIẾT NGAY!
+      setShowConsensusModal(true);
     } catch (err) {
       console.error('Lỗi khi chạy workflow:', err);
       alert('Đã xảy ra lỗi kết nối khi thực thi quy trình.');
@@ -206,11 +227,17 @@ export const App: React.FC = () => {
   const handleSelectFeaturesAndDeepDive = async () => {
     if (!currentSession || selectedFeatureIds.length === 0) return;
     setIsLoading(true);
+    setShowConsensusModal(false);
 
     try {
       setCamera('boardroom');
       soundFx.playType();
       setCurrentStageText('Giai đoạn 3: 4 Dũng đang tự nói chuyện, tranh luận chuyên sâu về các mặt hạn chế & rủi ro của các ý bạn chọn...');
+
+      // Hoạt ảnh bong bóng thoại trên đầu Dũng 1, Dũng 2, Dũng 3 khi mổ xẻ rủi ro
+      canvasRef.current?.setCustomBubble('dung_2', '🔍 Mổ xẻ mặt hạn chế & rủi ro của các ý bạn đã chọn...', 3000);
+      await sleep(1500);
+      canvasRef.current?.setCustomBubble('dung_3', '🛠️ Chốt cam kết Clean Code & Ma trận Test 8 kịch bản...', 3000);
 
       const deepDiveMsgs = await api.selectFeaturesAndDeepDive(currentSession.id, selectedFeatureIds);
       setMessages(prev => [...prev, ...deepDiveMsgs]);
@@ -226,7 +253,7 @@ export const App: React.FC = () => {
     }
   };
 
-  // 6. GIAI ĐOẠN 4 & 5: VỀ BÀN LÀM VIỆC THỰC THI & HỌP BOARDROOM LẦN 2 (HIỆN POPUP TỔNG KẾT)
+  // 6. GIAI ĐOẠN 4 & 5: VỀ BÀN LÀM VIỆC THỰC THI & HỌP BOARDROOM LẦN 2 (KÈM POPUP TỔNG KẾT)
   const handleExecuteWorkstations = async () => {
     if (!currentSession) return;
     setIsLoading(true);
@@ -242,13 +269,19 @@ export const App: React.FC = () => {
       setCamera('dev_lab');
       soundFx.playType();
 
+      // Hoạt ảnh gõ code trên đầu Dũng 3
+      canvasRef.current?.setCustomBubble('dung_3', '⚡ Đang gõ phím Clean Code: FastAPI Async...', 3000);
+
       // Chờ 2.5s mô phỏng gõ phím ở Dev Lab
       await sleep(2500);
 
       // Chuyển camera sang trạm QA Lab
       setCamera('games_room');
       soundFx.playAlert();
-      await sleep(2000);
+
+      // Hoạt ảnh bắn phá test trên đầu Dũng 4
+      canvasRef.current?.setCustomBubble('dung_4', '🎯 Đang bắn phá: 8 Kịch bản Stress Test 5,000 TPS...', 3000);
+      await sleep(2200);
 
       // Gọi API hoàn tất thực thi tại bàn và nghiệm thu
       const results = await api.executeWorkstations(currentSession.id);
@@ -268,13 +301,17 @@ export const App: React.FC = () => {
       handleDispatchAgent('dung_4', 'boardroom', 'debating');
 
       setCamera('boardroom');
-      await sleep(1500);
 
-      // Âm thanh vinh quang và bật POPUP BÁO CÁO NGHIỆM THU TOÀN DIỆN
+      // Hoạt ảnh báo cáo nghiệm thu trên đầu Dũng 1 & Dũng 2
+      canvasRef.current?.setCustomBubble('dung_1', '🏆 Họp nghiệm thu Boardroom lần 2 thành công!', 4000);
+      await sleep(1500);
+      canvasRef.current?.setCustomBubble('dung_2', '✅ Đạt chuẩn triển khai Production 100%!', 4000);
+
+      // Âm thanh vinh quang và TỰ ĐỘNG BẬT POPUP BÁO CÁO NGHIỆM THU TOÀN DIỆN
       soundFx.playSuccess();
       setWorkflowStage('finished');
       setShowFinalReviewModal(true);
-      setCurrentStageText('🏆 Hoàn tất 100%! Báo cáo nghiệm thu của Hội đồng 4 Dũng đã hiện lên màn hình.');
+      setCurrentStageText('🏆 Hoàn tất 100%! Popup Báo cáo nghiệm thu của Hội đồng 4 Dũng đã hiện lên màn hình.');
     } catch (err) {
       console.error('Lỗi khi thực thi tại bàn làm việc:', err);
       alert('Đã xảy ra lỗi khi thực thi tại bàn làm việc.');
@@ -398,7 +435,18 @@ export const App: React.FC = () => {
         </div>
       </main>
 
-      {/* POPUP BÁO CÁO NGHIỆM THU TOÀN DIỆN CỦA HỘI ĐỒNG 4 DŨNG SAU KHI HỌP BOARDROOM LẦN 2 */}
+      {/* POPUP 1: TỰ ĐỘNG BẬT KHI 4 DŨNG TRANH LUẬN XONG VÒNG 1 ĐỂ BẠN CHỌN Ý PHÁT TRIỂN PHẦN MỀM */}
+      <ConsensusModal
+        isOpen={showConsensusModal}
+        onClose={() => setShowConsensusModal(false)}
+        features={consensusFeatures}
+        selectedFeatureIds={selectedFeatureIds}
+        onToggleFeature={handleToggleFeature}
+        onSubmitSelected={handleSelectFeaturesAndDeepDive}
+        isLoading={isLoading}
+      />
+
+      {/* POPUP 2: TỰ ĐỘNG BẬT KHI 4 DŨNG LÀM XONG Ở BÀN LÀM VIỆC & HỌP BOARDROOM LẦN 2 */}
       <FinalReviewModal
         isOpen={showFinalReviewModal}
         onClose={() => setShowFinalReviewModal(false)}

@@ -726,6 +726,30 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Build `npm.cmd run build` thành công 100%, 0 lỗi, 0 cảnh báo (`dist/assets/index-BjffFWS1.js`).
 - [x] Đã đẩy toàn bộ mã nguồn lên GitHub.
 
+### [2026-10-27] Hoạt Ảnh Sóng Âm Trao Đổi Trên Đầu Nhân Vật & Tự Động Bật Popup Khi Hoàn Tất
+- [x] **Yêu cầu & Mục tiêu**:
+  - Cần có các hoạt ảnh trực tiếp trên đầu các nhân vật để người dùng nhìn vào Canvas là biết họ đang trao đổi, thảo luận và phản biện nhau.
+  - Khi thảo luận xong: Tự động bật Popup lên màn hình để người dùng biết ngay mà không cần phải tìm kiếm hay cuộn chuột.
+- [x] **Giải pháp đã thực hiện**:
+  1. **Hoạt ảnh sóng âm thoại động (Animated Voice Wave Bars) & Trạng thái trao đổi**:
+     - Cập nhật hàm `drawFalloutThoughtBubble` trong `spriteRenderer.ts`:
+       + Cả 4 Dũng đều có bong bóng trạng thái riêng biệt:
+         - **Dũng 1**: `🗣️ Thị trường & Vận hành` (Viền Vàng Hổ Phách `#f59e0b`).
+         - **Dũng 2**: `⚡ Kiến trúc & Rủi ro PM` (Viền Tím Neon `#c084fc`).
+         - **Dũng 3**: `💻 Khả thi PWA & Code` (Viền Xanh Lục `#10b981`).
+         - **Dũng 4**: `🛡️ Cảnh báo Hack & Test` (Viền Đỏ Hồng `#f43f5e`).
+       + Tích hợp **3 cột sóng âm thanh thoại nhấp nhô liên tục (Equalizer Voice Wave Bars)** ở góc phải bong bóng, đập nhịp nhàng theo nhịp phát biểu của từng chuyên gia.
+       + Vòng hào quang phát sáng (Pulsing Aura Halo) tỏa rộng dưới chân từng nhân vật khi đang họp tại phòng Boardroom.
+     - Cập nhật `drawSpecialBubble` trong `engine.ts`:
+       + Vị trí bong bóng thoại được căn chuẩn ngay sát đỉnh đầu `(y - 52)`, không bị bay quá cao.
+       + Bổ sung **3 nốt chấm nhảy luân phiên (Voice Typing Dots `● ● ●`)** biểu thị đang trực tiếp phát biểu.
+     - Bổ sung diễn hoạt thoại tuần tự 4 Dũng trong `handleRunWorkflow` của `App.tsx`: Lần lượt Dũng 1, Dũng 2, Dũng 3, Dũng 4 xuất hiện bong bóng phát biểu kèm độ trễ tự nhiên.
+  2. **Hệ thống Popup Tự Động Bật Lên Khi Xong**:
+     - **POPUP 1 - Khi Vòng 1 tranh luận xong**: Tự động bật `ConsensusModal` (`showConsensusModal = true`) kèm âm thanh thông báo `soundFx.playAlert()`, đưa Bảng Thống Nhất Ý Tưởng 4 Dũng ra giữa màn hình để người dùng tích chọn các dòng cần làm phần mềm.
+     - **POPUP 2 - Khi thực thi và họp lần 2 xong**: Tự động bật `FinalReviewModal` (`showFinalReviewModal = true`) kèm âm thanh chiến thắng `soundFx.playSuccess()`, hiển thị toàn bộ báo cáo nghiệm thu, mã nguồn Clean Code và ma trận kiểm thử 8/8 kịch bản.
+- [x] Build `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 cảnh báo (`dist/assets/index-C9EmjGR1.js`).
+- [x] Đã commit và đẩy toàn bộ mã nguồn lên GitHub.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

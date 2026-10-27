@@ -1293,6 +1293,80 @@ body {
 }
 
 /* =============================================================================
+   CONSENSUS MODAL WRAPPER (POPUP BẢNG CHỐT LẠI SAU VÒNG 1)
+   ============================================================================= */
+.consensus-modal-wrapper {
+  background: #0f172a;
+  border: 2px solid #00f0ff;
+  border-radius: 14px;
+  width: 92vw;
+  max-width: 980px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 0 50px rgba(0, 240, 255, 0.45);
+  animation: zoomIn 0.25s ease-out;
+}
+
+.consensus-modal-alert-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(15, 23, 42, 0.95));
+  border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.consensus-modal-tag {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #00f0ff;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+}
+
+.consensus-modal-subtag {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.consensus-modal-close-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.consensus-modal-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: #ef4444;
+}
+
+.consensus-modal-content {
+  overflow-y: auto;
+  padding: 10px 16px 20px 16px;
+}
+
+.consensus-modal-content .consensus-board-card {
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 10px 4px;
+}
+
+.consensus-modal-content .consensus-board-card::before {
+  display: none;
+}
+
+/* =============================================================================
    CONSENSUS BOARD (BẢNG THÔNG TIN CHỐT LẠI CỦA 4 DŨNG)
    ============================================================================= */
 .consensus-board-card {

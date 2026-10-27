@@ -8,6 +8,7 @@ export interface OfficeCanvasHandle {
   moveAgent: (code: string, targetX: number, targetY: number, status?: string) => void;
   selectAgent: (code: string | null) => void;
   cancelBreak: () => void;
+  setCustomBubble: (code: string, text: string, durationMs?: number) => void;
 }
 
 interface OfficeCanvasProps {
@@ -43,6 +44,11 @@ export const OfficeCanvas = forwardRef<OfficeCanvasHandle, OfficeCanvasProps>(({
     cancelBreak: () => {
       if (engineRef.current) {
         engineRef.current.cancelBreak();
+      }
+    },
+    setCustomBubble: (code: string, text: string, durationMs: number = 4000) => {
+      if (engineRef.current) {
+        engineRef.current.setCustomBubble(code, text, durationMs);
       }
     },
   }));

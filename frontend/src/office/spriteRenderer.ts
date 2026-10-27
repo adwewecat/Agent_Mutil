@@ -3089,14 +3089,24 @@ export class SpriteRenderer {
     if (agent.status === 'debating') {
       if (agent.code === 'dung_1') {
         text = 'Thị trường & Vận hành';
-        icon = '🔍';
+        icon = '🗣️';
         borderColor = '#f59e0b';
         textColor = '#fef08a';
-      } else {
-        text = 'Rủi ro & Kiến trúc';
-        icon = '⚙️';
+      } else if (agent.code === 'dung_2') {
+        text = 'Kiến trúc & Rủi ro PM';
+        icon = '⚡';
         borderColor = '#c084fc';
         textColor = '#f3e8ff';
+      } else if (agent.code === 'dung_3') {
+        text = 'Khả thi PWA & Code';
+        icon = '💻';
+        borderColor = '#10b981';
+        textColor = '#6ee7b7';
+      } else {
+        text = 'Cảnh báo Hack & Test';
+        icon = '🛡️';
+        borderColor = '#f43f5e';
+        textColor = '#fca5a5';
       }
     } else if (agent.status === 'coding') {
       text = 'Clean Code API';
@@ -3135,9 +3145,11 @@ export class SpriteRenderer {
       }
     }
 
+    const isDebating = agent.status === 'debating';
     const displayText = `${icon} ${text}`;
-    const w = Math.min(145, displayText.length * 5.6 + 16);
-    const h = 15;
+    const extraPad = isDebating ? 24 : 0;
+    const w = Math.min(160, displayText.length * 5.6 + 18 + extraPad);
+    const h = 16;
 
     // Hộp bong bóng thoại bo góc mềm mại
     ctx.save();
@@ -3147,10 +3159,15 @@ export class SpriteRenderer {
     ctx.fill();
 
     ctx.strokeStyle = borderColor;
-    ctx.lineWidth = 1;
+    ctx.lineWidth = isDebating ? 1.5 : 1;
+    if (isDebating) {
+      ctx.shadowColor = borderColor;
+      ctx.shadowBlur = 8;
+    }
     ctx.beginPath();
     ctx.roundRect(x - w / 2, bubbleY - h - 14, w, h, 4);
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
     // Mũi tên chỉ xuống nhẹ
     ctx.fillStyle = bgColor;
@@ -3164,8 +3181,25 @@ export class SpriteRenderer {
     // Icon & Text sắc nét
     ctx.fillStyle = textColor;
     ctx.font = 'bold 7.5px "JetBrains Mono", monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText(displayText, x, bubbleY - 18);
+    ctx.textAlign = isDebating ? 'left' : 'center';
+    const textX = isDebating ? x - w / 2 + 6 : x;
+    ctx.fillText(displayText, textX, bubbleY - 18);
+
+    // HOẠT ẢNH SÓNG ÂM THOẠI ĐỘNG (ANIMATED VOICE WAVE BARS) KHI ĐANG TRANH LUẬN
+    if (isDebating) {
+      const barX = x + w / 2 - 16;
+      const barY = bubbleY - h / 2 - 14;
+      const offset = agent.code === 'dung_1' ? 0 : agent.code === 'dung_2' ? 1.2 : agent.code === 'dung_3' ? 2.4 : 3.6;
+      const h1 = 2 + Math.abs(Math.sin(frame * 0.25 + offset)) * 6;
+      const h2 = 2 + Math.abs(Math.sin(frame * 0.32 + offset + 1.2)) * 8;
+      const h3 = 2 + Math.abs(Math.sin(frame * 0.28 + offset + 2.4)) * 6;
+
+      ctx.fillStyle = borderColor;
+      ctx.fillRect(barX, barY - h1 / 2, 1.8, h1);
+      ctx.fillRect(barX + 3.2, barY - h2 / 2, 1.8, h2);
+      ctx.fillRect(barX + 6.4, barY - h3 / 2, 1.8, h3);
+    }
+
     ctx.restore();
   }
 
