@@ -595,6 +595,28 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - Build `npm.cmd run build` trong `frontend/` hoàn tất sạch sẽ 100%, 0 lỗi, 0 warning.
   - Commit và đẩy mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-27] Khắc Phục Triệt Để Nhân Vật Lệch Vị Trí, Ngồi Giữa Đường/Lề Ngoài, Xóa Ghế Rác & Chuẩn Hóa Hướng Ngồi
+- [x] **Dọn sạch toàn bộ ghế rác dư thừa trên ảnh nền (Clean Photorealistic Background)**:
+  - Trước đây: Bàn tròn hội nghị có 11 chiếc ghế ken đặc xung quanh rất rối mắt, và 3 bàn làm việc bên trái có sẵn 3 chiếc ghế cố định trên nền bị lòi ra khi nhân vật vẽ lệch tạo thành ghế thừa thãi ("khá ảo").
+  - Xử lý: Tinh chỉnh và tái tạo background `cyberpunk_office.jpg` và `cyberpunk_office_clean.jpg` (1376x768):
+    + Dọn sạch toàn bộ 3 chiếc ghế trống ở 3 bàn làm việc bên trái, trả lại mặt sàn bóng loáng sạch sẽ.
+    + Xóa bỏ 7 chiếc ghế rác dư thừa quanh bàn tròn hội nghị, chỉ để lại các vị trí ghế ngồi đối xứng sang trọng, đẳng cấp.
+- [x] **Căn chuẩn Pixel-Perfect vị trí ngồi của 4 Dũng (Không còn ngồi giữa đường hay lề ngoài)**:
+  - **Dũng 1 (Software Director - Nam)**: Chuyển từ vị trí cũ ngồi đơn độc giữa lối đi `(750, 470)` về đúng **Ghế VIP Chủ tọa danh dự phía trên bàn tròn `(770, 235)`**, ngồi tựa lưng ghế da, nhìn bao quát toàn bộ văn phòng và Hologram 3D.
+  - **Dũng 2 (Software Architect & PM - Nữ)**: Chuyển từ lề ngoài `(410, 460)` vào đúng **Trạm Bàn 2 `(475, 370)`**, hai tay gõ phím hướng vào máy tính bên trái.
+  - **Dũng 3 (Senior Fullstack Dev - Nam)**: Chuyển từ mép bàn lệch `(215, 565)` vào đúng **Trạm Bàn 1 `(325, 490)`**, hai tay gõ phím hướng vào 2 màn hình code matrix bên trái.
+  - **Dũng 4 (Test Lead & Security QA - Nữ)**: Chuyển từ lề ngoài `(610, 340)` vào đúng **Trạm Bàn 3 `(610, 265)`**, hai tay gõ phím hướng vào màn hình radar kiểm thử bên trái.
+  - **Khi họp tại Bàn Tròn (`boardroom`)**: 4 Dũng gom lại 4 ghế xung quanh Hologram 3D: Dũng 1 `(770, 235)`, Dũng 2 `(720, 520)`, Dũng 3 `(950, 700)`, Dũng 4 `(1190, 550)`.
+- [x] **Chuẩn hóa hướng ngồi & Sprite gõ phím (Không còn ngồi quay lưng ra bàn)**:
+  - Khắc phục lỗi lật ảnh ngược (`flipHoriz = true`) khiến nhân vật quay lưng lại với máy tính.
+  - Tạo mới và bóc tách nền trong suốt 100% cho sprite `female_typing_chair.png` (cô gái tóc búi mặc vest đen ngồi gõ phím nhìn từ lưng 3/4 hướng sang trái), loại bỏ hoàn toàn các vệt bàn trắng và chậu cây thừa.
+  - Cả 4 Dũng khi ngồi làm việc đều hướng mặt và hai tay chuẩn xác vào bàn phím máy tính; khi ngồi họp bàn tròn đều hướng mặt vào tâm Hologram 3D.
+- [x] **Cập nhật đồng bộ toàn hệ thống**:
+  - `backend/app/services/office_manager.py` (ROOM_COORDINATES, BOARDROOM_SEATS, DEFAULT_AGENTS).
+  - Database SQLite `backend/agent_multi.db`.
+  - `frontend/src/office/mapData.ts`, `frontend/src/office/engine.ts`, `frontend/src/App.tsx`, `frontend/src/office/spriteRenderer.ts`.
+  - Build frontend `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

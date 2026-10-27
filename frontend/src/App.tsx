@@ -74,15 +74,15 @@ export const App: React.FC = () => {
   const handleDispatchAgent = (code: string, room: string, statusOverride?: string) => {
     const targetCoords: Record<string, { x: number; y: number }> = {
       boardroom: {
-        dung_1: { x: 750, y: 470 }, // Top-Left bàn tròn (Dũng 1 - Nam Giám đốc)
-        dung_2: { x: 600, y: 550 }, // Left bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
-        dung_3: { x: 680, y: 760 }, // Bottom-Left bàn tròn (Dũng 3 - Nam Dev)
-        dung_4: { x: 880, y: 770 }, // Bottom-Center bàn tròn (Dũng 4 - Nữ QA)
-      }[code] || { x: 750, y: 470 },
-      director_office: { x: 750, y: 470 }, // Bàn chỉ đạo chiến lược / Executive
-      architect_office: { x: 410, y: 460 }, // Trạm Kiến Trúc & PM (Nữ)
-      dev_lab: { x: 215, y: 565 }, // Trạm Cyber Dev Lab (Nam)
-      games_room: { x: 610, y: 340 }, // Trạm QA & Test (Nữ)
+        dung_1: { x: 770, y: 235 },   // Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
+        dung_2: { x: 720, y: 520 },   // Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
+        dung_3: { x: 950, y: 700 },   // Phía dưới bàn tròn (Dũng 3 - Nam Dev)
+        dung_4: { x: 1190, y: 550 },  // Bên phải bàn tròn (Dũng 4 - Nữ QA)
+      }[code] || { x: 770, y: 235 },
+      director_office: { x: 770, y: 235 }, // Ghế VIP Giám Đốc phía trên bàn tròn bao quát toàn phòng
+      architect_office: { x: 475, y: 370 }, // Trạm Kiến Trúc & PM (Desk 2 - Nữ)
+      dev_lab: { x: 325, y: 490 }, // Trạm Cyber Dev Lab (Desk 1 - Nam)
+      games_room: { x: 610, y: 265 }, // Trạm QA & Test (Desk 3 - Nữ)
       kitchen_pantry: { x: 1050, y: 620 }, // Sảnh ngắm xe bay & cà phê
     };
 

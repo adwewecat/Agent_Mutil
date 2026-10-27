@@ -4441,48 +4441,48 @@ export class SpriteRenderer {
       if (isMeeting) {
         // TẠI BÀN HỌP TRÒN TRUNG TÂM: Tất cả đều quay mặt VÀO TRUNG TÂM BÀN HỌP VÀ HOLOGRAM 3D
         if (agent.code === 'dung_1') {
-          // Dũng 1: Nam Giám Đốc ngồi ghế chỉ đạo phía trên bàn tròn, nhìn xuống bàn và người xem
+          // Dũng 1: Nam Giám Đốc ngồi ghế VIP phía trên bàn tròn, nhìn xuống Hologram và toàn phòng
           sprite = ImageLoader.getCharacter('male_sitting_chair');
-          charH = 120;
+          charH = 115;
           flipHoriz = false;
         } else if (agent.code === 'dung_2') {
-          // Dũng 2: Nữ Kiến Trúc Sư ngồi ghế bên trái bàn tròn, quay mặt sang phải vào trung tâm bàn họp
+          // Dũng 2: Nữ Kiến Trúc Sư ngồi ghế bên trái bàn tròn, quay mặt sang phải vào Hologram
           sprite = ImageLoader.getCharacter('female_sitting_chair');
           charH = 125;
           flipHoriz = true;
         } else if (agent.code === 'dung_3') {
-          // Dũng 3: Nam Fullstack Dev ngồi ghế dưới bên trái bàn tròn, hướng lên bàn họp
+          // Dũng 3: Nam Fullstack Dev ngồi ghế dưới bàn tròn, quay lưng lại người xem và hướng lên Hologram
           sprite = ImageLoader.getCharacter('male_typing_chair');
-          charH = 135;
+          charH = 138;
           flipHoriz = false;
         } else if (agent.code === 'dung_4') {
-          // Dũng 4: Nữ QA Lead ngồi ghế dưới bên phải bàn tròn, hướng lên bàn họp
-          sprite = ImageLoader.getCharacter('female_typing_chair');
-          charH = 135;
-          flipHoriz = true;
-        }
-      } else {
-        // TẠI BÀN LÀM VIỆC RIÊNG BIỆT: Ngồi đúng ghế, gõ phím hướng vào máy tính và màn hình
-        if (agent.code === 'dung_1') {
-          // Dũng 1: Nam Giám Đốc tại bàn điều hành chiến lược
-          sprite = ImageLoader.getCharacter('male_sitting_chair');
+          // Dũng 4: Nữ QA Lead ngồi ghế bên phải bàn tròn, quay mặt sang trái vào Hologram
+          sprite = ImageLoader.getCharacter('female_sitting_chair');
           charH = 125;
           flipHoriz = false;
+        }
+      } else {
+        // TẠI BÀN LÀM VIỆC RIÊNG BIỆT: Ngồi đúng ghế, gõ phím hướng vào máy tính và màn hình bên trái
+        if (agent.code === 'dung_1') {
+          // Dũng 1: Nam Giám Đốc tại ghế VIP điều hành tối cao phía trên bàn tròn
+          sprite = ImageLoader.getCharacter('male_sitting_chair');
+          charH = 115;
+          flipHoriz = false;
         } else if (agent.code === 'dung_2') {
-          // Dũng 2: Nữ Kiến Trúc Sư tại Desk 2 ngồi gõ phím phân tích kiến trúc hướng vào máy tính
+          // Dũng 2: Nữ Kiến Trúc Sư tại Desk 2 ngồi gõ phím hướng vào máy tính bên trái
           sprite = ImageLoader.getCharacter('female_typing_chair');
-          charH = 122;
-          flipHoriz = true;
+          charH = 118;
+          flipHoriz = false; // Sprite mới đã hướng sang trái
         } else if (agent.code === 'dung_3') {
-          // Dũng 3: Nam Fullstack Dev tại Desk 1 ngồi gõ phím lập trình Clean Code hướng vào máy tính
+          // Dũng 3: Nam Fullstack Dev tại Desk 1 ngồi gõ phím hướng vào máy tính bên trái
           sprite = ImageLoader.getCharacter('male_typing_chair');
-          charH = 142;
+          charH = 138;
           flipHoriz = false;
         } else if (agent.code === 'dung_4') {
-          // Dũng 4: Nữ QA Lead tại Desk 3 ngồi gõ phím kiểm thử bảo mật hướng vào máy tính
+          // Dũng 4: Nữ QA Lead tại Desk 3 ngồi gõ phím kiểm thử hướng vào máy tính bên trái
           sprite = ImageLoader.getCharacter('female_typing_chair');
-          charH = 105;
-          flipHoriz = true;
+          charH = 102;
+          flipHoriz = false; // Sprite mới đã hướng sang trái
         }
       }
     }
@@ -4635,9 +4635,9 @@ export class SpriteRenderer {
     ctx.save();
 
     const stations = [
-      { x: 215, y: 390, label: 'DEV LAB • 200 OK', color: '#10b981' },
-      { x: 410, y: 320, label: 'ARCH DAG • 1.2ms', color: '#a855f7' },
-      { x: 610, y: 220, label: 'QA SEC • 5k TPS', color: '#ef4444' },
+      { x: 300, y: 350, label: 'DEV LAB • 200 OK', color: '#10b981' },
+      { x: 450, y: 250, label: 'ARCH DAG • 1.2ms', color: '#a855f7' },
+      { x: 580, y: 165, label: 'QA SEC • 5k TPS', color: '#ef4444' },
     ];
 
     stations.forEach((st, idx) => {
