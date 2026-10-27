@@ -4228,18 +4228,18 @@ export class SpriteRenderer {
 
     // 4. Các vùng thảm chức năng có viền LED phát sáng (Floor Zoning)
     // Khu Giám Đốc (Executive Director Suite)
-    this.drawCyberRug(ctx, 40, 135, 320, 265, '#0369a1', '#fbbf24', 'PHÒNG GIÁM ĐỐC CHIẾN LƯỢC • DŨNG 1');
+    this.drawCyberRug(ctx, 40, 135, 430, 285, '#0369a1', '#fbbf24', 'PHÒNG GIÁM ĐỐC CHIẾN LƯỢC • DŨNG 1');
     // Khu Dãy Bàn Tech Pod (Dev, Arch, QA)
-    this.drawCyberRug(ctx, 40, 435, 600, 285, '#0f172a', '#06b6d4', 'TRẠM CÔNG NGHỆ CAO • DEV & ARCH & QA');
+    this.drawCyberRug(ctx, 40, 435, 630, 295, '#0f172a', '#06b6d4', 'TRẠM CÔNG NGHỆ CAO • DEV & ARCH & QA');
     // Khu Bàn Tròn Họp Hologram 3D (Central Deliberation Boardroom)
-    this.drawCyberRoundMeetingRug(ctx, 1000, 340, 240, 145, frame);
+    this.drawCyberRoundMeetingRug(ctx, 1000, 340, 260, 155, frame);
     // Khu Sảnh Cafe & Ngắm Xe Bay (Skyline Lounge)
-    this.drawCyberRug(ctx, 680, 585, 650, 155, '#1e1b4b', '#f59e0b', 'SẢNH CAFE & XE BAY • SKYLINE LOUNGE');
+    this.drawCyberRug(ctx, 690, 585, 640, 155, '#1e1b4b', '#f59e0b', 'SẢNH CAFE & XE BAY • SKYLINE LOUNGE');
 
     // 5. Vách ngăn kính mờ (Frosted Cyber Partitions)
-    this.drawCyberGlassPartition(ctx, 360, 135, 12, 265);
-    this.drawCyberGlassPartition(ctx, 640, 135, 12, 585);
-    this.drawCyberGlassPartition(ctx, 680, 565, 650, 8);
+    this.drawCyberGlassPartition(ctx, 475, 135, 12, 285);
+    this.drawCyberGlassPartition(ctx, 675, 135, 12, 595);
+    this.drawCyberGlassPartition(ctx, 690, 570, 640, 8);
 
     // 6. Đèn trần hình nón công nghiệp rọi xuống các bàn làm việc
     this.drawVaultIndustrialLighting(ctx);
@@ -4311,12 +4311,17 @@ export class SpriteRenderer {
     ctx.stroke();
 
     // Biển tên phân khu nhỏ tinh tế góc trên
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-    ctx.roundRect(x + 10, y + 8, ctx.measureText(title).width + 16, 16, 3);
+    ctx.font = 'bold 8px "JetBrains Mono", monospace';
+    const badgeW = ctx.measureText(title).width + 18;
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+    ctx.beginPath();
+    ctx.roundRect(x + 10, y + 8, badgeW, 18, 4);
     ctx.fill();
+    ctx.strokeStyle = ledColor;
+    ctx.lineWidth = 1;
+    ctx.stroke();
     ctx.fillStyle = ledColor;
-    ctx.font = 'bold 7.5px "JetBrains Mono", monospace';
-    ctx.fillText(title, x + 18, y + 19);
+    ctx.fillText(title, x + 19, y + 20);
 
     ctx.restore();
   }
@@ -4378,107 +4383,107 @@ export class SpriteRenderer {
     // Tủ tài liệu đứng kính mờ
     drawables.push({
       zY: 175,
-      draw: ctx => this.drawGlassFilingCabinet(ctx, 55, 145),
+      draw: ctx => this.drawGlassFilingCabinet(ctx, 60, 145),
     });
     // Chậu cây Monstera nhiệt đới
     drawables.push({
       zY: 185,
-      draw: ctx => this.drawPottedPlant(ctx, 310, 155),
+      draw: ctx => this.drawPottedPlant(ctx, 420, 155),
     });
     // Ghế da điều hành Giám Đốc (trống khi Dũng 1 rời bàn)
     const dung1AtDesk = agents.some(a => a.code === 'dung_1' && a.current_room === 'director_office' && a.status !== 'moving');
     if (!dung1AtDesk) {
       drawables.push({
-        zY: 205,
-        draw: ctx => this.drawExecutiveLeatherChair(ctx, 180, 205),
+        zY: 255,
+        draw: ctx => this.drawExecutiveLeatherChair(ctx, 230, 260),
       });
     }
-    // Bàn làm việc Giám Đốc (Mặt kính đen viền kim loại vàng titan, laptop mở slide, điện thoại, cà phê bốc khói)
+    // Bàn làm việc Giám Đốc (zY = 275 > agent.zY = 260: Mặt bàn & laptop che phủ chân và ngồi tự nhiên sau bàn)
     drawables.push({
-      zY: 245,
-      draw: ctx => this.drawExecutiveDirectorDesk(ctx, 100, 220),
+      zY: 275,
+      draw: ctx => this.drawExecutiveDirectorDesk(ctx, 130, 230),
     });
 
     // ───────────────────────────────────────────────────────────────────────
     // 2. KHU DÃY BÀN TECH POD (Dũng 3, Dũng 2, Dũng 4)
     // ───────────────────────────────────────────────────────────────────────
-    // Trạm 1: Cyber Dev Lab (Dũng 3 - Fullstack Dev)
+    // Trạm 1: Cyber Dev Lab (Dũng 3 - Fullstack Dev tại 185, 620)
     const dung3AtDesk = agents.some(a => a.code === 'dung_3' && a.current_room === 'dev_lab' && a.status !== 'moving');
     if (!dung3AtDesk) {
       drawables.push({
-        zY: 550,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 145, 555),
+        zY: 615,
+        draw: ctx => this.drawErgonomicMeshChair(ctx, 185, 620),
       });
     }
     drawables.push({
-      zY: 535,
-      draw: ctx => this.drawDevLabStation(ctx, 55, 510, frame),
+      zY: 625,
+      draw: ctx => this.drawDevLabStation(ctx, 75, 550, frame),
     });
 
-    // Trạm 2: Kiến Trúc & PM (Dũng 2 - Software Architect)
+    // Trạm 2: Kiến Trúc & PM (Dũng 2 - Software Architect tại 385, 620)
     const dung2AtDesk = agents.some(a => a.code === 'dung_2' && a.current_room === 'architect_office' && a.status !== 'moving');
     if (!dung2AtDesk) {
       drawables.push({
-        zY: 550,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 340, 555),
+        zY: 615,
+        draw: ctx => this.drawErgonomicMeshChair(ctx, 385, 620),
       });
     }
     drawables.push({
-      zY: 535,
-      draw: ctx => this.drawArchitectPMStation(ctx, 250, 510, frame),
+      zY: 625,
+      draw: ctx => this.drawArchitectPMStation(ctx, 275, 550, frame),
     });
 
-    // Trạm 3: Kiểm Thử An Ninh & QA (Dũng 4 - Test Lead)
+    // Trạm 3: Kiểm Thử An Ninh & QA (Dũng 4 - Test Lead tại 585, 620)
     const dung4AtDesk = agents.some(a => a.code === 'dung_4' && a.current_room === 'games_room' && a.status !== 'moving');
     if (!dung4AtDesk) {
       drawables.push({
-        zY: 550,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 535, 555),
+        zY: 615,
+        draw: ctx => this.drawErgonomicMeshChair(ctx, 585, 620),
       });
     }
     drawables.push({
-      zY: 535,
-      draw: ctx => this.drawQASecurityStation(ctx, 445, 510, frame),
+      zY: 625,
+      draw: ctx => this.drawQASecurityStation(ctx, 475, 550, frame),
     });
 
     // ───────────────────────────────────────────────────────────────────────
-    // 3. KHU BÀN TRÒN HỌP DỰ ÁN HOLOGRAM 3D TRUNG TÂM
+    // 3. KHU BÀN TRÒN HỌP DỰ ÁN HOLOGRAM 3D TRUNG TÂM (cx: 1000, cy: 340)
     // ───────────────────────────────────────────────────────────────────────
-    // Ghế Bắc (Dũng 1)
+    // Ghế Bắc (Dũng 1 tại 1000, 290 - phía trên bàn, zY = 285 < 340)
     const dung1InBoardroom = agents.some(a => a.code === 'dung_1' && (a.current_room === 'boardroom' || a.status === 'debating') && a.status !== 'moving');
     if (!dung1InBoardroom) {
       drawables.push({
-        zY: 240,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 1000, 245),
+        zY: 285,
+        draw: ctx => this.drawErgonomicMeshChair(ctx, 1000, 290),
       });
     }
-    // Ghế Tây (Dũng 2)
+    // Ghế Tây (Dũng 2 tại 820, 350 - bên trái bàn)
     const dung2InBoardroom = agents.some(a => a.code === 'dung_2' && (a.current_room === 'boardroom' || a.status === 'debating') && a.status !== 'moving');
     if (!dung2InBoardroom) {
       drawables.push({
-        zY: 335,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 810, 340),
+        zY: 345,
+        draw: ctx => this.drawErgonomicMeshChair(ctx, 820, 350),
       });
     }
-    // Ghế Đông (Dũng 4)
+    // Ghế Đông (Dũng 4 tại 1180, 350 - bên phải bàn)
     const dung4InBoardroom = agents.some(a => a.code === 'dung_4' && (a.current_room === 'boardroom' || a.status === 'debating') && a.status !== 'moving');
     if (!dung4InBoardroom) {
       drawables.push({
-        zY: 335,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 1190, 340),
+        zY: 345,
+        draw: ctx => this.drawErgonomicMeshChair(ctx, 1180, 350),
       });
     }
-    // Mặt Bàn Tròn Họp Hologram 3D (zY = 360)
+    // Mặt Bàn Tròn Họp Hologram 3D (zY = 340)
     drawables.push({
-      zY: 360,
+      zY: 340,
       draw: ctx => this.drawCustomRoundConferenceTable(ctx, 1000, 340, frame),
     });
-    // Ghế Nam (Dũng 3)
+    // Ghế Nam (Dũng 3 tại 1000, 440 - phía dưới bàn, zY = 445 > 340)
     const dung3InBoardroom = agents.some(a => a.code === 'dung_3' && (a.current_room === 'boardroom' || a.status === 'debating') && a.status !== 'moving');
     if (!dung3InBoardroom) {
       drawables.push({
-        zY: 450,
-        draw: ctx => this.drawErgonomicMeshChair(ctx, 1000, 445),
+        zY: 445,
+        draw: ctx => this.drawErgonomicMeshChair(ctx, 1000, 440),
       });
     }
 
@@ -4487,15 +4492,15 @@ export class SpriteRenderer {
     // ───────────────────────────────────────────────────────────────────────
     drawables.push({
       zY: 630,
-      draw: ctx => this.drawPantryCoffeeStation(ctx, 710, 605),
+      draw: ctx => this.drawPantryCoffeeStation(ctx, 720, 605),
     });
     drawables.push({
       zY: 625,
-      draw: ctx => this.drawWaterCooler(ctx, 875, 600),
+      draw: ctx => this.drawWaterCooler(ctx, 885, 600),
     });
     drawables.push({
       zY: 660,
-      draw: ctx => this.drawLoungeSofaSuite(ctx, 960, 630),
+      draw: ctx => this.drawLoungeSofaSuite(ctx, 970, 630),
     });
 
     return drawables;
@@ -4505,63 +4510,67 @@ export class SpriteRenderer {
    * Bàn Giám Đốc mặt kính đen viền kim loại vàng titan
    */
   public static drawExecutiveDirectorDesk(ctx: CanvasRenderingContext2D, x: number, y: number) {
-    const w = 160;
-    const h = 50;
+    const w = 200;
+    const h = 58;
     ctx.save();
     // Đổ bóng bàn
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
     ctx.beginPath();
-    ctx.roundRect(x + 4, y + 6, w, h, 6);
+    ctx.roundRect(x + 4, y + 8, w, h, 6);
     ctx.fill();
 
     // Chân bàn thép mạ crom chữ U
     ctx.fillStyle = '#334155';
-    ctx.fillRect(x + 8, y + 14, 6, 36);
-    ctx.fillRect(x + w - 14, y + 14, 6, 36);
+    ctx.fillRect(x + 10, y + 16, 8, 42);
+    ctx.fillRect(x + w - 18, y + 16, 8, 42);
 
     // Mặt bàn kính đen bóng viền kim loại vàng titan
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#0a0f1d';
     ctx.beginPath();
     ctx.roundRect(x, y, w, h, 6);
     ctx.fill();
 
     ctx.strokeStyle = '#fbbf24';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 2;
+    ctx.shadowColor = '#fbbf24';
+    ctx.shadowBlur = 8;
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
-    // Tấm lót bàn da đen (Desk Mat)
+    // Tấm lót bàn da đen (Desk Mat) đặt ngay phía trước Dũng 1 (tâm tại x + 100 = 230)
     ctx.fillStyle = '#1e293b';
-    ctx.roundRect(x + 35, y + 8, 90, 32, 3);
+    ctx.beginPath();
+    ctx.roundRect(x + 55, y + 8, 90, 42, 3);
     ctx.fill();
 
-    // Laptop siêu mỏng mở slide
+    // Laptop siêu mỏng mở slide ngay trước mặt Dũng 1
     ctx.fillStyle = '#64748b';
-    ctx.fillRect(x + 65, y + 12, 30, 18);
+    ctx.fillRect(x + 85, y + 12, 30, 20);
     ctx.fillStyle = '#38bdf8'; // Màn hình hiển thị slide xanh
-    ctx.fillRect(x + 66, y + 13, 28, 14);
+    ctx.fillRect(x + 86, y + 13, 28, 15);
 
     // Bàn phím laptop & chuột
     ctx.fillStyle = '#334155';
-    ctx.fillRect(x + 67, y + 28, 26, 8);
+    ctx.fillRect(x + 87, y + 34, 26, 10);
     ctx.fillStyle = '#fbbf24';
-    ctx.fillRect(x + 102, y + 25, 5, 7);
+    ctx.fillRect(x + 124, y + 30, 6, 8);
 
     // Điện thoại điều hành
     ctx.fillStyle = '#1e293b';
-    ctx.fillRect(x + 15, y + 14, 16, 18);
+    ctx.fillRect(x + 20, y + 16, 20, 22);
     ctx.fillStyle = '#22c55e'; // LED xanh
-    ctx.fillRect(x + 27, y + 16, 2, 2);
+    ctx.fillRect(x + 34, y + 18, 3, 3);
 
     // Tách cà phê nóng bốc khói
     ctx.fillStyle = '#f8fafc';
     ctx.beginPath();
-    ctx.arc(x + 140, y + 24, 4, 0, Math.PI * 2);
+    ctx.arc(x + 168, y + 26, 5, 0, Math.PI * 2);
     ctx.fill();
     ctx.fillStyle = '#78350f';
     ctx.beginPath();
-    ctx.arc(x + 140, y + 24, 3, 0, Math.PI * 2);
+    ctx.arc(x + 168, y + 26, 3.5, 0, Math.PI * 2);
     ctx.fill();
-    this.drawCoffeeSteam(ctx, x + 140, y + 20);
+    this.drawCoffeeSteam(ctx, x + 168, y + 22);
 
     ctx.restore();
   }
@@ -4842,37 +4851,66 @@ export class SpriteRenderer {
    */
   public static drawErgonomicMeshChair(ctx: CanvasRenderingContext2D, x: number, y: number) {
     ctx.save();
-    // 1. Chân sao 5 bánh xe
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 1.5;
+    // 1. Chân sao 5 bánh xe mạ crom cao cấp
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 2.2;
     for (let a = 0; a < 5; a++) {
       const rad = (a * Math.PI * 2) / 5;
       ctx.beginPath();
-      ctx.moveTo(x, y + 10);
-      ctx.lineTo(x + Math.cos(rad) * 12, y + 10 + Math.sin(rad) * 6);
+      ctx.moveTo(x, y + 12);
+      ctx.lineTo(x + Math.cos(rad) * 18, y + 12 + Math.sin(rad) * 9);
       ctx.stroke();
+      // Bánh xe đôi
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(x + Math.cos(rad) * 18, y + 12 + Math.sin(rad) * 9, 2.5, 0, Math.PI * 2);
+      ctx.fill();
     }
     // Trục nâng thủy lực
-    ctx.fillStyle = '#64748b';
-    ctx.fillRect(x - 2, y + 4, 4, 8);
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillRect(x - 3, y + 2, 6, 12);
 
-    // 2. Đệm ngồi đen êm ái
+    // 2. Đệm ngồi đen công thái học êm ái
     ctx.fillStyle = '#0f172a';
     ctx.beginPath();
-    ctx.roundRect(x - 12, y - 2, 24, 8, 3);
+    ctx.roundRect(x - 18, y - 6, 36, 12, 4);
+    ctx.fill();
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+
+    // 3. Tựa lưng lưới công thái học cao cấp (chiều cao tỉ lệ thật)
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.roundRect(x - 16, y - 48, 32, 42, 5);
     ctx.fill();
     ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Lưng lưới thoáng khí
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+    ctx.lineWidth = 0.8;
+    for (let ly = y - 44; ly < y - 10; ly += 6) {
+      ctx.beginPath();
+      ctx.moveTo(x - 14, ly);
+      ctx.lineTo(x + 14, ly);
+      ctx.stroke();
+    }
+
+    // Tựa đầu (Headrest)
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.roundRect(x - 11, y - 60, 22, 10, 3);
+    ctx.fill();
+    ctx.strokeStyle = '#38bdf8';
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // 3. Tựa lưng lưới thoáng khí
-    ctx.fillStyle = '#1e293b';
-    ctx.beginPath();
-    ctx.roundRect(x - 10, y - 22, 20, 20, 3);
-    ctx.fill();
-    ctx.strokeStyle = '#64748b';
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    // Tay vịn 2 bên
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(x - 21, y - 26, 4, 18);
+    ctx.fillRect(x + 17, y - 26, 4, 18);
 
     ctx.restore();
   }
@@ -4882,36 +4920,54 @@ export class SpriteRenderer {
    */
   public static drawExecutiveLeatherChair(ctx: CanvasRenderingContext2D, x: number, y: number) {
     ctx.save();
-    // Chân sao 5 bánh mạ crom
-    ctx.strokeStyle = '#94a3b8';
-    ctx.lineWidth = 1.8;
+    // Chân sao 5 bánh mạ vàng hoàng kim
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 2.4;
     for (let a = 0; a < 5; a++) {
       const rad = (a * Math.PI * 2) / 5;
       ctx.beginPath();
-      ctx.moveTo(x, y + 12);
-      ctx.lineTo(x + Math.cos(rad) * 14, y + 12 + Math.sin(rad) * 7);
+      ctx.moveTo(x, y + 14);
+      ctx.lineTo(x + Math.cos(rad) * 20, y + 14 + Math.sin(rad) * 10);
       ctx.stroke();
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(x + Math.cos(rad) * 20, y + 14 + Math.sin(rad) * 10, 3, 0, Math.PI * 2);
+      ctx.fill();
     }
-    ctx.fillStyle = '#cbd5e1';
-    ctx.fillRect(x - 2, y + 4, 4, 10);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillRect(x - 3.5, y + 2, 7, 14);
 
-    // Đệm ngồi da đen
+    // Đệm ngồi da nappa đen chần bông sang trọng
     ctx.fillStyle = '#090d16';
     ctx.beginPath();
-    ctx.roundRect(x - 14, y - 2, 28, 9, 3);
+    ctx.roundRect(x - 20, y - 8, 40, 14, 5);
     ctx.fill();
     ctx.strokeStyle = '#fbbf24';
-    ctx.lineWidth = 1;
+    ctx.lineWidth = 1.5;
     ctx.stroke();
 
     // Tựa lưng da cao quyền lực
     ctx.fillStyle = '#0f172a';
     ctx.beginPath();
-    ctx.roundRect(x - 12, y - 26, 24, 24, 4);
+    ctx.roundRect(x - 18, y - 56, 36, 48, 6);
+    ctx.fill();
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+
+    // Tựa đầu da nappa
+    ctx.fillStyle = '#1e293b';
+    ctx.beginPath();
+    ctx.roundRect(x - 13, y - 70, 26, 12, 4);
     ctx.fill();
     ctx.strokeStyle = '#fbbf24';
     ctx.lineWidth = 1.2;
     ctx.stroke();
+
+    // Tay vịn bọc da viền vàng
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(x - 23, y - 32, 5, 22);
+    ctx.fillRect(x + 18, y - 32, 5, 22);
 
     ctx.restore();
   }

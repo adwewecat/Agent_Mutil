@@ -646,6 +646,38 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - Build `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
   - Sẵn sàng đẩy code lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-27] Khắc Phục Triệt Để Độ Lệch Ghế Ngồi, Bàn Làm Việc & Bong Bóng Thoại (Pixel-Perfect Alignment)
+- [x] **Nguyên nhân cốt lõi gây lệch ở phiên bản vừa qua**:
+  - Dũng 1 (Software Director) bị đặt tại `pos_y = 205`, trong khi bàn giám đốc được vẽ từ `y = 220` trở xuống; với chiều cao sprite `115px`, đầu nhân vật ở `y = 90`, chân ở `y = 205`, cách xa mặt bàn 15-40px, tạo cảm giác như đang lơ lửng trên không trung phía trên bàn.
+  - Cụm bàn Tech Pod (Dũng 3, Dũng 2, Dũng 4): Bàn được vẽ ở `zY = 535` trong khi nhân vật ở `zY = 565`, khiến nhân vật bị vẽ đè lên mặt bàn và che mất bàn phím cơ / màn hình máy tính.
+  - Bong bóng thoại `drawSpecialBubble` bị vẽ tại `pos_y - 48`, che phủ ngay vào giữa khuôn mặt của nhân vật.
+- [x] **Giải pháp căn chỉnh hình học Pixel-Perfect & Chiều sâu Z-Sort chuẩn xác**:
+  - **Bàn Giám Đốc Hoàng Gia (Dũng 1)**:
+    + Tọa độ Dũng 1 chuyển về `(230, 260)`.
+    + Bàn Giám đốc titan đen viền vàng được vẽ tại `(130, 230, w: 200, h: 58)`.
+    + Chiều sâu bàn `zY = 275 > agent.zY = 260`: Mặt bàn, laptop mở slide và điện thoại điều hành che phủ nửa thân dưới một cách tự nhiên. Dũng 1 ngồi tựa lưng quyền uy trên ghế da hoàng gia, hai tay đặt đúng vị trí làm việc trước laptop.
+    + Thảm Sapphire phòng giám đốc mở rộng `(40, 135, 430, 285)`.
+  - **Dãy Bàn Công Nghệ Cao (Dũng 3, Dũng 2, Dũng 4)**:
+    + Dũng 3 (Dev Lab - Nam): Tọa độ `(185, 620)`, trạm bàn `(75, 550, w: 175, h: 65)`. Màn hình cong matrix code xanh lá bên trái, phím cơ RGB trước mặt, Dũng 3 ngồi ghế xoay gõ phím hướng vào màn hình.
+    + Dũng 2 (Software Architect - Nữ): Tọa độ `(385, 620)`, trạm bàn `(275, 550, w: 175, h: 65)`. Màn hình HUD DAG microservices tím neon đo độ trễ `1.2ms`, Dũng 2 ngồi phân tích kiến trúc.
+    + Dũng 4 (QA & Security - Nữ): Tọa độ `(585, 620)`, trạm bàn `(475, 550, w: 175, h: 65)`. Màn hình radar an ninh đỏ quét liên tục và ma trận Stress Test 5,000 TPS.
+    + Cả 3 bàn có `zY = 625 > agent.zY = 620`, mép bàn che chân nhân vật một cách tự nhiên.
+  - **Bàn Tròn Họp Dự Án Hologram 3D (Boardroom)**:
+    + Tâm bàn tròn: `(1000, 340)`.
+    + Khi họp: 4 ghế đại biểu ngồi đối xứng quanh Hologram 3D: Dũng 1 Bắc `(1000, 290)`, Dũng 2 Tây `(820, 350)`, Dũng 3 Nam `(1000, 440)`, Dũng 4 Đông `(1180, 350)`.
+    + Khi không họp: 4 ghế đại biểu trống được vẽ gọn gàng quanh bàn.
+  - **Nâng Cấp Ghế Công Thái Học & Da Hoàng Gia (Scale Tỉ Lệ Thật)**:
+    + Ghế công thái học lưới đen và ghế da giám đốc được thiết kế lại với chiều cao `~70px`, tựa đầu headrest, tay vịn, chân sao 5 bánh mạ crom / vàng, tỷ lệ ăn khớp với cơ thể nhân vật.
+  - **Tinh Chỉnh Bong Bóng Thoại Cyber Dark HUD**:
+    + Nâng độ cao bong bóng thoại lên `pos_y - 140` (vượt hẳn lên trên đầu và nhãn tên nhân vật, tuyệt đối không che khuôn mặt hay màn hình máy tính).
+    + Giao diện hộp thoại Cyber Dark bo góc viền Cyan neon `#00f0ff`, chữ trắng sắc nét.
+- [x] **Đồng Bộ Hoàn Toàn Hệ Thống**:
+  - `backend/app/services/office_manager.py` (ROOM_COORDINATES, BOARDROOM_SEATS, DEFAULT_AGENTS).
+  - SQLite Database `backend/agent_multi.db`.
+  - `frontend/src/office/mapData.ts`, `frontend/src/office/engine.ts`, `frontend/src/App.tsx`, `frontend/src/office/spriteRenderer.ts`.
+  - Build `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
+  - Đẩy toàn bộ mã nguồn lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

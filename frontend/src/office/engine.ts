@@ -10,18 +10,18 @@ import { ImageLoader } from './imageLoader';
 
 // Tọa độ các bàn làm việc và trạm chuyên môn của 4 Dũng trong Cyberpunk AI Office 16:9 (1376x768)
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
-  dung_1: { x: 180, y: 205, room: 'director_office', status: 'idle' },  // Bàn Giám Đốc Executive Suite (Nam)
-  dung_2: { x: 340, y: 555, room: 'architect_office', status: 'idle' }, // Trạm Kiến Trúc & PM (Nữ)
-  dung_3: { x: 145, y: 555, room: 'dev_lab', status: 'coding' },        // Trạm Cyber Dev Lab (Nam)
-  dung_4: { x: 535, y: 555, room: 'games_room', status: 'testing' },    // Trạm QA & Test (Nữ)
+  dung_1: { x: 230, y: 260, room: 'director_office', status: 'idle' },  // Bàn Giám Đốc Executive Suite (Nam)
+  dung_2: { x: 385, y: 620, room: 'architect_office', status: 'idle' }, // Trạm Kiến Trúc & PM (Nữ)
+  dung_3: { x: 185, y: 620, room: 'dev_lab', status: 'coding' },        // Trạm Cyber Dev Lab (Nam)
+  dung_4: { x: 585, y: 620, room: 'games_room', status: 'testing' },    // Trạm QA & Test (Nữ)
 };
 
 // Chỗ ngồi quanh bàn tròn trung tâm khi diễn ra họp hoặc tranh luận dự án Hologram 3D (tất cả quay mặt vào Hologram)
 const MEETING_SEATS: Record<string, { x: number; y: number }> = {
-  dung_1: { x: 1000, y: 245 },  // Ghế Bắc: Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
-  dung_2: { x: 810, y: 340 },   // Ghế Tây: Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
-  dung_3: { x: 1000, y: 445 },  // Ghế Nam: Phía dưới bàn tròn (Dũng 3 - Nam Dev)
-  dung_4: { x: 1190, y: 340 },  // Ghế Đông: Bên phải bàn tròn (Dũng 4 - Nữ QA)
+  dung_1: { x: 1000, y: 290 },  // Ghế Bắc: Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
+  dung_2: { x: 820, y: 350 },   // Ghế Tây: Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
+  dung_3: { x: 1000, y: 440 },  // Ghế Nam: Phía dưới bàn tròn (Dũng 3 - Nam Dev)
+  dung_4: { x: 1180, y: 350 },  // Ghế Đông: Bên phải bàn tròn (Dũng 4 - Nữ QA)
 };
 
 export class OfficeEngine {
@@ -515,32 +515,56 @@ export class OfficeEngine {
 
     // Nếu có bong bóng thoại đặc biệt thì vẽ đè lên
     if (customBubble) {
-      this.drawSpecialBubble(ctx, agent.pos_x, agent.pos_y - 48, customBubble);
+      this.drawSpecialBubble(ctx, agent.pos_x, agent.pos_y - 140, customBubble);
     }
   }
 
   private drawSpecialBubble(ctx: CanvasRenderingContext2D, x: number, y: number, text: string) {
-    const w = Math.min(320, text.length * 6.5 + 16);
+    const displayText = text.length > 42 ? text.substring(0, 40) + '...' : text;
     ctx.save();
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x - w / 2, y - 16, w, 18);
-    ctx.strokeStyle = '#0284c7';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(x - w / 2, y - 16, w, 18);
+    ctx.font = 'bold 10px "JetBrains Mono", monospace';
+    const textW = ctx.measureText(displayText).width;
+    const w = Math.max(120, textW + 24);
+    const h = 24;
 
-    // Mũi nhọn
-    ctx.fillStyle = '#ffffff';
+    // Bóng đổ HUD
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
     ctx.beginPath();
-    ctx.moveTo(x - 4, y + 2);
-    ctx.lineTo(x + 4, y + 2);
-    ctx.lineTo(x, y + 6);
-    ctx.closePath();
+    ctx.roundRect(x - w / 2 + 2, y - h + 2, w, h, 6);
     ctx.fill();
 
+    // Hộp thoại Cyber Dark
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+    ctx.beginPath();
+    ctx.roundRect(x - w / 2, y - h, w, h, 6);
+    ctx.fill();
+
+    ctx.strokeStyle = '#00f0ff';
+    ctx.lineWidth = 1.2;
+    ctx.shadowColor = '#00f0ff';
+    ctx.shadowBlur = 8;
+    ctx.stroke();
+
+    // Mũi nhọn chỉ xuống đầu nhân vật
     ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 9px "JetBrains Mono", monospace';
+    ctx.beginPath();
+    ctx.moveTo(x - 5, y);
+    ctx.lineTo(x + 5, y);
+    ctx.lineTo(x, y + 5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#00f0ff';
+    ctx.beginPath();
+    ctx.moveTo(x - 5, y);
+    ctx.lineTo(x, y + 5);
+    ctx.lineTo(x + 5, y);
+    ctx.stroke();
+
+    // Text phát sáng
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#f8fafc';
     ctx.textAlign = 'center';
-    ctx.fillText(text.length > 40 ? text.substring(0, 38) + '...' : text, x, y - 4);
+    ctx.fillText(displayText, x, y - 8);
     ctx.restore();
   }
 }
