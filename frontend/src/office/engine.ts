@@ -8,12 +8,11 @@ import { SpriteRenderer } from './spriteRenderer';
 import { soundFx } from './soundEffects';
 import { ImageLoader } from './imageLoader';
 
-// Tọa độ các bàn làm việc và trạm chuyên môn của 4 Dũng trong Cyberpunk AI Office 16:9 (1376x768)
+// Tọa độ các bàn làm việc và trạm chuyên môn của 3 chuyên gia Dũng
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
-  dung_1: { x: 230, y: 260, room: 'director_office', status: 'idle' },  // Bàn Giám Đốc Executive Suite (Nam)
-  dung_2: { x: 385, y: 620, room: 'architect_office', status: 'idle' }, // Trạm Kiến Trúc & PM (Nữ)
-  dung_3: { x: 185, y: 620, room: 'dev_lab', status: 'coding' },        // Trạm Cyber Dev Lab (Nam)
-  dung_4: { x: 585, y: 620, room: 'games_room', status: 'testing' },    // Trạm QA & Test (Nữ)
+  dung_1: { x: 230, y: 260, room: 'director_office', status: 'idle' },  // Phòng GĐ Vận Hành F&B (Dũng 1)
+  dung_2: { x: 385, y: 620, room: 'architect_office', status: 'idle' }, // Trạm GĐ Phần Mềm (Dũng 2)
+  dung_3: { x: 185, y: 620, room: 'dev_lab', status: 'coding' },        // Trạm Cyber Dev Lab (Dũng 3)
 };
 
 // Chỗ ngồi quanh bàn tròn trung tâm khi diễn ra họp hoặc tranh luận dự án Hologram 3D
@@ -22,6 +21,64 @@ const MEETING_SEATS: Record<string, { x: number; y: number }> = {
   dung_2: { x: 860, y: 375 },   // Ghế Tây-Nam: Trái dưới bàn tròn (Nhân viên 2 - GĐ Phần mềm 40 năm KN)
   dung_3: { x: 1140, y: 375 },  // Ghế Đông-Nam: Phải dưới bàn tròn (Nhân viên 3 - Senior Dev 30 năm KN)
 };
+
+interface ChitChatStep {
+  agentCode: string;
+  text: string;
+  durationMs: number;
+}
+
+// Tập hợp các đoạn hội thoại phiếm đời thường, hài hước và giàu kinh nghiệm giữa 3 chuyên gia Dũng
+const IDLE_DIALOGUES: ChitChatStep[][] = [
+  // Đoạn 1: Phở bốc khói & Độ trễ lag
+  [
+    { agentCode: 'dung_1', text: 'Dũng 3 ơi! Quán đông khách mà code lag là bát phở nguội tanh đấy nhé! 😂🍜', durationMs: 4200 },
+    { agentCode: 'dung_2', text: 'Anh 1 yên tâm! Em bọc HMAC SHA-256 + Cache RAM rồi, mượt như bơ lạt! 🛡️', durationMs: 4200 },
+    { agentCode: 'dung_3', text: 'Phở bốc khói, code bốc lửa! 30 năm gõ phím chưa để bếp trễ 1 giây nào! 🚀', durationMs: 4200 },
+  ],
+  // Đoạn 2: Trà sen hay cà phê phin
+  [
+    { agentCode: 'dung_1', text: 'Sáng nay ai trà sen, ai cà phê đen phin đậm đặc để bác Dũng 1 chiêu đãi nào? ☕', durationMs: 4200 },
+    { agentCode: 'dung_3', text: 'Cho em ly cà phê đen không đường, nạp năng lượng sinh Clean Code 0 bug! ⚡', durationMs: 4200 },
+    { agentCode: 'dung_2', text: 'Em xin cốc trà ô long ít đường, uống vào thẩm định kiến trúc cho tỉnh táo! 🍵', durationMs: 4200 },
+  ],
+  // Đoạn 3: Khoe hệ thống với đối thủ Mỹ Toast POS & Square
+  [
+    { agentCode: 'dung_2', text: 'Toast POS với Square bên Mỹ mà thấy quả hệ thống 50K TPS này chắc cũng xin sang học việc! 😎', durationMs: 4200 },
+    { agentCode: 'dung_1', text: 'Quy trình F&B chuẩn Việt Nam giờ cao điểm mà mượt thì chấp mọi đối thủ toàn cầu! 🌏', durationMs: 4200 },
+    { agentCode: 'dung_3', text: 'FastAPI async non-blocking, bếp nhận đơn trước khi khách kịp chớp mắt luôn! 🏎️', durationMs: 4200 },
+  ],
+  // Đoạn 4: Kèo bi-a nỉ Simonis
+  [
+    { agentCode: 'dung_3', text: 'Bàn bida đằng kia nỉ Simonis xanh mướt kìa, nghỉ trưa anh em làm ván bi-a cọ xát nhỉ? 🎱', durationMs: 4200 },
+    { agentCode: 'dung_1', text: 'Bác 40 năm kinh nghiệm F&B lẫn bida, chấp 2 chú mỗi đứa 3 cơ, ai thua trả tiền cà phê! 🏆', durationMs: 4200 },
+    { agentCode: 'dung_2', text: 'Kèo này nhận luôn! Em cơ thủ có hạng đấy bác Dũng 1 ơi! 😆', durationMs: 4200 },
+  ],
+  // Đoạn 5: Trà sữa trân châu full topping
+  [
+    { agentCode: 'dung_3', text: 'Đang gõ phím cơ mỏi tay, bác Dũng 1 nhớ giữ lời vụ trà sữa trân châu full topping nhé! 🧋', durationMs: 4200 },
+    { agentCode: 'dung_1', text: 'Cứ duyệt xong code ngon lành là bác ship hẳn 3 cốc size khổng lồ về tận bàn! 👍', durationMs: 4200 },
+    { agentCode: 'dung_2', text: 'Dũng 3 nghe rõ chưa, code cẩn thận không có bug thì mới có trà sữa uống nhé! 😜', durationMs: 4200 },
+  ],
+  // Đoạn 6: Thử thách đứt cáp quang biển
+  [
+    { agentCode: 'dung_1', text: '40 năm trong nghề sợ nhất đứt cáp quang biển vào giờ cơm trưa, khách kêu ầm ĩ! 🌊', durationMs: 4200 },
+    { agentCode: 'dung_2', text: 'Offline-First SQLite Sync lo hết anh ơi! Mạng đứt thì LAN nội bộ vẫn in đơn ầm ầm! 🛡️', durationMs: 4200 },
+    { agentCode: 'dung_3', text: 'Khi nào có mạng lại tự động sync lên Cloud, không mất 1 xu doanh thu của bác! ✨', durationMs: 4200 },
+  ],
+  // Đoạn 7: Bàn phím cơ Switch Blue
+  [
+    { agentCode: 'dung_2', text: 'Dũng 3 gõ bàn phím cơ Switch Blue lạch cạch nghe vui tai như tiếng xào rau của bếp trưởng ấy nhỉ! 🍳', durationMs: 4200 },
+    { agentCode: 'dung_3', text: 'Gõ thế này mới ra thơ ra code được anh ơi! Từng dòng code đều chuẩn OpenAPI! 💻', durationMs: 4200 },
+    { agentCode: 'dung_1', text: 'Nghe tiếng gõ phím rộn rã thế này bác thấy yên tâm hẳn! Chuỗi nhà hàng sắp bùng nổ rồi! 🚀', durationMs: 4200 },
+  ],
+  // Đoạn 8: Tinh thần phục vụ Haidilao
+  [
+    { agentCode: 'dung_1', text: 'Dù phần mềm có siêu đến mấy thì nụ cười chào đón khách vẫn là số 1, đúng chất Haidilao nhé! 😊', durationMs: 4200 },
+    { agentCode: 'dung_2', text: 'Đúng vậy anh 1! Phần mềm giải phóng sức lao động, còn cảm xúc ấm áp thì con người quyết định! 💡', durationMs: 4200 },
+    { agentCode: 'dung_3', text: 'Em làm thêm tính năng Staff POS Mode để nhân viên dễ dàng order hộ khách lớn tuổi luôn rồi ạ! 📱', durationMs: 4200 },
+  ],
+];
 
 export class OfficeEngine {
   public canvas: HTMLCanvasElement;
@@ -38,7 +95,15 @@ export class OfficeEngine {
   // Bong bóng thoại tùy biến
   public customBubbles: Record<string, { text: string; expires: number }> = {};
 
-  // Trạng thái nghỉ giải lao ngắn ngẫu nhiên (Lâu lâu mới đi giải lao 1 xíu, sau đó quay lại bàn làm việc)
+  // Hệ thống trò chuyện phiếm tự nhiên (Natural Idle Chit-Chat & Small Talk)
+  private nextChitChatTime: number = Date.now() + 6000;
+  private activeDialogue: {
+    steps: ChitChatStep[];
+    currentStepIndex: number;
+    nextStepTime: number;
+  } | null = null;
+
+  // Trạng thái nghỉ giải lao ngắn ngẫu nhiên
   private nextBreakTime: number = Date.now() + 15000;
   private activeBreak: {
     agentCode: string;
@@ -136,6 +201,8 @@ export class OfficeEngine {
       }
       this.activeBreak = null;
     }
+    this.activeDialogue = null;
+    this.nextChitChatTime = Date.now() + 25000;
   }
 
   /**
@@ -416,6 +483,39 @@ export class OfficeEngine {
       }
     }
 
+    // ─────────────────────────────────────────────────────────────────────
+    // QUY TRÌNH NÓI CHUYỆN PHIẾM TỰ NHIÊN HÀI HƯỚC (NATURAL IDLE CHIT-CHAT & SMALL TALK)
+    // ─────────────────────────────────────────────────────────────────────
+    if (this.activeDialogue) {
+      if (Date.now() >= this.activeDialogue.nextStepTime) {
+        this.activeDialogue.currentStepIndex++;
+        if (this.activeDialogue.currentStepIndex < this.activeDialogue.steps.length) {
+          const step = this.activeDialogue.steps[this.activeDialogue.currentStepIndex];
+          this.setCustomBubble(step.agentCode, step.text, step.durationMs);
+          this.activeDialogue.nextStepTime = Date.now() + step.durationMs;
+        } else {
+          // Kết thúc chuỗi đối thoại, nghỉ một khoảng 8s - 14s trước khi bắt đầu câu chuyện mới
+          this.activeDialogue = null;
+          this.nextChitChatTime = Date.now() + 8000 + Math.random() * 6000;
+        }
+      }
+    } else if (Date.now() > this.nextChitChatTime) {
+      // Chỉ kích hoạt trò chuyện phiếm nếu không có cuộc họp hay tranh luận căng thẳng
+      const isMeetingActive = this.agents.some(a => a.status === 'debating');
+      if (!isMeetingActive) {
+        const dialogue = IDLE_DIALOGUES[Math.floor(Math.random() * IDLE_DIALOGUES.length)];
+        const step0 = dialogue[0];
+        this.setCustomBubble(step0.agentCode, step0.text, step0.durationMs);
+        this.activeDialogue = {
+          steps: dialogue,
+          currentStepIndex: 0,
+          nextStepTime: Date.now() + step0.durationMs,
+        };
+      } else {
+        this.nextChitChatTime = Date.now() + 15000;
+      }
+    }
+
     // Dọn dẹp bong bóng thoại hết hạn
     const now = Date.now();
     Object.keys(this.customBubbles).forEach(key => {
@@ -528,67 +628,146 @@ export class OfficeEngine {
 
     // Nếu có bong bóng thoại đặc biệt thì vẽ chuẩn ngay trên đỉnh đầu
     if (customBubble) {
-      this.drawSpecialBubble(ctx, agent.pos_x, agent.pos_y - 52, customBubble, agent.avatar_color);
+      this.drawSpecialBubble(ctx, agent, customBubble);
     }
   }
 
-  private drawSpecialBubble(ctx: CanvasRenderingContext2D, x: number, y: number, text: string, accentColor: string = '#00f0ff') {
-    const displayText = text.length > 46 ? text.substring(0, 44) + '...' : text;
+  /**
+   * Dựng bong bóng thoại tranh luận và trò chuyện phiếm cỡ lớn (High-Readability Large Speech Bubble)
+   * Có huy hiệu phân vai, 4 cột equalizer âm thanh nhảy nhót, ngắt dòng tự động (Word Wrapping)
+   */
+  private drawSpecialBubble(ctx: CanvasRenderingContext2D, agent: Agent, text: string) {
+    const accentColor = agent.avatar_color || '#00f0ff';
+    const x = agent.pos_x;
+    const y = agent.pos_y - 58; // Vị trí đỉnh đầu nhân vật
+
+    // Xác định huy hiệu chức danh và icon của từng Dũng
+    let roleBadge = 'AI AGENT';
+    if (agent.code === 'dung_1') roleBadge = '🥩 DŨNG 1 • GĐ VẬN HÀNH F&B (40 NĂM KN)';
+    else if (agent.code === 'dung_2') roleBadge = '💻 DŨNG 2 • GĐ PHẦN MỀM (40 NĂM KN)';
+    else if (agent.code === 'dung_3') roleBadge = '⚡ DŨNG 3 • SENIOR FULLSTACK (30 NĂM KN)';
+
     ctx.save();
-    ctx.font = 'bold 8.5px "JetBrains Mono", monospace';
-    const textW = ctx.measureText(displayText).width;
-    const w = Math.max(120, textW + 36);
-    const h = 20;
 
-    // Bóng đổ HUD
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+    // Thiết lập font chữ lớn, rõ nét dễ nhìn theo yêu cầu người dùng (12.5px bold)
+    const fontContent = 'bold 12.5px "Outfit", "Segoe UI", sans-serif';
+    ctx.font = fontContent;
+
+    // Tách từ và ngắt dòng (Word Wrapping) để hiển thị trọn vẹn, không bị cắt dấu ba chấm (...)
+    const maxLineLength = 320;
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    for (let i = 0; i < words.length; i++) {
+      const testLine = currentLine ? `${currentLine} ${words[i]}` : words[i];
+      const testWidth = ctx.measureText(testLine).width;
+      if (testWidth > maxLineLength && currentLine) {
+        lines.push(currentLine);
+        currentLine = words[i];
+      } else {
+        currentLine = testLine;
+      }
+    }
+    if (currentLine) lines.push(currentLine);
+
+    // Tính toán chiều rộng và chiều cao bong bóng thoại dựa trên số dòng
+    let maxTextWidth = 160;
+    for (const line of lines) {
+      const lw = ctx.measureText(line).width;
+      if (lw > maxTextWidth) maxTextWidth = lw;
+    }
+
+    const headerHeight = 22;
+    const lineHeight = 18;
+    const paddingX = 14;
+    const paddingY = 10;
+    const bubbleWidth = Math.max(240, Math.min(360, maxTextWidth + paddingX * 2));
+    const bubbleHeight = headerHeight + lines.length * lineHeight + paddingY * 2;
+
+    // Kẹp tọa độ ngang để bong bóng không bị tràn ra ngoài màn hình Canvas (OFFICE_WIDTH = 1376)
+    const clampedCenterX = Math.max(bubbleWidth / 2 + 15, Math.min(x, 1376 - bubbleWidth / 2 - 15));
+    const bubbleLeft = clampedCenterX - bubbleWidth / 2;
+    const bubbleTop = y - bubbleHeight;
+
+    // 1. Bóng đổ HUD nổi khối
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
     ctx.beginPath();
-    ctx.roundRect(x - w / 2 + 2, y - h + 2, w, h, 5);
+    ctx.roundRect(bubbleLeft + 3, bubbleTop + 3, bubbleWidth, bubbleHeight, 8);
     ctx.fill();
 
-    // Hộp thoại Cyber Dark
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+    // 2. Hộp thoại Cyber Dark Glass cao cấp
+    const bgGrad = ctx.createLinearGradient(bubbleLeft, bubbleTop, bubbleLeft, bubbleTop + bubbleHeight);
+    bgGrad.addColorStop(0, 'rgba(15, 23, 42, 0.98)');
+    bgGrad.addColorStop(1, 'rgba(23, 37, 84, 0.96)');
+    ctx.fillStyle = bgGrad;
     ctx.beginPath();
-    ctx.roundRect(x - w / 2, y - h, w, h, 5);
+    ctx.roundRect(bubbleLeft, bubbleTop, bubbleWidth, bubbleHeight, 8);
     ctx.fill();
 
+    // Viền phát sáng theo màu nhận diện của Agent
     ctx.strokeStyle = accentColor;
-    ctx.lineWidth = 1.2;
+    ctx.lineWidth = 1.6;
     ctx.shadowColor = accentColor;
-    ctx.shadowBlur = 8;
+    ctx.shadowBlur = 12;
     ctx.stroke();
     ctx.shadowBlur = 0;
 
-    // Mũi nhọn chỉ xuống đầu nhân vật
-    ctx.fillStyle = '#0f172a';
+    // 3. Mũi tên chỉ xuống đỉnh đầu Agent
+    ctx.fillStyle = 'rgba(23, 37, 84, 0.98)';
     ctx.beginPath();
-    ctx.moveTo(x - 4, y);
-    ctx.lineTo(x + 4, y);
-    ctx.lineTo(x, y + 4);
+    ctx.moveTo(x - 7, bubbleTop + bubbleHeight);
+    ctx.lineTo(x + 7, bubbleTop + bubbleHeight);
+    ctx.lineTo(x, bubbleTop + bubbleHeight + 7);
     ctx.closePath();
     ctx.fill();
     ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(x - 4, y);
-    ctx.lineTo(x, y + 4);
-    ctx.lineTo(x + 4, y);
+    ctx.moveTo(x - 7, bubbleTop + bubbleHeight);
+    ctx.lineTo(x, bubbleTop + bubbleHeight + 7);
+    ctx.lineTo(x + 7, bubbleTop + bubbleHeight);
     ctx.stroke();
 
-    // 3 nốt chấm nhảy nhót biểu thị đang trò chuyện (Voice Typing Dots)
-    const dotX = x - w / 2 + 10;
-    const dotY = y - h / 2;
-    for (let i = 0; i < 3; i++) {
-      const dotBounce = Math.sin(this.frameCount * 0.25 + i * 0.9) * 2;
+    // 4. Thanh Header huy hiệu Speaker
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    ctx.beginPath();
+    ctx.roundRect(bubbleLeft + 1, bubbleTop + 1, bubbleWidth - 2, headerHeight, [7, 7, 0, 0]);
+    ctx.fill();
+
+    // Dải màu accent bên mép trái
+    ctx.fillStyle = accentColor;
+    ctx.fillRect(bubbleLeft + 1, bubbleTop + 1, 3.5, headerHeight);
+
+    // Tiêu đề chức danh Agent
+    ctx.font = 'bold 9.5px "JetBrains Mono", monospace';
+    ctx.fillStyle = accentColor;
+    ctx.textAlign = 'left';
+    ctx.fillText(roleBadge, bubbleLeft + 10, bubbleTop + 15);
+
+    // 4 Cột Equalizer sóng âm thanh trò chuyện nhảy nhót sinh động
+    const eqX = bubbleLeft + bubbleWidth - 36;
+    const eqY = bubbleTop + 16;
+    for (let i = 0; i < 4; i++) {
+      const barH = 3 + Math.abs(Math.sin(this.frameCount * 0.22 + i * 1.1)) * 9;
       ctx.fillStyle = accentColor;
-      ctx.beginPath();
-      ctx.arc(dotX + i * 4.5, dotY + dotBounce, 1.2, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.fillRect(eqX + i * 5, eqY - barH, 2.5, barH);
     }
 
-    // Text phát sáng
-    ctx.fillStyle = '#f8fafc';
+    // 5. Nội dung đối thoại (Text trắng sáng sắc nét, nhiều dòng)
+    ctx.font = fontContent;
     ctx.textAlign = 'left';
-    ctx.fillText(displayText, x - w / 2 + 26, y - 7);
+    ctx.fillStyle = '#ffffff';
+    let textY = bubbleTop + headerHeight + paddingY + 11;
+    for (const line of lines) {
+      // Đổ bóng chữ nhẹ tăng tương phản
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillText(line, bubbleLeft + paddingX + 0.5, textY + 0.5);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(line, bubbleLeft + paddingX, textY);
+      textY += lineHeight;
+    }
+
     ctx.restore();
   }
 }

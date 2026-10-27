@@ -26,11 +26,11 @@ export class SpriteRenderer {
    */
   public static drawVaultIndustrialLighting(ctx: CanvasRenderingContext2D) {
     const lights = [
-      { x: 135, y: 315, floorY: 425, color: 'rgba(56, 189, 248, 0.08)', radius: 75 }, // Dev Lab (Cyan Matrix)
-      { x: 490, y: 315, floorY: 430, color: 'rgba(254, 240, 138, 0.10)', radius: 100 }, // Boardroom (Warm Golden)
-      { x: 800, y: 315, floorY: 430, color: 'rgba(168, 85, 247, 0.08)', radius: 85 },  // Games Room (Arcade Purple)
-      { x: 135, y: 80,  floorY: 185, color: 'rgba(56, 189, 248, 0.08)', radius: 75 },  // Architect Office (Drafting Lamp)
-      { x: 470, y: 80,  floorY: 175, color: 'rgba(251, 191, 36, 0.09)', radius: 90 },  // Director Office (Luxury Amber)
+      { x: 135, y: 315, floorY: 425, color: 'rgba(56, 189, 248, 0.22)', radius: 105 }, // Dev Lab (Cyan Matrix)
+      { x: 490, y: 315, floorY: 430, color: 'rgba(254, 240, 138, 0.26)', radius: 135 }, // Boardroom (Warm Golden)
+      { x: 800, y: 315, floorY: 430, color: 'rgba(192, 132, 252, 0.22)', radius: 115 }, // Games Room (Arcade Purple)
+      { x: 135, y: 80,  floorY: 185, color: 'rgba(56, 189, 248, 0.22)', radius: 105 }, // Architect Office (Drafting Lamp)
+      { x: 470, y: 80,  floorY: 175, color: 'rgba(251, 191, 36, 0.25)', radius: 125 }, // Director Office (Luxury Amber)
     ];
 
     lights.forEach(light => {
@@ -4228,22 +4228,22 @@ export class SpriteRenderer {
    * thảm trải sàn viền neon LED, vách ngăn kính mờ, đèn spotlight công nghiệp.
    */
   public static drawCustomCyberAIOfficeStructure(ctx: CanvasRenderingContext2D, width: number, height: number, frame: number) {
-    // 1. Nền tối sâu thẳm
-    ctx.fillStyle = '#060913';
+    // 1. Nền văn phòng sáng sạch, hiện đại
+    ctx.fillStyle = '#0f172a';
     ctx.fillRect(0, 0, width, height);
 
-    // 2. Tường hậu titan phía sau (Back Wall) từ y = 0 đến 125
+    // 2. Tường hậu titan phía sau (Back Wall) từ y = 0 đến 125 với tông màu xám sáng sang trọng
     const wallGrad = ctx.createLinearGradient(0, 0, 0, 125);
-    wallGrad.addColorStop(0, '#0a0f1d');
-    wallGrad.addColorStop(1, '#0f172a');
+    wallGrad.addColorStop(0, '#1e293b');
+    wallGrad.addColorStop(1, '#334155');
     ctx.fillStyle = wallGrad;
     ctx.fillRect(20, 15, width - 40, 110);
 
-    // Gờ phào trần nhà nhôm xước viền LED Cyan
-    ctx.fillStyle = '#1e293b';
+    // Gờ phào trần nhà nhôm xước viền LED Cyan sáng
+    ctx.fillStyle = '#475569';
     ctx.fillRect(20, 15, width - 40, 8);
     ctx.fillStyle = '#00f0ff';
-    ctx.fillRect(20, 22, width - 40, 1.5);
+    ctx.fillRect(20, 22, width - 40, 1.8);
 
     // 4 Cửa sổ kính lớn Skyline (Panoramic Windows): wx = [80, 400, 720, 1040], w = 250, h = 80, y = 28
     const windowPositions = [80, 400, 720, 1040];
@@ -4251,15 +4251,15 @@ export class SpriteRenderer {
     const winH = 80;
 
     windowPositions.forEach((wx, idx) => {
-      // Bầu trời đêm thành phố Cyberpunk
+      // Bầu trời thành phố công nghệ sáng xanh rạng rỡ
       const skyGrad = ctx.createLinearGradient(wx, 28, wx, 108);
-      skyGrad.addColorStop(0, '#030712');
-      skyGrad.addColorStop(0.5, '#1e1b4b');
-      skyGrad.addColorStop(1, '#0c4a6e');
+      skyGrad.addColorStop(0, '#0284c7');
+      skyGrad.addColorStop(0.6, '#38bdf8');
+      skyGrad.addColorStop(1, '#bae6fd');
       ctx.fillStyle = skyGrad;
       ctx.fillRect(wx, 28, winW, winH);
 
-      // Skyline các tòa nhà chọc trời Cyberpunk ngoài cửa sổ
+      // Skyline các tòa nhà chọc trời ngoài cửa sổ
       const bldCount = 6;
       for (let b = 0; b < bldCount; b++) {
         const bx = wx + b * 42 + 2;
@@ -4267,16 +4267,16 @@ export class SpriteRenderer {
         const bh = 30 + ((b * 17 + idx * 23) % 40);
         const by = 108 - bh;
 
-        ctx.fillStyle = b % 2 === 0 ? '#090d16' : '#0f172a';
+        ctx.fillStyle = b % 2 === 0 ? '#1e293b' : '#334155';
         ctx.fillRect(bx, by, bw, bh);
 
-        // Các ô cửa sổ nhà cao tầng phát sáng nhấp nháy
+        // Các ô cửa sổ nhà cao tầng phát sáng ấm áp
         for (let wy = by + 4; wy < 104; wy += 8) {
           for (let wcol = bx + 4; wcol < bx + bw - 4; wcol += 8) {
             const isLit = (wcol * 7 + wy * 13 + idx * 3) % 4 !== 0;
             if (isLit) {
               const isWarm = (wcol + wy) % 3 === 0;
-              ctx.fillStyle = isWarm ? 'rgba(254, 240, 138, 0.75)' : 'rgba(56, 189, 248, 0.75)';
+              ctx.fillStyle = isWarm ? 'rgba(254, 240, 138, 0.95)' : 'rgba(224, 242, 254, 0.95)';
               ctx.fillRect(wcol, wy, 4, 4);
             }
           }
@@ -4286,33 +4286,34 @@ export class SpriteRenderer {
       // Đại lộ xe bay (Animated Flying Cars) lướt ngang qua
       // Làn 1: Bay sang phải (y = 48)
       const car1X = wx + ((frame * 2.2 + idx * 120) % (winW + 60)) - 30;
-      ctx.fillStyle = '#38bdf8';
+      ctx.fillStyle = '#0284c7';
       ctx.fillRect(car1X, 48, 18, 5);
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(car1X + 16, 49, 2, 3);
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.45)';
       ctx.fillRect(car1X - 25, 49, 25, 3);
 
       // Làn 2: Bay sang trái (y = 72)
       const car2X = wx + winW - ((frame * 1.8 + idx * 90) % (winW + 60)) + 30;
-      ctx.fillStyle = '#a855f7';
+      ctx.fillStyle = '#8b5cf6';
       ctx.fillRect(car2X - 18, 72, 18, 5);
       ctx.fillStyle = '#ef4444'; // Đèn đuôi đỏ
       ctx.fillRect(car2X, 73, 2, 3);
-      ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.35)';
       ctx.fillRect(car2X + 2, 73, 25, 3);
 
-      // Khung kính cường lực viền kim loại nòng súng
-      ctx.strokeStyle = '#334155';
+      // Khung kính cường lực viền kim loại sáng
+      ctx.strokeStyle = '#64748b';
       ctx.lineWidth = 2;
       ctx.strokeRect(wx, 28, winW, winH);
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
       ctx.fillRect(wx, 28, winW, winH);
 
-      // Luồng sáng Cyber Volumetric Rays chiếu nghiêng rọi xuống sàn
-      const rayAlpha = 0.05 + Math.sin(frame * 0.03 + idx) * 0.02;
+      // Luồng sáng nắng ấm ban ngày chiếu nghiêng rọi xuống sàn (Warm Volumetric Sunlight Rays)
+      const rayAlpha = 0.14 + Math.sin(frame * 0.03 + idx) * 0.04;
       const rayGrad = ctx.createLinearGradient(wx + winW / 2, 108, wx + winW / 2 + 50, 240);
-      rayGrad.addColorStop(0, `rgba(56, 189, 248, ${rayAlpha * 1.5})`);
+      rayGrad.addColorStop(0, `rgba(254, 240, 138, ${rayAlpha * 1.6})`);
+      rayGrad.addColorStop(0.5, `rgba(56, 189, 248, ${rayAlpha * 1.2})`);
       rayGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
       ctx.fillStyle = rayGrad;
       ctx.beginPath();
@@ -4324,24 +4325,24 @@ export class SpriteRenderer {
       ctx.fill();
     });
 
-    // Chân tường 3D (Baseboard) viền LED Purple chạy ngang phòng ở y = 120
-    ctx.fillStyle = '#1e293b';
+    // Chân tường 3D (Baseboard) viền LED Cyan chạy ngang phòng ở y = 120
+    ctx.fillStyle = '#334155';
     ctx.fillRect(20, 120, width - 40, 5);
-    ctx.fillStyle = '#a855f7';
-    ctx.fillRect(20, 124, width - 40, 1.5);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(20, 124, width - 40, 1.8);
 
     // 3. Toàn bộ sàn nhà công nghệ cao Isometric (y = 125 đến 748)
     this.drawIsometricCyberFloor(ctx, 20, 125, width - 40, height - 145);
 
     // 4. Các vùng thảm chức năng có viền LED phát sáng (Floor Zoning)
     // Khu Giám Đốc (Executive Director Suite)
-    this.drawCyberRug(ctx, 40, 135, 430, 285, '#0369a1', '#fbbf24', 'PHÒNG GIÁM ĐỐC CHIẾN LƯỢC • DŨNG 1');
+    this.drawCyberRug(ctx, 40, 135, 430, 285, '#0284c7', '#fbbf24', 'PHÒNG GIÁM ĐỐC CHIẾN LƯỢC • DŨNG 1');
     // Khu Dãy Bàn Tech Pod (Dev, Arch, QA)
-    this.drawCyberRug(ctx, 40, 435, 630, 295, '#0f172a', '#06b6d4', 'TRẠM CÔNG NGHỆ CAO • DEV & ARCH & QA');
+    this.drawCyberRug(ctx, 40, 435, 630, 295, '#1e293b', '#06b6d4', 'TRẠM CÔNG NGHỆ CAO • DEV & ARCH & QA');
     // Khu Bàn Tròn Họp Hologram 3D (Central Deliberation Boardroom)
     this.drawCyberRoundMeetingRug(ctx, 1000, 340, 260, 155, frame);
     // Khu Sảnh Cafe & Ngắm Xe Bay (Skyline Lounge)
-    this.drawCyberRug(ctx, 690, 585, 640, 155, '#1e1b4b', '#f59e0b', 'SẢNH CAFE & XE BAY • SKYLINE LOUNGE');
+    this.drawCyberRug(ctx, 690, 585, 640, 155, '#3730a3', '#f59e0b', 'SẢNH CAFE & XE BAY • SKYLINE LOUNGE');
 
     // 5. Vách ngăn kính mờ (Frosted Cyber Partitions)
     this.drawCyberGlassPartition(ctx, 475, 135, 12, 285);
@@ -4356,7 +4357,7 @@ export class SpriteRenderer {
   }
 
   /**
-   * Sàn gạch công nghệ cao màu tối xám sang trọng phản chiếu ánh neon
+   * Sàn gạch công nghệ cao màu sáng sạch sang trọng phản chiếu ánh sáng tự nhiên
    */
   public static drawIsometricCyberFloor(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
     const tileW = 48;
@@ -4367,7 +4368,7 @@ export class SpriteRenderer {
     ctx.rect(x, y, w, h);
     ctx.clip();
 
-    ctx.fillStyle = '#0a0f1d';
+    ctx.fillStyle = '#1e293b';
     ctx.fillRect(x, y, w, h);
 
     const startCol = -4;
@@ -4381,7 +4382,7 @@ export class SpriteRenderer {
         const cy = y + r * tileH + (Math.abs(c) % 2 !== 0 ? tileH / 2 : 0);
 
         const isAlt = (Math.abs(c) + Math.abs(r)) % 2 === 0;
-        ctx.fillStyle = isAlt ? '#0c1222' : '#0e1628';
+        ctx.fillStyle = isAlt ? '#253349' : '#2b3a52';
 
         ctx.beginPath();
         ctx.moveTo(cx, cy - tileH / 2);
@@ -4391,8 +4392,17 @@ export class SpriteRenderer {
         ctx.closePath();
         ctx.fill();
 
-        ctx.strokeStyle = '#1e293b';
+        ctx.strokeStyle = '#3e5270';
+        ctx.lineWidth = 0.65;
+        ctx.stroke();
+
+        // Điểm viền phản quang nhẹ phía trên gạch
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
         ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(cx - tileW / 2 + 1, cy);
+        ctx.lineTo(cx, cy - tileH / 2 + 0.5);
+        ctx.lineTo(cx + tileW / 2 - 1, cy);
         ctx.stroke();
       }
     }

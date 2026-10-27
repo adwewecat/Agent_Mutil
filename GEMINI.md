@@ -770,20 +770,32 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Bản build đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
 - [x] Commit và sẵn sàng push toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 
-### [2026-10-27] Khắc Phục Triệt Để Lỗi Hiển Thị Modal Overlay & Bố Cục Bảng Thống Nhất
-- [x] **Nguyên nhân cốt lõi gây lỗi hiển thị khi lướt xuống dưới**:
-  - Class `.modal-overlay` bị thiếu trong file CSS, khiến popup `ConsensusModal` không có `position: fixed; inset: 0`, bị đẩy xuống cuối luồng tài liệu dưới dạng block tĩnh lệch về bên trái màn hình.
-  - Header vẫn hiển thị tên cũ `AGENT PIXELS • BỘ TỨ DŨNG` và logo `4D`.
-  - `.detail-grid` sử dụng `repeat(auto-fit, minmax(240px, 1fr))` khiến 4 cột bị lẻ (3 cột trên, 1 cột dưới kéo dài mất cân đối).
-  - Xuất hiện tình trạng duplicate UI (vừa render Modal vừa render ConsensusBoard nội tuyến cùng lúc).
-- [x] **Giải pháp đã thực thi**:
-  1. Thêm định dạng chuẩn cho `.modal-overlay`: `position: fixed; inset: 0; width: 100vw; height: 100vh; background: rgba(3, 7, 18, 0.85); backdrop-filter: blur(10px); z-index: 99999; display: flex; align-items: center; justify-content: center;`.
-  2. Mở rộng `.consensus-modal-wrapper` lên `max-width: 1200px` với `max-height: 90vh; overflow-y: auto;` giúp popup luôn căn giữa màn hình, viền neon phát sáng và cuộn mượt mà độc lập.
-  3. Căn chuẩn 4 cột đối xứng cho `.detail-grid` (`repeat(4, 1fr)` trên desktop, `repeat(2, 1fr)` trên tablet, `1fr` trên mobile).
-  4. Căn chuẩn 3 cột đối xứng cho `.compliance-analysis-grid` (`repeat(3, 1fr)`).
-  5. Cập nhật Header thành `3D` • `AGENT PIXELS • BỘ BA CHUYÊN GIA DŨNG`.
-  6. Ẩn `ConsensusBoard` nội tuyến khi Modal Popup đang mở, bổ sung nút mở lại Modal tại `WorkflowPanel`.
-- [x] Build `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 warning.
+### [2026-10-28] Nâng Cấp Giao Diện Sáng Hiện Đại, Bong Bóng Thoại Cỡ Lớn & Đối Thoại Tự Nhiên Hài Hước
+- [x] **Giao diện sáng sạch hiện đại (Luminous Cyber Aesthetic)**:
+  - **Virtual Canvas**: Nền tổng thể chuyển từ sắc đen tối `#060913` sang xanh titan sáng sang trọng `#0f172a`. Tường hậu titan gradient `#1e293b` đến `#334155`.
+  - **Bầu trời Skyline & Ánh sáng ban ngày**: Bầu trời thành phố công nghệ chuyển sang xanh ngọc rạng rỡ (`#0284c7` -> `#38bdf8`), luồng sáng nắng ấm xiên tự nhiên (Volumetric Sunlight God Rays `rgba(254, 240, 138, 0.22)`) và đèn spotlight công nghiệp rọi sàn ấm áp.
+  - **Sàn gạch Isometric sáng sạch**: Sàn gạch chuyển sang gam màu đá phiến hiện đại `#253349` / `#2b3a52`, ron gạch `#3e5270` kèm phản quang viền gạch tinh tế.
+  - **CSS Web Theme**: Tinh chỉnh `--bg-dark: #0f172a`, `--bg-card: rgba(30, 41, 59, 0.88)`, viền thẻ sáng hơn và radial gradient 3 vùng sáng (cyan, purple, emerald) giúp tổng thể app nổi bật, không bị tối tăm hay mỏi mắt.
+- [x] **Bong bóng thoại tranh luận cỡ lớn & Rõ nét (High-Readability Large Speech Bubble)**:
+  - Cải tiến toàn diện hàm `drawSpecialBubble` trên Canvas Engine:
+    - Font chữ lớn `12.5px bold` sắc nét, tương phản cao, dễ đọc từ mọi khoảng cách zoom camera.
+    - Cơ chế **Ngắt dòng tự động (Word-wrapping)** linh hoạt nhiều dòng (tối đa 320px mỗi dòng), loại bỏ hoàn toàn hiện tượng cắt cụt văn bản kèm dấu ba chấm (`...`).
+    - **Thanh Header huy hiệu phân vai**: Hiển thị rõ danh xưng và số năm kinh nghiệm (`🥩 DŨNG 1 • GĐ VẬN HÀNH F&B (40 NĂM KN)`, `💻 DŨNG 2 • GĐ PHẦN MỀM (40 NĂM KN)`, `⚡ DŨNG 3 • SENIOR FULLSTACK (30 NĂM KN)`).
+    - **4 cột Equalizer âm thanh**: Hiệu ứng sóng âm thanh trò chuyện nhảy nhót nhịp nhàng theo giọng nói.
+    - Mũi tên chỉ chuẩn xác vào đỉnh đầu nhân vật, kèm thuật toán kẹp tọa độ ngang (clamping) không bao giờ bị tràn ra mép màn hình.
+- [x] **Tự nhiên hóa hành vi nhân vật & Đối thoại phiếm hài hước (Humorous Battle-Tested Banter)**:
+  - Hệ thống máy trạng thái tự động trò chuyện phiếm (`activeDialogue` & `IDLE_DIALOGUES`) luân phiên kích hoạt mỗi 8 - 14s giữa 3 nhân viên khi không có cuộc họp.
+  - 8 kịch bản đối thoại hài hước, phản ánh đúng 40 năm kinh nghiệm F&B, 40 năm Software và 30 năm Fullstack Dev:
+    1. *Đổi mới số hóa vs Chảo lửa phở lag*: Khách đói lả quét QR mà xoay vòng thì bay sang tiệm phở bên cạnh.
+    2. *Trà sen vs Cà phê đen phin*: Bác Dũng 1 chiêu đãi cà phê để sinh Clean Code 0 bug.
+    3. *So găng Toast POS & Square bên Mỹ*: Hệ thống Việt Nam tải 50K TPS mượt mà khiến đối thủ toàn cầu nể phục.
+    4. *Kèo bi-a nỉ Simonis*: Bác Dũng 1 chấp mỗi chú 3 cơ, thua trả tiền cà phê.
+    5. *Trà sữa trân châu full topping*: Code không bug mới được ship 3 cốc size khổng lồ về tận bàn.
+    6. *Đứt cáp quang biển*: Offline-First SQLite Sync gánh team, in đơn nội bộ ầm ầm không mất 1 xu doanh thu.
+    7. *Bàn phím cơ Switch Blue*: Gõ lạch cạch vui tai như bếp trưởng xào rau.
+    8. *Nụ cười phục vụ Haidilao*: Phần mềm giải phóng sức lao động, con người quyết định cảm xúc ấm áp.
+  - Diễn hoạt tranh luận trực tiếp (Giai đoạn 1), bàn giao nhiệm vụ (Giai đoạn 3) và nghiệm thu phần mềm (Giai đoạn 5) được cập nhật đồng bộ các câu thoại thực chiến dí dỏm, sống động.
+- [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
 - [x] Đã commit và đẩy code lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git`.
 
 ---

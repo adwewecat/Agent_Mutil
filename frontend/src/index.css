@@ -4,21 +4,21 @@
    ============================================================================== */
 
 :root {
-  --bg-dark: #0b0f19;
-  --bg-card: rgba(17, 24, 39, 0.85);
-  --bg-card-hover: rgba(30, 41, 59, 0.95);
-  --border-color: rgba(255, 255, 255, 0.1);
-  --border-active: rgba(56, 189, 248, 0.4);
+  --bg-dark: #0f172a;
+  --bg-card: rgba(30, 41, 59, 0.88);
+  --bg-card-hover: rgba(51, 65, 85, 0.95);
+  --border-color: rgba(255, 255, 255, 0.16);
+  --border-active: rgba(56, 189, 248, 0.6);
   
-  --primary-blue: #3b82f6;
-  --architect-purple: #8b5cf6;
+  --primary-blue: #38bdf8;
+  --architect-purple: #a855f7;
   --dev-green: #10b981;
-  --qa-red: #ef4444;
-  --gold-accent: #f59e0b;
+  --qa-red: #f43f5e;
+  --gold-accent: #fbbf24;
   
   --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-sub: #64748b;
+  --text-muted: #cbd5e1;
+  --text-sub: #94a3b8;
 
   --font-main: 'Outfit', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -39,8 +39,9 @@ body {
   line-height: 1.5;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(circle at 15% 15%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+    radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.14) 0%, transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(168, 85, 247, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.10) 0%, transparent 50%);
 }
 
 /* Scrollbar tùy biến */

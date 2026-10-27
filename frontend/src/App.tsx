@@ -175,18 +175,34 @@ export const App: React.FC = () => {
       soundFx.playAlert();
       setCurrentStageText('Giai đoạn 1: Nhân viên 1 (F&B) & Nhân viên 2 (Software) đang tranh luận nảy lửa và đối chiếu đối thủ thị trường...');
 
-      // Diễn hoạt bong bóng thoại tranh luận nảy lửa trên đầu Nhân viên 1 & Nhân viên 2
-      canvasRef.current?.setCustomBubble('dung_1', '🥩 NV1 (40 năm F&B): Bóc tách quy trình gọi món, case study McDonald\'s & Starbucks...', 3500);
-      await sleep(1800);
+      // Diễn hoạt bong bóng thoại tranh luận nảy lửa và hài hước giữa Dũng 1 & Dũng 2
+      canvasRef.current?.setCustomBubble(
+        'dung_1',
+        'Chú Dũng 2 nhìn xem! Giờ cao điểm khách đói lả mà app xoay vòng là họ sang tiệm phở bên cạnh ngay! McDonald\'s & Starbucks họ tối ưu từng mili-giây kìa!',
+        4500
+      );
+      await sleep(2400);
 
-      canvasRef.current?.setCustomBubble('dung_2', '💻 NV2 (40 năm Software): Phản biện toàn diện hệ thống, Toast POS & rủi ro nghẽn mạng...', 3500);
-      await sleep(1800);
+      canvasRef.current?.setCustomBubble(
+        'dung_2',
+        'Bác Dũng 1 cứ nóng! Toast POS bên Mỹ từng sập cả chuỗi vì nghẽn mạng! Hệ thống của em bọc giáp HMAC SHA-256 chống tráo mã QR, cộng Offline-First SQLite mới an toàn tuyệt đối!',
+        4500
+      );
+      await sleep(2400);
 
-      canvasRef.current?.setCustomBubble('dung_1', '⚡ NV1: Tranh luận nảy lửa về rớt đơn, gian lận QR và rủi ro giờ cao điểm!', 3500);
-      await sleep(1800);
+      canvasRef.current?.setCustomBubble(
+        'dung_1',
+        'Nói hay lắm! Nhưng quy trình phải thực chiến: Khách quét QR là bếp KDS nổ chuông liền, chứ khách chờ 15 phút không thấy đĩa sườn là bác trừ lương chú đấy nhé! 🥩',
+        4500
+      );
+      await sleep(2400);
 
-      canvasRef.current?.setCustomBubble('dung_2', '🛡️ NV2: Chốt tỷ lệ % đáp ứng, giải pháp mềm SOP & khóa đặc tả cho Dev 3!', 3500);
-      await sleep(1800);
+      canvasRef.current?.setCustomBubble(
+        'dung_2',
+        'Haha bác cứ yên tâm! Em chốt tỷ lệ 98% tự động, 2% SOP dự phòng. Lập ngay Bảng Thống Nhất trình sếp duyệt cho Dũng 3 code nào! 🛡️',
+        4500
+      );
+      await sleep(2000);
 
       // Kích hoạt tranh luận trên Backend
       const newMsgs = await api.triggerWorkflow(session.id, 'initial_deliberation');
@@ -232,11 +248,23 @@ export const App: React.FC = () => {
       setCurrentStageText('Giai đoạn 3: Người dùng đã duyệt các ý! Nhân viên 1 & 2 chuyển giao cái cần thực thi cho Nhân viên 3...');
 
       // Hoạt ảnh bong bóng thoại trên đầu 3 nhân viên khi chốt bàn giao nhiệm vụ
-      canvasRef.current?.setCustomBubble('dung_1', `📋 NV1: Đã nhận lệnh duyệt ${selectedFeatureIds.length} ý từ Bạn, bàn giao cho Dev 3!`, 3000);
-      await sleep(1500);
-      canvasRef.current?.setCustomBubble('dung_2', '📐 NV2: Đã khóa spec kỹ thuật HMAC SHA-256 & Idempotency Key!', 3000);
-      await sleep(1500);
-      canvasRef.current?.setCustomBubble('dung_3', '👨‍💻 NV3 (Dev 30 năm KN): Tiếp nhận nhiệm vụ đã duyệt, sẵn sàng lập trình Clean Code!', 3000);
+      canvasRef.current?.setCustomBubble(
+        'dung_1',
+        `Sếp đã duyệt chuẩn chỉ ${selectedFeatureIds.length} ý rồi! Bác chiêu đãi chú Dũng 3 ly cà phê đen phin, vào Dev Lab múa phím đi nào! ☕`,
+        4200
+      );
+      await sleep(2200);
+      canvasRef.current?.setCustomBubble(
+        'dung_2',
+        'Spec khóa chặt từng endpoint HMAC SHA-256 & Idempotency Key rồi nhé! Code chuẩn không bug thì trưa nay có trà sữa full topping! 🧋',
+        4200
+      );
+      await sleep(2200);
+      canvasRef.current?.setCustomBubble(
+        'dung_3',
+        'Rõ như ban ngày hai sếp ơi! 30 năm gõ phím cơ thì mấy cái API này em giải quyết trong một nốt nhạc, 0 warning 0 bug luôn! ⚡',
+        4200
+      );
 
       const deepDiveMsgs = await api.selectFeaturesAndDeepDive(currentSession.id, selectedFeatureIds);
       setMessages(prev => [...prev, ...deepDiveMsgs]);
@@ -268,7 +296,11 @@ export const App: React.FC = () => {
       soundFx.playType();
 
       // Hoạt ảnh gõ code trên đầu Nhân viên 3
-      canvasRef.current?.setCustomBubble('dung_3', '⚡ Đang gõ phím Clean Code: FastAPI + HMAC SHA-256 + Idempotency...', 3500);
+      canvasRef.current?.setCustomBubble(
+        'dung_3',
+        '⚡ Switch Blue gõ vang lừng cả phòng! FastAPI async non-blocking, bọc HMAC SHA-256 giáp Iron Man, benchmark 1.2ms nuột nà!',
+        4500
+      );
 
       // Chờ 3.0s mô phỏng gõ phím ở Dev Lab
       await sleep(3000);
@@ -292,11 +324,23 @@ export const App: React.FC = () => {
       setCamera('boardroom');
 
       // Hoạt ảnh báo cáo và nghiệm thu trên đầu 3 nhân viên
-      canvasRef.current?.setCustomBubble('dung_3', '📋 NV3: Đã lập trình xong phần mềm theo các ý duyệt, kính trình nghiệm thu!', 3500);
-      await sleep(1800);
-      canvasRef.current?.setCustomBubble('dung_1', '✅ NV1 (GĐ F&B): Nghiệm thu quy trình vận hành & chống rớt đơn tuyệt đối!', 3500);
-      await sleep(1800);
-      canvasRef.current?.setCustomBubble('dung_2', '🏆 NV2 (GĐ Phần mềm): Nghiệm thu Clean Code 1.5ms, ký phê chuẩn bàn giao!', 3500);
+      canvasRef.current?.setCustomBubble(
+        'dung_3',
+        'Báo cáo hai sếp lớn! Clean Code FastAPI Async + HMAC SHA-256 + bộ Unit Test đã lên nòng, benchmark 1.2ms nuột nà kính trình nghiệm thu!',
+        4500
+      );
+      await sleep(2200);
+      canvasRef.current?.setCustomBubble(
+        'dung_1',
+        'Tuyệt vời chú em! Quy trình F&B chuẩn chỉnh thế này thì nhà hàng chạy mượt hơn cả Haidilao, duyệt ngay và luôn! Chiều anh khao bia! 🍻',
+        4500
+      );
+      await sleep(2200);
+      canvasRef.current?.setCustomBubble(
+        'dung_2',
+        'Code quá sạch, kiến trúc chuẩn OpenAPI không một vết xước! Em ký biên bản nghiệm thu chuyển giao cho Sếp ngay! 🏆',
+        4500
+      );
 
       // Âm thanh vinh quang và TỰ ĐỘNG BẬT POPUP BÁO CÁO NGHIỆM THU CHO NGƯỜI DÙNG
       soundFx.playSuccess();
