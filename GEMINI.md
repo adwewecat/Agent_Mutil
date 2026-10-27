@@ -617,6 +617,35 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - `frontend/src/office/mapData.ts`, `frontend/src/office/engine.ts`, `frontend/src/App.tsx`, `frontend/src/office/spriteRenderer.ts`.
   - Build frontend `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
 
+### [2026-10-27] Tự Thiết Kế Kiến Trúc & Nội Thất Cyber A.I Bằng Code (Chấm Dứt Hoàn Toàn Lỗi Ngồi Trên Tường & Ghế Ảo)
+- [x] **Nguyên nhân gốc rễ lỗi "ngồi trên tường / ngoài cửa sổ"**:
+  - Việc dựa vào bức ảnh tĩnh 2.5D phối cảnh cố định (`cyberpunk_office.jpg`) khiến mọi phép biến đổi tọa độ 2D bị xung đột parallax: khi nhân vật dịch chuyển để tránh mặt bàn thì bị đẩy lên tường kính kịch trần hoặc lọt ra ngoài đại lộ xe bay; các ghế in chết trên ảnh nền không thể tự di chuyển hay biến mất linh hoạt.
+- [x] **Giải pháp: Chuyển sang Tự Thiết Kế & Quản Lý 100% Kiến Trúc Bằng Code Canvas (Procedural Cyber A.I Office)**:
+  - **Kiến trúc phòng 16:9 (1376 x 768)** được tính toán bằng các hàm toán học chính xác:
+    + **Tường hậu Titan (Back Wall)**: Nằm gọn từ `y = 0` đến `y = 125`, có gờ phào trần nhôm xước viền LED Cyan `#00f0ff` và chân tường phào 3D viền tím `#a855f7`.
+    + **4 Cửa Sổ Kính Lớn Skyline (Panoramic Windows)**: Đặt tại `y = 28..108` ngắm nhìn thành phố chọc trời Cyberpunk về đêm, đại lộ xe bay 2 chiều (`Animated Flying Cars`) có đèn pha và vệt sáng laser chống trọng lực, chùm tia sáng mặt trời/ánh trăng chiếu nghiêng (Volumetric God Rays).
+    + **Sàn Công Nghệ Cao Isometric (`y = 125..748`)**: Ma trận gạch công nghệ cao màu tối xám sang trọng (`#0a0f1d`), phản chiếu ánh sáng đèn trần và neon.
+    + **Vùng Thảm Chức Năng Phân Khu (Floor Zoning)**:
+      * Phòng Giám Đốc Điều Hành (Dũng 1): Thảm xanh Sapphire viền vàng hoàng kim (`40, 135, 320, 265`).
+      * Trạm Công Nghệ Cao (Dũng 2, Dũng 3, Dũng 4): Thảm xám than viền Cyan công nghệ (`40, 435, 600, 285`).
+      * Bàn Tròn Họp Hologram 3D (Boardroom): Thảm tròn xoay sóng phát xạ neon kép (`1000, 340`).
+      * Sảnh Cafe & Ngắm Xe Bay (Skyline Lounge): Thảm tím than viền hổ phách (`680, 585, 650, 155`).
+    + **Vách Ngăn Kính Mờ Kỹ Thuật Số (Frosted Cyber Partitions)**: Phân tách không gian tinh tế tại `x = 360`, `x = 640`, và `y = 565`.
+    + **Hệ thống Đèn Trần Công Nghiệp Rọi Nón (Spotlights)** & Bụi Cyber Nano Ambient lơ lửng.
+- [x] **Nội Thất Cyberpunk Pixel-Perfect & Z-Depth Sorting 100%**:
+  - **Bàn Giám Đốc Hoàng Gia (Dũng 1 - `(180, 205)`)**: Bàn mặt kính titan đen viền vàng hoàng kim, laptop mỏng, điện thoại doanh nhân, tách cà phê bốc khói; Dũng 1 ngồi tựa lưng trên ghế da đen sang trọng tại `(180, 205)`.
+  - **Trạm Lập Trình Dev Lab (Dũng 3 - `(145, 555)`)**: Trạm bàn thép xước (`x: 50, y: 510`), 2 màn hình cong 32" cuộn code ma trận xanh ngọc, case PC tản nhiệt nước RGB, bàn phím cơ; Dũng 3 ngồi ghế lưới công thái học tại `(145, 555)` gõ phím liên tục.
+  - **Trạm Kiến Trúc & PM (Dũng 2 - `(340, 555)`)**: Trạm bàn thép xước (`x: 250, y: 510`), màn hình HUD DAG microservices tím neon đo độ trễ `1.2ms`, tablet thiết kế; Dũng 2 ngồi ghế lưới tại `(340, 555)` phân tích kiến trúc.
+  - **Trạm Kiểm Thử QA & An Ninh (Dũng 4 - `(535, 555)`)**: Trạm bàn thép xước (`x: 450, y: 510`), màn hình radar an ninh 360 độ quét liên tục, ma trận `STRESS TEST 5,000 TPS OK`; Dũng 4 ngồi ghế lưới tại `(535, 555)` giám sát bảo mật.
+  - **Bàn Tròn Họp Hologram 3D (Boardroom - `(1000, 340)`)**: Bàn tròn viền LED Cyan, máy chiếu Hologram chiếu thẳng đứng lõi thành phố 3D Wireframe xoay tròn. Khi họp, cả 4 Dũng ngồi đối xứng quanh bàn: Dũng 1 `(1000, 245)`, Dũng 2 `(810, 340)`, Dũng 3 `(1000, 445)`, Dũng 4 `(1190, 340)`.
+  - **Ghế Tự Động Biến Mất / Xuất Hiện Thông Minh**: Không còn bất kỳ chiếc ghế "ảo" hay "ma" nào: khi nhân viên đang ngồi làm việc, chỉ hiển thị nhân viên ngồi trên ghế; khi nhân viên đứng dậy đi họp hoặc đi dạo, ghế trống tự động vẽ lại tại đúng vị trí bàn đó.
+- [x] **Đồng Bộ Hoàn Toàn Hệ Thống**:
+  - `backend/app/services/office_manager.py` (ROOM_COORDINATES, BOARDROOM_SEATS, DEFAULT_AGENTS).
+  - SQLite Database `backend/agent_multi.db`.
+  - `frontend/src/office/mapData.ts`, `frontend/src/office/engine.ts`, `frontend/src/App.tsx`, `frontend/src/office/spriteRenderer.ts`.
+  - Build `npm.cmd run build` hoàn tất 100%, 0 lỗi, 0 cảnh báo.
+  - Sẵn sàng đẩy code lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

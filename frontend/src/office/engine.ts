@@ -8,20 +8,20 @@ import { SpriteRenderer } from './spriteRenderer';
 import { soundFx } from './soundEffects';
 import { ImageLoader } from './imageLoader';
 
-// Tọa độ các bàn làm việc và trạm chuyên môn của 4 Dũng trong Cyberpunk Office 16:9 (1376x768)
+// Tọa độ các bàn làm việc và trạm chuyên môn của 4 Dũng trong Cyberpunk AI Office 16:9 (1376x768)
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
-  dung_1: { x: 770, y: 235, room: 'director_office', status: 'idle' },  // Ghế VIP Giám Đốc phía trên bàn tròn bao quát toàn phòng
-  dung_2: { x: 475, y: 370, room: 'architect_office', status: 'idle' }, // Trạm Kiến Trúc & PM (Desk 2 - Nữ)
-  dung_3: { x: 325, y: 490, room: 'dev_lab', status: 'coding' },        // Trạm Cyber Dev Lab (Desk 1 - Nam)
-  dung_4: { x: 610, y: 265, room: 'games_room', status: 'testing' },    // Trạm QA & Test (Desk 3 - Nữ)
+  dung_1: { x: 180, y: 205, room: 'director_office', status: 'idle' },  // Bàn Giám Đốc Executive Suite (Nam)
+  dung_2: { x: 340, y: 555, room: 'architect_office', status: 'idle' }, // Trạm Kiến Trúc & PM (Nữ)
+  dung_3: { x: 145, y: 555, room: 'dev_lab', status: 'coding' },        // Trạm Cyber Dev Lab (Nam)
+  dung_4: { x: 535, y: 555, room: 'games_room', status: 'testing' },    // Trạm QA & Test (Nữ)
 };
 
 // Chỗ ngồi quanh bàn tròn trung tâm khi diễn ra họp hoặc tranh luận dự án Hologram 3D (tất cả quay mặt vào Hologram)
 const MEETING_SEATS: Record<string, { x: number; y: number }> = {
-  dung_1: { x: 770, y: 235 },   // Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
-  dung_2: { x: 720, y: 520 },   // Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
-  dung_3: { x: 950, y: 700 },   // Phía dưới bàn tròn (Dũng 3 - Nam Dev)
-  dung_4: { x: 1190, y: 550 },  // Bên phải bàn tròn (Dũng 4 - Nữ QA)
+  dung_1: { x: 1000, y: 245 },  // Ghế Bắc: Phía trên bàn tròn (Dũng 1 - Nam Giám đốc)
+  dung_2: { x: 810, y: 340 },   // Ghế Tây: Bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
+  dung_3: { x: 1000, y: 445 },  // Ghế Nam: Phía dưới bàn tròn (Dũng 3 - Nam Dev)
+  dung_4: { x: 1190, y: 340 },  // Ghế Đông: Bên phải bàn tròn (Dũng 4 - Nữ QA)
 };
 
 export class OfficeEngine {
