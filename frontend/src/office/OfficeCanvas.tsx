@@ -7,6 +7,7 @@ import { MousePointerClick, Navigation } from 'lucide-react';
 export interface OfficeCanvasHandle {
   moveAgent: (code: string, targetX: number, targetY: number, status?: string) => void;
   selectAgent: (code: string | null) => void;
+  cancelBreak: () => void;
 }
 
 interface OfficeCanvasProps {
@@ -36,7 +37,12 @@ export const OfficeCanvas = forwardRef<OfficeCanvasHandle, OfficeCanvasProps>(({
     },
     selectAgent: (code: string | null) => {
       if (engineRef.current) {
-        engineRef.current.selectedAgentCode = code;
+        engineRef.current.selectAgent(code);
+      }
+    },
+    cancelBreak: () => {
+      if (engineRef.current) {
+        engineRef.current.cancelBreak();
       }
     },
   }));

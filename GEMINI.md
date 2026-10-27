@@ -571,6 +571,30 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
   - Build `npm.cmd run build` trong `frontend/` đạt 100% thành công, 0 lỗi, 0 warning.
   - Commit và đẩy toàn bộ mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-27] Tương Tác Chọn Xem Hồ Sơ & Điều Động, Chuẩn Hóa Ghế Ngồi, Đi Dạo Tự Hành & Gom Bàn Họp
+- [x] **Tương tác click chọn nhân vật & Xem hồ sơ chi tiết (Agent Profile Modal)**:
+  - Khắc phục triệt để lỗi không click được: Mở rộng vùng hitbox toàn thân từ 22px tròn ở chân thành bounding box toàn diện (`wx: pos_x ± 45px`, `wy: pos_y - charH` đến `pos_y + 15px`).
+  - Khi click vào bất kỳ Dũng nào trên Canvas hoặc Thẻ Sidebar:
+    + Bật vòng tròn hào quang Neon đồng bộ phát sáng quanh chân nhân vật và mũi tên chỉ định hướng trên đầu.
+    + Mở modal **Hồ sơ nhân sự (`AgentProfileModal`)**: hiển thị avatar, tên, giới tính (`👨 Nam` / `👩 Nữ`), năm kinh nghiệm (25/40 năm), chuyên môn cốt lõi, vị trí và trạng thái hiện tại.
+    + Cung cấp 3 nút điều động nhanh: "Bàn làm việc", "Vào bàn họp", "Sảnh Cafe / Đi dạo".
+    + Hỗ trợ click sàn để điều động nhân vật đi bộ tới tọa độ chỉ định tức thì.
+- [x] **Căn chuẩn ghế ngồi và hướng nhìn (Không còn ngồi ngoài, không quay lưng ra bàn)**:
+  - Khắc phục triệt để tình trạng ngồi sai tọa độ do dùng nhầm biến tọa độ cũ `targetCoords` trong `App.tsx`:
+    + **Trạm Cyber Dev Lab (Dũng 3 - Nam)**: `(215, 565)`, ngồi đúng ghế tại Desk 1, hai tay gõ phím hướng vào 2 màn hình code matrix.
+    + **Trạm Kiến Trúc & PM (Dũng 2 - Nữ)**: `(410, 460)`, ngồi đúng ghế tại Desk 2, hai tay gõ phím phân tích microservices hướng vào máy tính.
+    + **Trạm QA & Stress Test (Dũng 4 - Nữ)**: `(610, 340)`, ngồi đúng ghế tại Desk 3, hai tay gõ phím kiểm thử bảo mật hướng vào máy tính.
+    + **Executive Director (Dũng 1 - Nam)**: `(750, 470)`, ngồi ghế điều hành chiến lược nhìn ra không gian văn phòng.
+  - Loại bỏ các hộp HUD nổi làm che khuất bàn ghế, dịch chuyển tâm máy chiếu Hologram 3D về đúng tâm lõi thành phố 3D trong bàn tròn (`cx: 948, cy: 499`), giữ trọn vẹn vẻ photorealistic của bối cảnh.
+- [x] **Hành vi đi dạo tự hành (Autonomous Roaming) & Gom lại bàn họp khi có vấn đề**:
+  - **Lâu lâu đứng dậy đi lại**: Sau mỗi 20-35 giây, nhân viên đang rảnh tự động đứng dậy đi dạo ngắm đại lộ xe bay tại sảnh kính `(1050, 620)` hoặc đi pha tách cà phê nóng `(500, 680)` trong 6.5 giây kèm bong bóng suy nghĩ sinh động, sau đó tự quay về bàn làm việc.
+  - **Gom lại bàn họp khi có vấn đề**: Bất kỳ khi nào người dùng gửi đề bài hoặc bấm "Kích hoạt quy trình" hay "Họp", hệ thống lập tức hủy mọi trạng thái nghỉ/đi dạo, **toàn bộ 4 Dũng AI đồng loạt đứng dậy bước về 4 ghế chỉ định quanh bàn tròn trung tâm (`Dũng 1: 750, 470`, `Dũng 2: 600, 550`, `Dũng 3: 680, 760`, `Dũng 4: 880, 770`)**, tất cả đều quay mặt vào Hologram 3D để mở phiên tranh luận chiến lược.
+- [x] **Đồng bộ toàn diện Backend, SQLite DB & Build Production**:
+  - Đồng bộ `ROOM_COORDINATES`, `BOARDROOM_SEATS` và `DEFAULT_AGENTS` trong `backend/app/services/office_manager.py`.
+  - Cập nhật trực tiếp vào cơ sở dữ liệu `agent_multi.db`.
+  - Build `npm.cmd run build` trong `frontend/` hoàn tất sạch sẽ 100%, 0 lỗi, 0 warning.
+  - Commit và đẩy mã nguồn lên GitHub `https://github.com/adwewecat/Agent_Mutil.git`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

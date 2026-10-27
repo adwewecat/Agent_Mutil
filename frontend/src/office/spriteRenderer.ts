@@ -4422,53 +4422,105 @@ export class SpriteRenderer {
     const isMoving = agent.status === 'moving';
     const isFemale = agent.code === 'dung_2' || agent.code === 'dung_4';
     const facingLeft = isMoving && (agent.target_x < agent.pos_x);
+    const isSelected = agent.code === (window as any).__selectedAgentCode;
 
     let sprite: HTMLImageElement | null = null;
-    let charH = 150;
+    let charH = 140;
     let flipHoriz = false;
 
     if (isMoving) {
       // 1. TRẠNG THÁI ĐI BỘ: Di chuyển qua lại trong văn phòng
       sprite = isFemale ? ImageLoader.getCharacter('female_walk') : ImageLoader.getCharacter('male_walk');
-      const depthScale = Math.min(1.0, Math.max(0.70, (y - 300) / 450));
-      charH = Math.round((isFemale ? 152 : 160) * depthScale);
+      const depthScale = Math.min(1.0, Math.max(0.68, (y - 250) / 450));
+      charH = Math.round((isFemale ? 150 : 158) * depthScale);
       flipHoriz = facingLeft;
     } else {
-      // 2. TRẠNG THÁI NGỒI LÀM VIỆC & HỌP TRÊN GHẾ XOAY CÔNG THÁI HỌC
-      if (agent.code === 'dung_1') {
-        // Dũng 1: Nam Giám Đốc ngồi ghế điều hành bàn tròn
-        sprite = ImageLoader.getCharacter('male_sitting_chair');
-        charH = 145;
-      } else if (agent.code === 'dung_2') {
-        // Dũng 2: Nữ Kiến Trúc Sư ngồi ghế tại bàn kiến trúc (lật ngang để hướng vào bàn máy tính)
-        sprite = ImageLoader.getCharacter('female_sitting_chair');
-        charH = 132;
-        flipHoriz = true;
-      } else if (agent.code === 'dung_3') {
-        // Dũng 3: Nam Fullstack Dev ngồi ghế gõ phím tại bàn Cyber Dev Lab
-        if (agent.current_room === 'boardroom' || agent.status === 'debating') {
+      // 2. TRẠNG THÁI NGỒI LÀM VIỆC & HỌP TRÊN GHẾ CÔNG THÁI HỌC
+      const isMeeting = agent.current_room === 'boardroom' || agent.status === 'debating';
+
+      if (isMeeting) {
+        // TẠI BÀN HỌP TRÒN TRUNG TÂM: Tất cả đều quay mặt VÀO TRUNG TÂM BÀN HỌP VÀ HOLOGRAM 3D
+        if (agent.code === 'dung_1') {
+          // Dũng 1: Nam Giám Đốc ngồi ghế chỉ đạo phía trên bàn tròn, nhìn xuống bàn và người xem
           sprite = ImageLoader.getCharacter('male_sitting_chair');
-          charH = 145;
-        } else {
+          charH = 120;
+          flipHoriz = false;
+        } else if (agent.code === 'dung_2') {
+          // Dũng 2: Nữ Kiến Trúc Sư ngồi ghế bên trái bàn tròn, quay mặt sang phải vào trung tâm bàn họp
+          sprite = ImageLoader.getCharacter('female_sitting_chair');
+          charH = 125;
+          flipHoriz = true;
+        } else if (agent.code === 'dung_3') {
+          // Dũng 3: Nam Fullstack Dev ngồi ghế dưới bên trái bàn tròn, hướng lên bàn họp
           sprite = ImageLoader.getCharacter('male_typing_chair');
-          charH = 150;
+          charH = 135;
+          flipHoriz = false;
+        } else if (agent.code === 'dung_4') {
+          // Dũng 4: Nữ QA Lead ngồi ghế dưới bên phải bàn tròn, hướng lên bàn họp
+          sprite = ImageLoader.getCharacter('female_typing_chair');
+          charH = 135;
+          flipHoriz = true;
         }
-      } else if (agent.code === 'dung_4') {
-        // Dũng 4: Nữ QA Lead ngồi ghế tại bàn kiểm định QA Lab
-        sprite = ImageLoader.getCharacter('female_sitting_chair');
-        charH = 115;
-        flipHoriz = true;
+      } else {
+        // TẠI BÀN LÀM VIỆC RIÊNG BIỆT: Ngồi đúng ghế, gõ phím hướng vào máy tính và màn hình
+        if (agent.code === 'dung_1') {
+          // Dũng 1: Nam Giám Đốc tại bàn điều hành chiến lược
+          sprite = ImageLoader.getCharacter('male_sitting_chair');
+          charH = 125;
+          flipHoriz = false;
+        } else if (agent.code === 'dung_2') {
+          // Dũng 2: Nữ Kiến Trúc Sư tại Desk 2 ngồi gõ phím phân tích kiến trúc hướng vào máy tính
+          sprite = ImageLoader.getCharacter('female_typing_chair');
+          charH = 122;
+          flipHoriz = true;
+        } else if (agent.code === 'dung_3') {
+          // Dũng 3: Nam Fullstack Dev tại Desk 1 ngồi gõ phím lập trình Clean Code hướng vào máy tính
+          sprite = ImageLoader.getCharacter('male_typing_chair');
+          charH = 142;
+          flipHoriz = false;
+        } else if (agent.code === 'dung_4') {
+          // Dũng 4: Nữ QA Lead tại Desk 3 ngồi gõ phím kiểm thử bảo mật hướng vào máy tính
+          sprite = ImageLoader.getCharacter('female_typing_chair');
+          charH = 105;
+          flipHoriz = true;
+        }
       }
     }
 
     if (sprite) {
       const charW = Math.round(charH * (sprite.naturalWidth / sprite.naturalHeight));
-      const bob = isMoving ? Math.abs(Math.sin(frame * 0.22)) * 3 : (agent.status === 'coding' ? Math.sin(frame * 0.3) * 0.6 : 0);
+      const bob = isMoving
+        ? Math.abs(Math.sin(frame * 0.22)) * 3
+        : (agent.status === 'coding' || agent.status === 'testing' ? Math.sin(frame * 0.3) * 0.6 : 0);
       const drawX = x - charW / 2;
       const drawY = y - charH - bob;
 
+      // Hiệu ứng vòng tròn phát sáng Neon khi nhân vật được người dùng click chọn
+      if (isSelected) {
+        ctx.save();
+        const pulse = Math.sin(frame * 0.12) * 3;
+        ctx.strokeStyle = isFemale ? '#ec4899' : '#38bdf8';
+        ctx.lineWidth = 2.5;
+        ctx.shadowColor = isFemale ? '#ec4899' : '#38bdf8';
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.ellipse(x, y + 2, charW * 0.5 + pulse, 10 + pulse * 0.3, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Mũi tên chỉ định hướng trên đầu nhân vật đang chọn
+        ctx.fillStyle = isFemale ? '#ec4899' : '#38bdf8';
+        ctx.beginPath();
+        const arrowY = drawY - 26 + Math.sin(frame * 0.15) * 3;
+        ctx.moveTo(x, arrowY + 6);
+        ctx.lineTo(x - 5, arrowY);
+        ctx.lineTo(x + 5, arrowY);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
       // Đổ bóng chân / bánh xe trên sàn
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
       ctx.beginPath();
       ctx.ellipse(x, y + 2, charW * 0.38, 7, 0, 0, Math.PI * 2);
       ctx.fill();
@@ -4494,9 +4546,11 @@ export class SpriteRenderer {
       const tw = ctx.measureText(badgeText).width;
       const bw = tw + 14;
 
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-      ctx.strokeStyle = isFemale ? 'rgba(236, 72, 153, 0.6)' : 'rgba(56, 189, 248, 0.6)';
-      ctx.lineWidth = 1;
+      ctx.fillStyle = isSelected ? 'rgba(15, 23, 42, 0.95)' : 'rgba(15, 23, 42, 0.85)';
+      ctx.strokeStyle = isSelected
+        ? (isFemale ? '#ec4899' : '#38bdf8')
+        : (isFemale ? 'rgba(236, 72, 153, 0.6)' : 'rgba(56, 189, 248, 0.6)');
+      ctx.lineWidth = isSelected ? 1.5 : 1;
       ctx.roundRect(x - bw / 2, badgeY - 14, bw, 15, 3);
       ctx.fill();
       ctx.stroke();
@@ -4510,10 +4564,11 @@ export class SpriteRenderer {
 
   /**
    * 9. Bàn tròn trung tâm: Chiếu Hologram 3D xoay vòng đỉnh cao (Center Round Table Hologram)
+   * Tọa độ chuẩn xác trùng khớp tâm lõi thành phố 3D trong Cyberpunk Office (cx: 948, cy: 499)
    */
   public static drawCenterRoundTableHologram(ctx: CanvasRenderingContext2D, frame: number) {
-    const cx = 690;
-    const cy = 665;
+    const cx = 948;
+    const cy = 499;
 
     ctx.save();
 
@@ -4521,55 +4576,38 @@ export class SpriteRenderer {
     // VÒNG TRÒN PHÁT SÓNG EMITTER MỞ RỘNG TRÊN MẶT BÀN (Pulsing Emitter Rings)
     // ─────────────────────────────────────────────────────────────────────────
     for (let r = 0; r < 3; r++) {
-      const pulseProgress = ((frame * 0.6 + r * 22) % 65) / 65;
-      const radius = 6 + pulseProgress * 55;
-      const alpha = (1 - pulseProgress) * 0.6;
+      const pulseProgress = ((frame * 0.5 + r * 22) % 65) / 65;
+      const rx = 80 + pulseProgress * 45;
+      const ry = rx * 0.44;
+      const alpha = (1 - pulseProgress) * 0.45;
 
       ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.ellipse(cx, cy, radius, radius * 0.38, 0, 0, Math.PI * 2);
+      ctx.ellipse(cx, cy + 18, rx, ry, 0, 0, Math.PI * 2);
       ctx.stroke();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // HÌNH NÓN ÁNH SÁNG MÁY CHIẾU HOLOGRAM CHIẾU LÊN KHÔNG GIAN (Projector Cone)
+    // CẤU TRÚC VÒNG QUỸ ĐẠO DỮ LIỆU XOAY TRÊN LÕI THÀNH PHỐ (Orbit Data Rings)
     // ─────────────────────────────────────────────────────────────────────────
-    const coneGrad = ctx.createLinearGradient(cx, cy, cx, cy - 85);
-    coneGrad.addColorStop(0, 'rgba(56, 189, 248, 0.28)');
-    coneGrad.addColorStop(0.6, 'rgba(56, 189, 248, 0.12)');
-    coneGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+    const coreY = cy - 35;
+    const rot = frame * 0.02;
 
-    ctx.fillStyle = coneGrad;
-    ctx.beginPath();
-    ctx.moveTo(cx - 30, cy);
-    ctx.lineTo(cx - 50, cy - 80);
-    ctx.lineTo(cx + 50, cy - 80);
-    ctx.lineTo(cx + 30, cy);
-    ctx.closePath();
-    ctx.fill();
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // CẤU TRÚC 3D HOLOGRAM XOAY VÒNG (Rotating 3D Wireframe Project Core)
-    // ─────────────────────────────────────────────────────────────────────────
-    const coreY = cy - 50;
-    const rot = frame * 0.025;
-
-    // Vòng quỹ đạo dữ liệu xoay nghiêng (Orbit Data Rings)
     for (let o = 0; o < 2; o++) {
       const angle = rot + o * (Math.PI / 2);
       ctx.save();
       ctx.translate(cx, coreY);
-      ctx.rotate(0.3); // Nghiêng góc 3D
-      ctx.strokeStyle = o === 0 ? 'rgba(56, 189, 248, 0.65)' : 'rgba(168, 85, 247, 0.65)';
+      ctx.rotate(0.25);
+      ctx.strokeStyle = o === 0 ? 'rgba(56, 189, 248, 0.55)' : 'rgba(168, 85, 247, 0.55)';
       ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.ellipse(0, 0, 36, 14, angle, 0, Math.PI * 2);
+      ctx.ellipse(0, 0, 55, 20, angle, 0, Math.PI * 2);
       ctx.stroke();
 
       // Nốt dữ liệu phát sáng chạy trên quỹ đạo
-      const nodeX = Math.cos(angle) * 36;
-      const nodeY = Math.sin(angle) * 14;
+      const nodeX = Math.cos(angle) * 55;
+      const nodeY = Math.sin(angle) * 20;
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
       ctx.arc(nodeX, nodeY, 2.5, 0, Math.PI * 2);
@@ -4577,211 +4615,43 @@ export class SpriteRenderer {
       ctx.restore();
     }
 
-    // Khối đa diện 3D Wireframe Project Core ở trung tâm
-    const numPoints = 6;
-    const radiusCore = 18;
-    const pts: { x: number; y: number }[] = [];
-
-    for (let i = 0; i < numPoints; i++) {
-      const theta = rot + (i * 2 * Math.PI) / numPoints;
-      pts.push({
-        x: cx + Math.cos(theta) * radiusCore,
-        y: coreY + Math.sin(theta) * (radiusCore * 0.45),
-      });
-    }
-
-    // Vẽ đa giác đáy
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    pts.forEach((p, i) => {
-      if (i === 0) ctx.moveTo(p.x, p.y);
-      else ctx.lineTo(p.x, p.y);
-    });
-    ctx.closePath();
-    ctx.stroke();
-
-    // Đỉnh chóp trên và dưới tạo hình Kim Cương Quantum (Quantum Diamond)
-    const topY = coreY - 22;
-    const botY = coreY + 16;
-
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
+    // Tia Laser Hologram quét dọc (Sweeping Scanline)
+    const scanProgress = (frame * 1.5) % 70;
+    const scanY = coreY - 35 + scanProgress;
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
     ctx.lineWidth = 1;
-    pts.forEach(p => {
-      ctx.beginPath();
-      ctx.moveTo(cx, topY);
-      ctx.lineTo(p.x, p.y);
-      ctx.lineTo(cx, botY);
-      ctx.stroke();
-    });
-
-    // Quét tia Laser Hologram quét dọc (Sweeping Scanline)
-    const scanLineY = coreY - 20 + Math.sin(frame * 0.08) * 18;
-    const scanGrad = ctx.createLinearGradient(cx - 45, scanLineY, cx + 45, scanLineY);
-    scanGrad.addColorStop(0, 'rgba(56, 189, 248, 0)');
-    scanGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.9)');
-    scanGrad.addColorStop(1, 'rgba(56, 189, 248, 0)');
-    ctx.strokeStyle = scanGrad;
-    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(cx - 45, scanLineY);
-    ctx.lineTo(cx + 45, scanLineY);
+    ctx.moveTo(cx - 45, scanY);
+    ctx.lineTo(cx + 45, scanY);
     ctx.stroke();
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // BẢNG TEXT TRẠNG THÁI HOLOGRAM NỔI LƠ LỬNG (Floating Holographic Status)
-    // ─────────────────────────────────────────────────────────────────────────
-    ctx.save();
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.5)';
-    ctx.lineWidth = 1;
-    ctx.roundRect(cx - 65, coreY - 50, 130, 18, 4);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 8px "JetBrains Mono", monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('◈ AI PROJECT CORE v4.0 ◈', cx, coreY - 38);
-    ctx.restore();
 
     ctx.restore();
   }
 
   /**
-   * 10. Màn hình Holographic HUD phát sáng tại 3 trạm làm việc riêng biệt
+   * 10. Đèn và nhãn trạng thái tinh tế tại 3 trạm làm việc (không che khuất bàn ghế)
    */
   public static drawWorkstationHolographicHUDs(ctx: CanvasRenderingContext2D, frame: number) {
     ctx.save();
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // TRẠM 1: CYBER DEV LAB (Dũng 3) - x: 205, y: 535
-    // ─────────────────────────────────────────────────────────────────────────
-    const devX = 205;
-    const devY = 535;
-
-    // Bảng HUD trong suốt phát sáng xanh lá matrix
-    ctx.fillStyle = 'rgba(6, 78, 59, 0.35)';
-    ctx.strokeStyle = 'rgba(16, 185, 129, 0.75)';
-    ctx.lineWidth = 1;
-    ctx.roundRect(devX - 30, devY - 30, 60, 36, 4);
-    ctx.fill();
-    ctx.stroke();
-
-    // Header HUD
-    ctx.fillStyle = '#10b981';
-    ctx.font = 'bold 7px "JetBrains Mono", monospace';
-    ctx.textAlign = 'left';
-    ctx.fillText('[DEV LAB: DŨNG 3]', devX - 26, devY - 21);
-
-    // Dòng Code Matrix cuộn xanh lá
-    const codeLines = [
-      'const api = await fastApi();',
-      'renderMatrix(cleanCode);',
-      'status: 200 OK • clean',
-    ];
-    ctx.font = '6px "JetBrains Mono", monospace';
-    codeLines.forEach((cl, idx) => {
-      const alpha = 0.5 + 0.4 * Math.sin(frame * 0.1 + idx);
-      ctx.fillStyle = `rgba(52, 211, 153, ${alpha})`;
-      ctx.fillText(cl, devX - 26, devY - 12 + idx * 7);
-    });
-
-    // Điểm nháy đèn trạng thái
-    ctx.fillStyle = (frame % 20 < 10) ? '#10b981' : '#047857';
-    ctx.beginPath();
-    ctx.arc(devX + 22, devY - 22, 2, 0, Math.PI * 2);
-    ctx.fill();
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // TRẠM 2: TRẠM KIẾN TRÚC & PM (Dũng 2) - x: 310, y: 445
-    // ─────────────────────────────────────────────────────────────────────────
-    const archX = 310;
-    const archY = 445;
-
-    // Bảng HUD trong suốt tím neon
-    ctx.fillStyle = 'rgba(76, 29, 149, 0.35)';
-    ctx.strokeStyle = 'rgba(139, 92, 246, 0.75)';
-    ctx.lineWidth = 1;
-    ctx.roundRect(archX - 30, archY - 30, 60, 36, 4);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = '#a855f7';
-    ctx.font = 'bold 7px "JetBrains Mono", monospace';
-    ctx.fillText('[ARCH DAG: DŨNG 2]', archX - 26, archY - 21);
-
-    // Đồ thị vi dịch vụ Microservices Node DAG
-    const nodes = [
-      { x: archX - 18, y: archY - 10, name: 'Gateway' },
-      { x: archX,      y: archY - 14, name: 'Auth' },
-      { x: archX,      y: archY - 4,  name: 'Core' },
-      { x: archX + 18, y: archY - 8,  name: 'DB' },
+    const stations = [
+      { x: 215, y: 390, label: 'DEV LAB • 200 OK', color: '#10b981' },
+      { x: 410, y: 320, label: 'ARCH DAG • 1.2ms', color: '#a855f7' },
+      { x: 610, y: 220, label: 'QA SEC • 5k TPS', color: '#ef4444' },
     ];
 
-    // Vẽ đường nối giữa các nodes
-    ctx.strokeStyle = 'rgba(192, 132, 252, 0.5)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(nodes[0].x, nodes[0].y);
-    ctx.lineTo(nodes[1].x, nodes[1].y);
-    ctx.lineTo(nodes[3].x, nodes[3].y);
-    ctx.moveTo(nodes[0].x, nodes[0].y);
-    ctx.lineTo(nodes[2].x, nodes[2].y);
-    ctx.lineTo(nodes[3].x, nodes[3].y);
-    ctx.stroke();
-
-    // Vẽ từng node phát sáng
-    nodes.forEach(n => {
-      ctx.fillStyle = '#c084fc';
+    stations.forEach((st, idx) => {
+      const isBlink = (frame + idx * 7) % 24 < 12;
+      ctx.fillStyle = isBlink ? st.color : 'rgba(100, 116, 139, 0.4)';
       ctx.beginPath();
-      ctx.arc(n.x, n.y, 2.5, 0, Math.PI * 2);
+      ctx.arc(st.x - 25, st.y, 2, 0, Math.PI * 2);
       ctx.fill();
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.font = 'bold 6.5px "JetBrains Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(st.label, st.x - 18, st.y + 2.5);
     });
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // TRẠM 3: KIỂM THỬ QA & AN NINH (Dũng 4) - x: 415, y: 365
-    // ─────────────────────────────────────────────────────────────────────────
-    const qaX = 415;
-    const qaY = 365;
-
-    // Bảng HUD đỏ/cyan an ninh
-    ctx.fillStyle = 'rgba(127, 29, 29, 0.35)';
-    ctx.strokeStyle = 'rgba(239, 68, 68, 0.75)';
-    ctx.lineWidth = 1;
-    ctx.roundRect(qaX - 30, qaY - 30, 60, 36, 4);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = '#ef4444';
-    ctx.font = 'bold 7px "JetBrains Mono", monospace';
-    ctx.fillText('[QA RADAR: DŨNG 4]', qaX - 26, qaY - 21);
-
-    // Radar quét an ninh 360 độ
-    const radarCx = qaX;
-    const radarCy = qaY - 6;
-    const radarR = 12;
-
-    ctx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.arc(radarCx, radarCy, radarR, 0, Math.PI * 2);
-    ctx.arc(radarCx, radarCy, radarR * 0.5, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Kim radar xoay quét
-    const sweepAngle = frame * 0.08;
-    ctx.strokeStyle = '#f87171';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(radarCx, radarCy);
-    ctx.lineTo(radarCx + Math.cos(sweepAngle) * radarR, radarCy + Math.sin(sweepAngle) * radarR);
-    ctx.stroke();
-
-    // Text kết quả kiểm định
-    ctx.fillStyle = '#fca5a5';
-    ctx.font = '6px "JetBrains Mono", monospace';
-    ctx.fillText('STRESS: 5,000 TPS OK', qaX - 26, qaY + 4);
 
     ctx.restore();
   }

@@ -14,6 +14,7 @@ import { DeliberationChat } from './components/DeliberationChat';
 import { CodeArtifactViewer } from './components/CodeArtifactViewer';
 import { TestMatrixModal } from './components/TestMatrixModal';
 import { SystemStatusModal } from './components/SystemStatusModal';
+import { AgentProfileModal } from './components/AgentProfileModal';
 import { soundFx } from './office/soundEffects';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -41,6 +42,7 @@ export const App: React.FC = () => {
   const [activeCodeArtifact, setActiveCodeArtifact] = useState<string | null>(null);
   const [activeTestMatrix, setActiveTestMatrix] = useState<string | null>(null);
   const [showStatusModal, setShowStatusModal] = useState<boolean>(false);
+  const [activeProfileAgent, setActiveProfileAgent] = useState<Agent | null>(null);
 
   // 1. Nạp dữ liệu ban đầu khi mở ứng dụng
   const loadInitialData = useCallback(async () => {
@@ -72,16 +74,16 @@ export const App: React.FC = () => {
   const handleDispatchAgent = (code: string, room: string, statusOverride?: string) => {
     const targetCoords: Record<string, { x: number; y: number }> = {
       boardroom: {
-        dung_1: { x: 695, y: 380 }, // Đứng đầu bàn họp Oval thuyết trình (pin_meeting 591730838527550441)
-        dung_2: { x: 765, y: 348 }, // Ngồi ghế Cantilever sau bàn họp Oval, tay chống cằm phản biện (pin 1013309984899659354)
-        dung_3: { x: 825, y: 348 }, // Ngồi ghế Cantilever mở laptop
-        dung_4: { x: 765, y: 432 }, // Ngồi ghế Cantilever mở laptop
-      }[code] || { x: 765, y: 348 },
-      director_office: { x: 135, y: 132 }, // Ngồi sâu vào đệm sofa nỉ Royal Blue
-      architect_office: { x: 413, y: 168 }, // Ngồi ghế xoay trước bàn CAD thiết kế
-      dev_lab: { x: 388, y: 372 }, // Ngồi ghế xoay trước máy tính Dev Lab gõ phím
-      games_room: { x: 714, y: 168 }, // Ngồi ghế xoay trước màn hình QA & Security
-      kitchen_pantry: { x: 160, y: 375 }, // Đi giải lao lấy nước / cà phê
+        dung_1: { x: 750, y: 470 }, // Top-Left bàn tròn (Dũng 1 - Nam Giám đốc)
+        dung_2: { x: 600, y: 550 }, // Left bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
+        dung_3: { x: 680, y: 760 }, // Bottom-Left bàn tròn (Dũng 3 - Nam Dev)
+        dung_4: { x: 880, y: 770 }, // Bottom-Center bàn tròn (Dũng 4 - Nữ QA)
+      }[code] || { x: 750, y: 470 },
+      director_office: { x: 750, y: 470 }, // Bàn chỉ đạo chiến lược / Executive
+      architect_office: { x: 410, y: 460 }, // Trạm Kiến Trúc & PM (Nữ)
+      dev_lab: { x: 215, y: 565 }, // Trạm Cyber Dev Lab (Nam)
+      games_room: { x: 610, y: 340 }, // Trạm QA & Test (Nữ)
+      kitchen_pantry: { x: 1050, y: 620 }, // Sảnh ngắm xe bay & cà phê
     };
 
     const target = targetCoords[room] || { x: 500, y: 250 };
@@ -122,21 +124,25 @@ export const App: React.FC = () => {
       setCurrentSession(session);
 
       if (step === 'full_cycle') {
+        // HỦY BỎ NGHỈ GIẢI LAO VÀ GOM TOÀN BỘ 4 DŨNG VỀ BÀN HỌP TRÒN TRUNG TÂM KHI CÓ VẤN ĐỀ
+        canvasRef.current?.cancelBreak();
+        handleDispatchAgent('dung_1', 'boardroom', 'debating');
+        handleDispatchAgent('dung_2', 'boardroom', 'debating');
+        handleDispatchAgent('dung_3', 'boardroom', 'debating');
+        handleDispatchAgent('dung_4', 'boardroom', 'debating');
+
         // ─────────────────────────────────────────────────────────────────────
         // GIAI ĐOẠN 1: DŨNG 1 (Software Director - Nghiên cứu thị trường & Rủi ro vận hành)
         // ─────────────────────────────────────────────────────────────────────
-        setCurrentStageText('Giai đoạn 1: Dũng 1 (Software Director) phân tích thị trường & rủi ro vận hành sâu sắc...');
+        setCurrentStageText('Giai đoạn 1: Cả 4 Dũng đã gom lại bàn họp! Dũng 1 (Software Director) phân tích thị trường & rủi ro vận hành...');
         setCamera('boardroom');
         soundFx.playAlert();
-
-        // Dũng 1 đi vào ghế họp Boardroom dãy trên
-        handleDispatchAgent('dung_1', 'boardroom', 'debating');
 
         // Gọi API lấy ý kiến Dũng 1
         const m1 = await api.triggerWorkflow(session.id, 'director');
         setMessages(m1);
 
-        // Chờ 2.5 giây cho người dùng chứng kiến Dũng 1 đi vào và phát biểu
+        // Chờ 2.5 giây cho người dùng chứng kiến Dũng 1 phát biểu
         await sleep(2500);
 
         // ─────────────────────────────────────────────────────────────────────
@@ -237,10 +243,11 @@ export const App: React.FC = () => {
   };
 
 
-  // Xử lý khi click vào Agent trên Canvas
+  // Xử lý khi click vào Agent trên Canvas: Bật cửa sổ thông tin chi tiết và điều khiển
   const handleSelectAgentOnCanvas = (agent: Agent) => {
     setSelectedAgentCode(agent.code);
     canvasRef.current?.selectAgent(agent.code);
+    setActiveProfileAgent(agent);
   };
 
   // Xử lý khi click điều động Agent tới tọa độ sàn mới
@@ -321,6 +328,7 @@ export const App: React.FC = () => {
                   onClick={() => {
                     setSelectedAgentCode(agent.code);
                     canvasRef.current?.selectAgent(agent.code);
+                    setActiveProfileAgent(agent);
                   }}
                   className={`agent-card-wrapper ${selectedAgentCode === agent.code ? 'selected-card-glow' : ''}`}
                 >
@@ -348,6 +356,15 @@ export const App: React.FC = () => {
         <TestMatrixModal
           matrix={activeTestMatrix}
           onClose={() => setActiveTestMatrix(null)}
+        />
+      )}
+
+      {/* Modal hiển thị thông tin hồ sơ chi tiết và điều chỉnh Agent khi bấm vào nhân vật */}
+      {activeProfileAgent && (
+        <AgentProfileModal
+          agent={activeProfileAgent}
+          onClose={() => setActiveProfileAgent(null)}
+          onDispatch={handleDispatchAgent}
         />
       )}
 

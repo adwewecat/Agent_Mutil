@@ -10,21 +10,18 @@ import { ImageLoader } from './imageLoader';
 
 // Tọa độ các bàn làm việc và trạm chuyên môn của 4 Dũng trong Cyberpunk Office 16:9 (1376x768)
 const WORKSTATIONS: Record<string, { x: number; y: number; room: string; status: Agent['status'] }> = {
-  dung_1: { x: 535, y: 650, room: 'director_office', status: 'idle' },  // Ghế điều hành tối cao
-  dung_2: { x: 340, y: 550, room: 'architect_office', status: 'idle' }, // Trạm 2: Kiến Trúc & PM (Nữ)
-  dung_3: { x: 205, y: 610, room: 'dev_lab', status: 'coding' },        // Trạm 1: Cyber Dev Lab (Nam)
-  dung_4: { x: 455, y: 470, room: 'games_room', status: 'testing' },    // Trạm 3: QA & Stress Testing (Nữ)
+  dung_1: { x: 750, y: 470, room: 'director_office', status: 'idle' },  // Bàn chỉ đạo chiến lược / Executive
+  dung_2: { x: 410, y: 460, room: 'architect_office', status: 'idle' }, // Trạm Kiến Trúc & PM (Nữ)
+  dung_3: { x: 215, y: 565, room: 'dev_lab', status: 'coding' },        // Trạm Cyber Dev Lab (Nam)
+  dung_4: { x: 610, y: 340, room: 'games_room', status: 'testing' },    // Trạm QA & Test (Nữ)
 };
 
-// Sảnh cà phê & ngắm đại lộ xe bay ngoài cửa sổ kính
-const PANTRY_COFFEE = { x: 470, y: 700, room: 'kitchen_pantry' };
-
-// Chỗ ngồi quanh bàn tròn trung tâm khi diễn ra họp hoặc tranh luận dự án Hologram 3D
+// Chỗ ngồi quanh bàn tròn trung tâm khi diễn ra họp hoặc tranh luận dự án Hologram 3D (tất cả quay mặt vào Hologram)
 const MEETING_SEATS: Record<string, { x: number; y: number }> = {
-  dung_1: { x: 535, y: 650 }, // Ghế trên bên trái bàn tròn (Dũng 1 - Nam Giám đốc)
-  dung_2: { x: 540, y: 745 }, // Ghế dưới bên trái bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
-  dung_3: { x: 635, y: 810 }, // Ghế dưới trung tâm bàn tròn (Dũng 3 - Nam Dev)
-  dung_4: { x: 735, y: 810 }, // Ghế dưới bên phải bàn tròn (Dũng 4 - Nữ QA)
+  dung_1: { x: 750, y: 470 }, // Top-Left bàn tròn (Dũng 1 - Nam Giám đốc)
+  dung_2: { x: 600, y: 550 }, // Left bàn tròn (Dũng 2 - Nữ Kiến trúc sư)
+  dung_3: { x: 680, y: 760 }, // Bottom-Left bàn tròn (Dũng 3 - Nam Dev)
+  dung_4: { x: 880, y: 770 }, // Bottom-Center bàn tròn (Dũng 4 - Nữ QA)
 };
 
 export class OfficeEngine {
@@ -43,9 +40,11 @@ export class OfficeEngine {
   public customBubbles: Record<string, { text: string; expires: number }> = {};
 
   // Trạng thái nghỉ giải lao ngắn ngẫu nhiên (Lâu lâu mới đi giải lao 1 xíu, sau đó quay lại bàn làm việc)
-  private nextBreakTime: number = Date.now() + 60000;
+  private nextBreakTime: number = Date.now() + 15000;
   private activeBreak: {
     agentCode: string;
+    targetX: number;
+    targetY: number;
     state: 'going_to_pantry' | 'resting_at_pantry' | 'returning_to_desk';
     finishRestTime: number;
   } | null = null;
@@ -125,6 +124,21 @@ export class OfficeEngine {
     }
   }
 
+  public selectAgent(code: string | null) {
+    this.selectedAgentCode = code;
+    (window as any).__selectedAgentCode = code;
+  }
+
+  public cancelBreak() {
+    if (this.activeBreak) {
+      const home = WORKSTATIONS[this.activeBreak.agentCode];
+      if (home) {
+        this.moveAgentTo(this.activeBreak.agentCode, home.x, home.y, home.status);
+      }
+      this.activeBreak = null;
+    }
+  }
+
   /**
    * Hiển thị bong bóng thoại ngắn trên đầu Agent
    */
@@ -196,15 +210,16 @@ export class OfficeEngine {
   } {
     const { x: wx, y: wy } = this.screenToWorld(clientX, clientY);
 
-    // 1. Kiểm tra xem người dùng có click vào một trong 4 Dũng hay không
+    // 1. Kiểm tra xem người dùng có click vào một trong 4 Dũng hay không (Hitbox toàn thân)
     const clickedAgent = this.agents.find(a => {
-      const dx = a.pos_x - wx;
-      const dy = a.pos_y - wy;
-      return Math.sqrt(dx * dx + dy * dy) < 22;
+      const charH = 150;
+      return wx >= a.pos_x - 45 && wx <= a.pos_x + 45 &&
+             wy >= a.pos_y - charH && wy <= a.pos_y + 15;
     });
 
     if (clickedAgent) {
       this.selectedAgentCode = clickedAgent.code;
+      (window as any).__selectedAgentCode = clickedAgent.code;
       soundFx.playAlert();
 
       // Phát lời chào đặc trưng của từng Dũng
@@ -227,7 +242,7 @@ export class OfficeEngine {
         const clampedY = Math.max(30, Math.min(OFFICE_HEIGHT - 30, Math.round(wy)));
 
         this.moveAgentTo(this.selectedAgentCode, clampedX, clampedY, 'moving');
-        this.setCustomBubble(this.selectedAgentCode, 'Đang đi đến vị trí chỉ định...', 3000);
+        this.setCustomBubble(this.selectedAgentCode, 'Đang đi đến vị trí bạn chỉ định...', 3000);
 
         return {
           action: 'moved_agent',
@@ -247,6 +262,9 @@ export class OfficeEngine {
       return { action: 'selected_room', room: clickedRoom.id };
     }
 
+    // 4. Click vào khoảng trống hủy chọn
+    this.selectedAgentCode = null;
+    (window as any).__selectedAgentCode = null;
     return { action: 'none' };
   }
 
@@ -318,20 +336,18 @@ export class OfficeEngine {
     });
 
     // ─────────────────────────────────────────────────────────────────────
-    // QUY TRÌNH NGHỈ GIẢI LAO TỰ ĐỘNG THỈNH THOẢNG (95% LÀM VIỆC TẠI BÀN, LÂU LÂU 1 NGƯỜI ĐI UỐNG CÀ PHÊ 8 GIÂY RỒI VỀ)
+    // QUY TRÌNH NGHỈ GIẢI LAO TỰ ĐỘNG THỈNH THOẢNG (ĐỨNG DẬY ĐI LẠI, SAU ĐÓ QUAY VỀ BÀN LÀM VIỆC)
     // ─────────────────────────────────────────────────────────────────────
     if (this.activeBreak) {
       const breakAgent = this.agents.find(a => a.code === this.activeBreak?.agentCode);
       if (breakAgent) {
         if (this.activeBreak.state === 'going_to_pantry') {
-          const dx = breakAgent.pos_x - PANTRY_COFFEE.x;
-          const dy = breakAgent.pos_y - PANTRY_COFFEE.y;
-          if (Math.sqrt(dx * dx + dy * dy) <= 4) {
-            breakAgent.current_room = 'kitchen_pantry';
+          const dx = breakAgent.pos_x - this.activeBreak.targetX;
+          const dy = breakAgent.pos_y - this.activeBreak.targetY;
+          if (Math.sqrt(dx * dx + dy * dy) <= 6) {
             breakAgent.status = 'resting';
             this.activeBreak.state = 'resting_at_pantry';
-            this.activeBreak.finishRestTime = Date.now() + 8500;
-            this.setCustomBubble(breakAgent.code, 'Thưởng thức tách cà phê nạp năng lượng... ☕', 8000);
+            this.activeBreak.finishRestTime = Date.now() + 6500;
           }
         } else if (this.activeBreak.state === 'resting_at_pantry') {
           if (Date.now() >= this.activeBreak.finishRestTime) {
@@ -339,10 +355,10 @@ export class OfficeEngine {
             if (home) {
               this.activeBreak.state = 'returning_to_desk';
               this.moveAgentTo(breakAgent.code, home.x, home.y, 'moving');
-              this.setCustomBubble(breakAgent.code, 'Nạp đủ năng lượng rồi, về bàn làm việc thôi! 💼', 3500);
+              this.setCustomBubble(breakAgent.code, 'Nạp đủ năng lượng rồi, về bàn làm việc thôi! 💼', 3000);
             } else {
               this.activeBreak = null;
-              this.nextBreakTime = Date.now() + 90000 + Math.random() * 30000;
+              this.nextBreakTime = Date.now() + 25000 + Math.random() * 20000;
             }
           }
         } else if (this.activeBreak.state === 'returning_to_desk') {
@@ -350,46 +366,54 @@ export class OfficeEngine {
           if (home) {
             const dx = breakAgent.pos_x - home.x;
             const dy = breakAgent.pos_y - home.y;
-            if (Math.sqrt(dx * dx + dy * dy) <= 4) {
+            if (Math.sqrt(dx * dx + dy * dy) <= 6) {
               breakAgent.current_room = home.room;
               breakAgent.status = home.status;
               this.activeBreak = null;
-              // Lượt giải lao tiếp theo sau 90 đến 120 giây (ngồi làm việc đàng hoàng phần lớn thời gian)
-              this.nextBreakTime = Date.now() + 90000 + Math.random() * 30000;
+              this.nextBreakTime = Date.now() + 25000 + Math.random() * 20000;
             }
           } else {
             this.activeBreak = null;
-            this.nextBreakTime = Date.now() + 90000 + Math.random() * 30000;
+            this.nextBreakTime = Date.now() + 25000 + Math.random() * 20000;
           }
         }
       } else {
         this.activeBreak = null;
       }
     } else if (Date.now() > this.nextBreakTime) {
-      // Chỉ cho phép giải lao nếu KHÔNG có cuộc họp nào đang diễn ra và nhân vật đang ở bàn làm việc
+      // Chỉ cho phép giải lao nếu KHÔNG có cuộc họp nào đang diễn ra
       const isMeetingActive = this.agents.some(a => a.current_room === 'boardroom' || a.status === 'debating');
       if (isMeetingActive) {
-        this.nextBreakTime = Date.now() + 30000;
+        this.nextBreakTime = Date.now() + 20000;
       } else {
         const atDeskAgents = this.agents.filter(a => {
           const home = WORKSTATIONS[a.code];
           if (!home) return false;
           const dx = a.pos_x - home.x;
           const dy = a.pos_y - home.y;
-          return Math.sqrt(dx * dx + dy * dy) < 15 && a.status !== 'moving';
+          return Math.sqrt(dx * dx + dy * dy) < 20 && a.status !== 'moving';
         });
 
         if (atDeskAgents.length > 0) {
           const chosen = atDeskAgents[Math.floor(Math.random() * atDeskAgents.length)];
+          const roamingSpots = [
+            { x: 1050, y: 620, msg: 'Đi dạo ngắm đại lộ xe bay thư giãn... 🚗' },
+            { x: 500,  y: 680, msg: 'Pha tách cà phê nóng nạp năng lượng... ☕' },
+            { x: 680,  y: 650, msg: 'Vận động gân cốt sau phiên code tập trung... 🏃' },
+          ];
+          const spot = roamingSpots[Math.floor(Math.random() * roamingSpots.length)];
+
           this.activeBreak = {
             agentCode: chosen.code,
+            targetX: spot.x,
+            targetY: spot.y,
             state: 'going_to_pantry',
             finishRestTime: 0,
           };
-          this.moveAgentTo(chosen.code, PANTRY_COFFEE.x, PANTRY_COFFEE.y, 'moving');
-          this.setCustomBubble(chosen.code, 'Đi pha tách cà phê giải lao 1 xíu... ☕', 4000);
+          this.moveAgentTo(chosen.code, spot.x, spot.y, 'moving');
+          this.setCustomBubble(chosen.code, spot.msg, 4500);
         } else {
-          this.nextBreakTime = Date.now() + 30000;
+          this.nextBreakTime = Date.now() + 20000;
         }
       }
     }
