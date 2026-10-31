@@ -25,7 +25,7 @@
 Hệ thống được thiết kế theo mô hình **Độc lập tách biệt (Decoupled Architecture)** giữa Backend và Frontend:
 
 ### 2.1. Backend
-- **Ngôn ngữ**: Python 3.10+
+- **Ngôn ngữ**: Python 3.14+ (tương thích Python 3.10+ - 3.14+)
 - **Framework**: FastAPI (hỗ trợ REST API theo chuẩn OpenAPI tự động tại `/docs`, `/redoc` và WebSocket `/ws/office`).
 - **Database**: SQL Server (hỗ trợ `SQLAlchemy 2.0` + `pyodbc` + `ODBC Driver 18 for SQL Server`), đồng thời có cơ chế fallback linh hoạt sang SQLite (`sqlite:///./agent_multi.db`) khi chạy local dev chưa kết nối SQL Server thật.
 - **Thư mục**: `backend/`
@@ -55,7 +55,7 @@ Hệ thống được chuẩn hóa gồm đúng 3 nhân vật AI chuyên gia c�
 
 Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bước sau:
 1. **Cài đặt công cụ nền tảng**:
-   - Python 3.10+ (tích hợp PATH).
+   - Python 3.14+ hoặc Python 3.10+ (tích hợp PATH).
    - Node.js LTS (v18+ hoặc v20+).
    - Git.
    - Microsoft ODBC Driver 18 for SQL Server (nếu kết nối SQL Server thật).
@@ -798,6 +798,24 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] Build bản đóng gói `frontend/dist` hoàn tất 100%, 0 lỗi, 0 warning.
 - [x] Đã commit và đẩy code lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git`.
 
+### [2026-10-31] Rà Soát Chuẩn Hóa 5 Trụ Cột Kỹ Thuật, Cập Nhật Test Suite Bộ Ba Dũng & Đồng Bộ Toàn Diện Tài Liệu
+- [x] **Rà soát & kiểm tra hệ sinh thái tài liệu (`README.md` & `GEMINI.md`)**:
+  - Đối chiếu và đồng bộ 100% giữa `README.md` và `GEMINI.md`. Nâng cấp tài liệu `README.md` từ mô hình 4 Dũng ban đầu sang mô hình Bộ Ba Chuyên Gia (3 Dũng) hiện tại.
+  - Khẳng định và củng cố 5 trụ cột kỹ thuật bất di bất dịch của dự án:
+    1. **Backend**: Python 3.14+ (và tương thích Python 3.10+) + FastAPI.
+    2. **Frontend**: React 19 + TypeScript + Vite.
+    3. **Database**: SQL Server (`SQLAlchemy 2.0` + `pyodbc` + `Microsoft ODBC Driver 18 for SQL Server`), tích hợp cơ chế fallback SQLite linh hoạt cho local dev.
+    4. **Phương thức giao tiếp**: Chuẩn REST API OpenAPI (tự động tại `/docs`, `/redoc`) và WebSocket thời gian thực `/ws/office`.
+    5. **Mô hình triển khai**: Frontend và Backend triển khai độc lập tách biệt, build static ra `frontend/dist/`.
+- [x] **Tối ưu mã nguồn sạch (Clean Code & Fix Deprecations)**:
+  - Cập nhật trường `selected_feature_ids` trong `backend/app/schemas.py`: thay thế `min_items=1` đã lỗi thời bằng `min_length=1` theo chuẩn Pydantic V2, loại bỏ triệt để cảnh báo deprecation.
+  - Tái cấu trúc bộ kiểm thử tự động `backend/tests/test_api.py`: đồng bộ với quy trình Bộ Ba Chuyên Gia (3 Dũng), kiểm tra toàn vẹn luồng từ tạo session -> tranh luận nảy lửa Dũng 1 & Dũng 2 -> sinh Bảng Thống Nhất 5 tiêu chuẩn -> Người dùng duyệt từng ý -> Dũng 3 thực thi mã nguồn -> Nghiệm thu 2 chiều. Chạy pytest đạt 3/3 tests PASS 100%.
+  - Rà soát code frontend: TypeScript `strict: true`, `noUnusedLocals: true`, `noUnusedParameters: true` đạt chuẩn sạch sẽ 100%, không có dead code hay unused imports.
+- [x] **Build & Đóng gói sản phẩm**:
+  - Build `frontend` bằng `tsc -b && vite build` ra thư mục `frontend/dist/` thành công 100%, 0 lỗi, 0 cảnh báo.
+- [x] **Quy tắc Git & GitHub**:
+  - Đã commit và đẩy toàn bộ mã nguồn sạch lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git` nhánh `main`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER
@@ -810,7 +828,7 @@ Khi đưa lên máy chủ thật có SQL Server:
    ```ini
    SQL_SERVER_CONNECTION_STRING=mssql+pyodbc://sa:YourStrongPassword123@localhost:1433/AgentMultiDB?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes
    ```
-4. Khi khởi chạy, SQLAlchemy 2.0 sẽ tự động tạo bảng `agents`, `project_sessions`, `deliberation_messages`, `office_event_logs` và nạp sẵn 4 chuyên gia Dũng vào database.
+4. Khi khởi chạy, SQLAlchemy 2.0 sẽ tự động tạo bảng `agents`, `project_sessions`, `deliberation_messages`, `office_event_logs` và nạp sẵn Bộ Ba Chuyên Gia Dũng vào database.
 
 ---
 

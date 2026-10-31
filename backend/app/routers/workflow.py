@@ -16,7 +16,7 @@ from app.schemas import (
 )
 from app.services.workflow_engine import WorkflowEngine
 
-router = APIRouter(prefix="/api/workflow", tags=["Workflow (Quy trình hợp tác 4 Dũng)"])
+router = APIRouter(prefix="/api/workflow", tags=["Workflow (Quy trình hợp tác Bộ Ba Dũng)"])
 
 
 @router.post("/trigger", response_model=List[DeliberationMessageResponse], summary="Kích hoạt quy trình 4 Dũng")

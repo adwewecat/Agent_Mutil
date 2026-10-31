@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     """
     model_config = SettingsConfigDict(env_file=".env", extra="allow")
 
-    APP_NAME: str = "Agent Multi - 4 Dũng Virtual Pixel Office API"
+    APP_NAME: str = "Agent Multi - Virtual Pixel Office & Bộ Ba Dũng API"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = True
     

@@ -34,12 +34,12 @@ with Session(bind=engine) as db:
 async def lifespan(app: FastAPI):
     """
     Vòng đời của ứng dụng FastAPI.
-    Đảm bảo 4 Agent cốt lõi luôn sẵn sàng.
+    Đảm bảo Bộ Ba Chuyên Gia Dũng cốt lõi luôn sẵn sàng.
     """
     with Session(bind=engine) as db:
         init_default_agents(db)
         
-    print(">>> [VIRTUAL OFFICE]: Ready. 4 Dungs in position!")
+    print(">>> [VIRTUAL OFFICE]: Ready. 3 Dungs in position!")
     yield
     print(">>> [VIRTUAL OFFICE]: Shutting down...")
 
@@ -50,7 +50,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="Hệ thống văn phòng ảo Pixel Art (Agent-Pixels) kết hợp quy trình hội đồng 4 chuyên gia Dũng AI.",
+    description="Hệ thống văn phòng ảo Pixel Art (Agent-Pixels) kết hợp quy trình hội đồng Bộ Ba Chuyên Gia Dũng AI.",
     lifespan=lifespan
 )
 

@@ -103,7 +103,7 @@ class ConsensusFeatureItem(BaseModel):
 
 class WorkflowSelectFeaturesPayload(BaseModel):
     session_id: int = Field(..., description="ID phiên làm việc")
-    selected_feature_ids: List[str] = Field(..., min_items=1, description="Danh sách mã ý tưởng người dùng chọn phát triển")
+    selected_feature_ids: List[str] = Field(..., min_length=1, description="Danh sách mã ý tưởng người dùng chọn phát triển")
 
 
 # -----------------------------------------------------------------------------
