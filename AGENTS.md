@@ -51,3 +51,14 @@ This repository integrates Matt Pocock's engineering and productivity skills ins
 - **Idea to Ship**: `/ask-matt`, `/grill-with-docs`, `/domain-modeling`, `/to-spec`, `/to-tickets`, `/implement`, `/implement-spec`
 - **Quality & Testing**: `/tdd`, `/diagnosing-bugs`, `/code-review`, `/improve-codebase-architecture`, `/retro`, `/pr`
 - **Productivity & Communication**: `/grill-me`, `/grilling`, `/handoff`, `/teach`, `/to-questionnaire`, `/wait-what`, `/wizard`
+
+---
+
+## 5. Knowledge Work Plugins (`anthropics/knowledge-work-plugins`)
+This repository integrates Anthropic's official domain plugins installed in `.agents/plugins/` to empower specialized, objective office workflows:
+- **Operations & Business (`operations`, `small-business`)**: Process optimization, operational risk assessment, standard operating procedures (SOP/runbooks), capacity planning, vendor review. (Empowers Dũng 1).
+- **Sales & Customer Support (`sales`, `customer-support`)**: Account research, pipeline review, call prep, objection handling, ticket triage, knowledge base generation.
+- **Product Management & Data (`product-management`, `data`)**: Spec writing, roadmap planning, user research synthesis, SQL query generation, statistical analysis, dashboard specs. (Empowers Dũng 2).
+- **Governance & Finance (`legal`, `finance`)**: Contract review, compliance tracking, risk assessment, financial statement prep, reconciliation, audit support.
+- **Marketing & Productivity (`marketing`, `productivity`, `enterprise-search`, `design`)**: Campaign planning, brand voice enforcement, cross-tool search, daily briefing, design critique.
+

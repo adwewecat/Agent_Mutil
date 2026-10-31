@@ -21,3 +21,4 @@ When working offline or without the `gh` CLI authenticated, fallback to local ma
 ## When a skill says "publish to the issue tracker"
 
 Create a GitHub issue via `gh issue create` or create a file in `.scratch/tickets/<slug>.md`.
+

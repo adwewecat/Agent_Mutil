@@ -836,6 +836,30 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] **Quy tắc Git & GitHub**:
   - Đã commit và đẩy toàn bộ mã nguồn cùng bộ kỹ năng lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git` nhánh `main`.
 
+### [2026-10-31] Tích Hợp Hệ Thống Knowledge Work Plugins Của Anthropic (anthropics/knowledge-work-plugins)
+- [x] **Tích hợp trọn bộ 15 Plugins nghiệp vụ văn phòng chính thức từ Anthropic**:
+  - Tải và cấu hình toàn bộ 15 plugins chuyên sâu vào `.agents/plugins/`:
+    - `operations` (Tối ưu hóa quy trình kinh doanh, đánh giá rủi ro, xây dựng runbook SOP, lập kế hoạch công suất).
+    - `sales` (Nghiên cứu tài khoản, tóm tắt cuộc gọi, chuẩn bị kịch bản bán hàng, xử lý từ chối, đánh giá deal).
+    - `small-business` (Bộ 44 kỹ năng điều hành và chăm sóc khách hàng cho doanh nghiệp vừa và nhỏ).
+    - `customer-support` (Phân loại ticket, soạn phản hồi, đóng gói escalation, tạo cơ sở tri thức).
+    - `product-management` (Viết đặc tả tính năng spec, lập lộ trình roadmap, tổng hợp nghiên cứu người dùng).
+    - `data` (Tạo truy vấn SQL, kiểm tra chất lượng dữ liệu, phân tích thống kê, đặc tả dashboard).
+    - `legal` (Rà soát hợp đồng, sàng lọc NDA, quản lý tuân thủ pháp lý, đánh giá rủi ro).
+    - `finance` (Báo cáo tài chính, hạch toán nhật ký, đối soát tài khoản reconciliation, hỗ trợ kiểm toán).
+    - `marketing` (Lập chiến dịch, giữ chuẩn giọng điệu thương hiệu brand voice, tóm tắt đối thủ).
+    - `productivity`, `enterprise-search`, `design`, `bio-research`, `cowork-plugin-management`.
+  - Chuẩn hóa cấu hình mỗi plugin: tạo file gốc `plugin.json` và `mcp_config.json` đồng bộ với chuẩn Antigravity/Agent, bảo đảm MCP connectors (Slack, HubSpot, Notion, Jira, Salesforce, BigQuery, Snowflake, v.v.) sẵn sàng kết nối.
+- [x] **Áp dụng vào phân vai thực chiến của Bộ Ba Chuyên Gia Dũng**:
+  - **Dũng 1 (Giám đốc Vận hành & Chiến lược F&B 40 năm KN)**: Tận dụng các plugin `operations`, `sales`, `small-business`, `customer-support` để tư vấn quy trình thực chiến, đo lường điểm nghẽn, đối chiếu case studies thị trường một cách khách quan, chuẩn xác.
+  - **Dũng 2 (Giám đốc Phần mềm & Kiến trúc Hệ thống 40 năm KN)**: Tận dụng các plugin `product-management`, `data`, `legal`, `finance` để lập ma trận đặc tả hệ thống, phân tích dữ liệu chịu tải, rà soát tính tuân thủ bảo mật và chi phí hạ tầng.
+- [x] **Cập nhật tài liệu & Kiểm thử Clean Code**:
+  - Đồng bộ `AGENTS.md`, `GLOSSARY.md`, `README.md` và `GEMINI.md`.
+  - Chạy `npm.cmd run build` đóng gói `frontend/dist/` thành công 100%, 0 lỗi.
+  - Chạy `pytest backend/tests` đạt 3/3 tests PASSED 100%.
+- [x] **Quy tắc Git & GitHub**:
+  - Đã commit và đẩy toàn bộ mã nguồn cùng các plugins lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git` nhánh `main`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER

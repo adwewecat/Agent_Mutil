@@ -36,3 +36,4 @@ Ban đầu, hệ thống thử nghiệm với mô hình 4 Agent chung chung. Tuy
   - Mã nguồn do Dũng 3 sinh ra có mục tiêu rõ ràng và được kiểm chứng kép.
 - **Tiêu cực**:
   - Thêm một bước chờ người dùng duyệt trên giao diện thay vì chạy tự động hoàn toàn (đây là đánh đổi có chủ đích để đảm bảo an toàn).
+

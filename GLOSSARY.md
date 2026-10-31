@@ -43,3 +43,17 @@ Mã định danh duy nhất (UUID) gửi kèm Header request của API tạo đ�
 
 ### Offline-First Local Gateway Sync
 Cơ chế đồng bộ trực tiếp qua mạng LAN nội bộ giữa máy khách, POS Thu ngân và Màn hình Bếp KDS dưới 2ms, cho phép quán ăn tiếp tục vận hành và nấu nướng bình thường ngay cả khi đứt cáp quang biển hoặc Cloud bị mất kết nối.
+
+---
+
+## 4. Nghiệp Vụ Văn Phòng Chuyên Biệt (Knowledge Work Plugins)
+
+### Knowledge Work Plugins (Anthropic)
+Hệ thống các gói plugin kỹ năng nghiệp vụ chuyên sâu theo từng phòng ban doanh nghiệp (Sales, Operations, Legal, Finance, Marketing, Product Management, Data, Customer Support, HR), giúp AI trả lời khách quan, chuẩn xác theo tiêu chuẩn thực tế của từng ngành nghề.
+
+### Process Optimization & SOP Runbooks (Vận hành & Doanh nghiệp - Dũng 1)
+Khung phân tích quy trình nghiệp vụ: Lập bản đồ hiện trạng, định danh 5 điểm lãng phí (Chờ đợi, Làm lại, Chuyển giao handoff, Thao tác thừa, Tác vụ thủ công), thiết kế luồng tương lai và đo lường chỉ số tiết kiệm chi phí/thời gian.
+
+### Spec-Writing & System Architecture Matrix (Kiến trúc & Kỹ thuật - Dũng 2)
+Đặc tả giải pháp kỹ thuật, phân tích dữ liệu, đánh giá dung lượng tải (Capacity Plan), thẩm định rủi ro an ninh thông tin và khung pháp lý tuân thủ (Compliance).
+

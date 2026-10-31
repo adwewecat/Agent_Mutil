@@ -63,6 +63,17 @@ Dự án đã tích hợp trọn bộ **38 Agent Skills** chuẩn kỹ sư từ 
 
 ---
 
+## 🏢 HỆ THỐNG PLUGINS CÔNG VIỆC VĂN PHÒNG CHUYÊN NGHIỆP (`anthropics/knowledge-work-plugins`)
+
+Dự án tích hợp trọn bộ **15 Knowledge Work Plugins** chính thức từ Anthropic (tại `.agents/plugins/`), giúp Bộ Ba Dũng đưa ra các câu trả lời khách quan, thực tế và chuẩn hóa theo từng phòng ban nghiệp vụ doanh nghiệp:
+- **Operations & Small Business (`operations`, `small-business`)**: Tối ưu hóa quy trình (Process Optimization), đánh giá rủi ro vận hành (Risk Assessment), xây dựng quy trình thao tác chuẩn (SOP Runbooks), lập kế hoạch công suất (Capacity Planning). Hỗ trợ đắc lực cho **Dũng 1 (GĐ Vận hành F&B & Doanh nghiệp)**.
+- **Sales & Chăm sóc khách hàng (`sales`, `customer-support`)**: Nghiên cứu tài khoản khách hàng (Account Research), phân loại và giải quyết khiếu nại (Ticket Triage), kịch bản xử lý từ chối (Handle Objections), phân tích cạnh tranh thị trường.
+- **Quản lý sản phẩm & Dữ liệu (`product-management`, `data`)**: Viết đặc tả tính năng (Spec Writing), lập lộ trình sản phẩm (Roadmap Planning), truy vấn dữ liệu SQL, phân tích thống kê và trực quan hóa dashboard. Hỗ trợ đắc lực cho **Dũng 2 (GĐ Phần mềm & Kiến trúc)**.
+- **Pháp lý & Tài chính (`legal`, `finance`)**: Rà soát hợp đồng (Contract Review), quản lý tuân thủ pháp lý (Compliance Tracking), lập báo cáo tài chính, đối soát tài khoản (Reconciliation) và hỗ trợ kiểm toán.
+- **Marketing & Năng suất làm việc (`marketing`, `productivity`, `enterprise-search`, `design`)**: Lập chiến dịch truyền thông, kiểm soát giọng điệu thương hiệu (Brand Voice), tìm kiếm đa nền tảng và đánh giá thiết kế UI/UX.
+
+---
+
 ## 🚀 HƯỚNG DẪN CHẠY DỰ ÁN NHANH NHẤT (1-CLICK RUN)
 
 Bạn chỉ cần chạy 1 file duy nhất ở thư mục gốc:
