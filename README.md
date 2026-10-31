@@ -46,6 +46,23 @@ flowchart TD
 
 ---
 
+## 🧠 HỆ THỐNG AGENT SKILLS CHUYÊN SÂU (`mattpocock/skills`)
+
+Dự án đã tích hợp trọn bộ **38 Agent Skills** chuẩn kỹ sư từ [mattpocock/skills](https://github.com/mattpocock/skills) (nằm tại thư mục chuẩn `.agents/skills/`), hỗ trợ toàn diện chu trình kỹ thuật phần mềm kỷ luật cao:
+- **Từ Ý Tưởng Đến Thành Phẩm (Idea-to-Ship)**:
+  - `/ask-matt`: Router điều phối và định tuyến kỹ năng phù hợp cho tình huống.
+  - `/grill-with-docs` & `/grill-me`: Phỏng vấn Socratic phản biện sâu sắc, loại bỏ mơ hồ, tự động cập nhật [GLOSSARY.md](file:///d:/LAPTRINH/Agent_multi/GLOSSARY.md) và [docs/adr/](file:///d:/LAPTRINH/Agent_multi/docs/adr).
+  - `/domain-modeling`: Chuẩn hóa mô hình tên miền nghiệp vụ và thuật ngữ cốt lõi.
+  - `/to-spec` & `/to-tickets`: Chuyển hội thoại thành đặc tả và phân rã thành các ticket có liên kết phụ thuộc.
+  - `/implement` & `/implement-spec`: Lập trình hiện thực hóa spec/tickets.
+- **Đảm Bảo Chất Lượng & Kiến Trúc (Quality & Architecture)**:
+  - `/tdd`: Chu trình phát triển hướng kiểm thử (Red - Green - Refactor).
+  - `/diagnosing-bugs`: Vòng lặp chẩn đoán lỗi phức tạp và hiệu năng.
+  - `/code-review`: Thẩm định mã nguồn song song 2 trục (Standards & Spec).
+  - `/improve-codebase-architecture`: Quét sâu kiến trúc module và tối ưu hóa ranh giới code.
+
+---
+
 ## 🚀 HƯỚNG DẪN CHẠY DỰ ÁN NHANH NHẤT (1-CLICK RUN)
 
 Bạn chỉ cần chạy 1 file duy nhất ở thư mục gốc:

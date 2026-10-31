@@ -816,6 +816,26 @@ Nếu máy tính vừa cài lại Windows, DEV chỉ cần thực hiện 4 bư�
 - [x] **Quy tắc Git & GitHub**:
   - Đã commit và đẩy toàn bộ mã nguồn sạch lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git` nhánh `main`.
 
+### [2026-10-31] Tích Hợp Trọn Bộ Hệ Thống Agent Skills Của Matt Pocock (mattpocock/skills)
+- [x] **Tích hợp trọn bộ 38 kỹ năng chuyên sâu (Agent Skills)**:
+  - Cài đặt toàn bộ bộ kỹ năng chuẩn kỹ sư từ repository chính thức `https://github.com/mattpocock/skills` vào thư mục chuẩn của Antigravity/Agent: `.agents/skills/`.
+  - Bao gồm đầy đủ các nhóm kỹ năng:
+    - **Engineering Core**: `ask-matt`, `grill-with-docs`, `domain-modeling`, `to-spec`, `to-tickets`, `implement`, `implement-spec`, `improve-codebase-architecture`, `tdd`, `diagnosing-bugs`, `codebase-design`, `code-review`, `pr`, `retro`, `prototype`, `research`, `triage`, `wayfinder`, `wizard`.
+    - **Productivity & Communication**: `grill-me`, `grilling`, `handoff`, `teach`, `to-questionnaire`, `wait-what`, `writing-for-agents`.
+    - **Workflow & Automation**: `chief-of-staff`, `claude-handoff`, `loop-me`, `setup-ts-deep-modules`, `writing-beats`, `writing-fragments`, `writing-shape`, `git-guardrails-claude-code`, `setup-pre-commit`, `scaffold-exercises`, `migrate-to-shoehorn`.
+  - Khởi tạo file khóa cấu hình kỹ năng chuẩn `skills-lock.json` ghi nhận đầy đủ hash của 38 skills.
+- [x] **Thiết lập hạ tầng tài liệu đồng bộ chuẩn Matt Pocock**:
+  - Tạo `AGENTS.md` tại thư mục gốc làm cẩm nang điều hướng cho các AI coding agent.
+  - Tạo `GLOSSARY.md` thiết lập ngôn ngữ chuẩn hóa (Ubiquitous Language) của dự án: định nghĩa rõ Bộ Ba Chuyên Gia Dũng, Bảng Thống Nhất, Cổng Phê Duyệt Người Dùng, Dynamic QR Token HMAC SHA-256, Idempotency Key, Offline-First Sync.
+  - Tạo `docs/agents/domain.md`, `docs/agents/issue-tracker.md`, `docs/agents/triage-labels.md` định cấu hình Issue Tracker và quản lý nhãn công việc.
+  - Tạo tài liệu ghi nhận quyết định kiến trúc đầu tiên: `docs/adr/0001-bo-ba-dung-architecture.md`.
+- [x] **Dọn dẹp sạch sẽ (Clean Code)**:
+  - Loại bỏ hoàn toàn các thư mục rác trung gian ngoài hệ thống Antigravity, giữ cây thư mục dự án gọn gàng, tinh tươm.
+  - Chạy `npm.cmd run build` đóng gói `frontend/dist/` thành công 100%, 0 lỗi.
+  - Chạy `pytest backend/tests` đạt 3/3 tests PASSED 100%.
+- [x] **Quy tắc Git & GitHub**:
+  - Đã commit và đẩy toàn bộ mã nguồn cùng bộ kỹ năng lên GitHub repository `https://github.com/adwewecat/Agent_Mutil.git` nhánh `main`.
+
 ---
 
 ## 6. HƯỚNG DẪN KẾT NỐI SQL SERVER TRÊN PRODUCTION SERVER
